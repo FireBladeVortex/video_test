@@ -764,13 +764,14 @@ async function id_가공(재생목록)
 
 		for (const video of 재생목록[key])
 		{
-			const id = Array.isArray(id_찾기(video.id)) ? id[0] : id
-			if (id)
+			const id = id_찾기(video.id)
+			const 값 = Array.isArray(id) ? id[0] : id
+			if (값)
 			{
-				if (재생목록인가(id))
+				if (재생목록인가(값))
 				{
-					const 값 = await 재생목록_조사(id)
-					임시_목록[key] = (임시_목록[key] ?? []).concat(값)
+					const 결과 = await 재생목록_조사(값)
+					임시_목록[key] = (임시_목록[key] ?? []).concat(결과)
 				}
 				else
 				{
@@ -792,9 +793,9 @@ function 재생목록_불러오기(누구)
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
 	script.addEventListener("load", async () =>
 	{
-		await id_가공(window.playlist)
+		await id_가공(window.재생목록)
 
-		나만의_색깔(window.playlist.color)
+		나만의_색깔(window.재생목록.색깔)
 
 		switch_click()
 
