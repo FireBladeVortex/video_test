@@ -106,6 +106,7 @@ document.head.appendChild(api)
 
 // iframe 들어갈 변수 준비
 let player = null
+let 재생_대기 = null
 
 // iframe 호출한다면
 function onYouTubeIframeAPIReady()
@@ -142,6 +143,14 @@ function onYouTubeIframeAPIReady()
 			{
 				// 현재 value 적용
 				player.setVolume(+볼륨_조절.value)
+			},
+			onError : () =>
+			{
+				if (재생목록_대기)
+				{
+					재생목록_대기()
+					재생목록_대기 = null
+				}
 			},
 			onStateChange : onPlayerStateChange,
 		}

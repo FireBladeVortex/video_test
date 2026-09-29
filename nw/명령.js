@@ -533,6 +533,14 @@ const resize = new ResizeObserver(구역 =>
 // 동영상 상태가 변화하면 즉시 작동
 function onPlayerStateChange(event)
 {
+
+	if (event.data === 5 && 재생목록_대기)
+	{
+		재생목록_대기()
+		재생목록_대기 = null
+		return
+	}
+
 	// 영상 정보 불러온 상태(재생 시작 전)
 	if (event.data === 5)
 	{
@@ -654,51 +662,24 @@ function 나만의_색깔(색깔)
 
 
 
-function 재생목록_조사(id)
+async function 재생목록_조사(id) // (수정)
 {
-	const 임시_공간 = document.createElement("div")
-	document.body.appendChild(임시_공간)
+	const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
+	const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
 
-	let 임시_플레이어 = null
-
-	const promise = new Promise(resolve =>
+	player.cuePlaylist(
 	{
-		임시_플레이어 = new YT.Player(임시_공간,
-		{
-			height: "0", width: "0",
-			events:
-			{
-				onReady: () =>
-				{
-					임시_플레이어.cuePlaylist(
-						{
-							listType: "playlist",
-							list: id
-						})
-				},
-				onStateChange: event =>
-				{
-					if (event.data !== YT.PlayerState.CUED)
-						return
-
-					const 재생목록 = 임시_플레이어.getPlaylist()
-					if (!재생목록)
-						return
-
-					const 결과 = 재생목록.map(id => ({ id }))
-
-					임시_플레이어.destroy()
-					임시_공간.remove()
-
-					resolve(결과)
-				}
-			}
-		})
+		listType: "playlist",
+		list: id
 	})
-	return promise
+
+	await Promise.race([대기, 시간초과])
+	재생목록_대기 = null
+
+	const 재생목록 = player.getPlaylist() ?? []
+	const 결과 = 재생목록.map(id => ({ id }))
+	return 결과
 }
-
-
 
 
 function 재생목록인가(id)
