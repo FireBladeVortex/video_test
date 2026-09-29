@@ -231,8 +231,6 @@ function 재생_속도_조절(키, 증감)
 // 시간 표시 변환
 // 100000초 또는 12:34:56 같은 모양으로
 // 없는거 채워서 시간값 2개 전달하기
-// function data_split(time) // 함수 이름 교체 대기
-// function time_split(time)
 function 시간_표기법(시간)
 {
 	// 숫자 모양인 시간 값이 들어왔을 떄
@@ -291,7 +289,7 @@ function ctrl_view()
 	const ratio = (cur - sec_start) / (sec_end - sec_start)
 	document.getElementById("재생_시간_지금").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
 
-	// const [, msg_cur] = data_split(cur)
+	// const [, msg_cur] = 시간_표기법(cur)
 	// if (msg_end && msg_start)
 	// {
 	// 	if (sec_start === 0)
@@ -434,12 +432,12 @@ function ready_data(id, start = 0, end = 0)
 	// // 주소에서 t값 추출 + 시작시간 비교후 결정
 	// const get_start = parseInt(url.searchParams.get("t"))
 	// const set_start = !Number.isNaN(get_start) ? get_start : start
-	const start_t = data_split(start)
+	const start_t = 시간_표기법(start)
 	sec_start = start_t[0]
 	msg_start = start_t[1]
 
 	// 종료 시간 결정(getDuration() 아님)
-	const end_t = data_split(end)
+	const end_t = 시간_표기법(end)
 	sec_end = end_t[0]
 	msg_end = end_t[1]
 
@@ -541,7 +539,7 @@ function onPlayerStateChange(event)
 		player.setPlaybackRate(1)
 		if (sec_end === 0)
 		{
-			[sec_end, msg_end] = data_split(player.getDuration())
+			[sec_end, msg_end] = 시간_표기법(player.getDuration())
 		}
 		let title = null
 		try
@@ -799,7 +797,7 @@ function 재생목록_불러오기(누구)
 
 		switch_click()
 
-		await cue_intro(temp_list.intro)
+		await cue_intro(임시_목록.소개)
 
 		document.getElementById("이름_상자").remove()
 	})
