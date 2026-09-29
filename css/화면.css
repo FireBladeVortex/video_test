@@ -1,0 +1,504 @@
+/*
+
+https://codingeverybody.kr/
+
+http://developer.mozilla.org/
+
+*/
+
+/* 기본 설정 초기화 */
+* {
+	margin : 0;
+	padding : 0;
+	border : 0;
+}
+
+/* 변수 선언 */
+:root
+{
+	--오른쪽바탕색 : #021322;
+	--왼쪽바탕색 : #230213;
+	--강조1 : #FFD700;
+	--강조2 : #800020;
+	--강조3 : #ffffff;
+	--가로 : 160px;
+	--세로 : 90px;
+}
+
+body
+{
+	width : 100%;
+	height : 100%;
+	overflow : hidden;
+	background : var(--오른쪽바탕색);
+}
+
+ /* 바탕 크기 결정 */
+#화면
+{
+	display : flex;
+	width : 100vw;
+	width : 100dvw;
+	height : 100vh;
+	height : 100dvh;
+	overflow : hidden;
+}
+
+#이름_상자
+{
+	position : fixed;
+	top : 0;
+	left : 0;
+	width : 50%;
+	height : 100vh;
+	height : 100dvh;
+	background : var(--강조2);
+	cursor : pointer;
+	z-index : 50;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.가나다_h1
+{
+	display : grid;
+	grid-template-columns : repeat(7, 3fr 1fr);
+	grid-auto-rows : auto;
+	width : 95%;
+	height : auto;
+	font-size : 14px;
+	text-align : center;
+	color : var(--강조1);
+	border-bottom : 3px solid var(--강조1);
+	padding-bottom : 3px;
+}
+
+.자음_상자, .자음_번호
+{
+	display : flex;
+	align-items : center;
+	justify-content : center;
+}
+
+.이름표_목록
+{
+	display : grid;
+	grid-template-columns : repeat(5, 1fr);
+	grid-auto-rows : auto;
+	width : 80%;
+	padding-top: 10px;
+}
+
+.이름표
+{
+	color: var(--강조3);
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.이름표:hover
+{
+	color: var(--강조1);
+}
+
+#왼쪽
+{
+	display : grid;
+	grid-template-rows : 2fr 2fr 1fr;
+	flex : 0 0 50%;
+	min-width : 0;
+	background : var(--왼쪽바탕색);
+	height : 100%;
+}
+
+#왼쪽 h1
+{
+	width : 95%;
+	font-size : 14px;
+	color : var(--강조1);
+	border-bottom : 3px solid var(--강조2);
+	padding-bottom : 3px;
+	display : flex;
+	align-items : center;
+}
+
+
+
+#왼쪽 h1 .구역_재생목록
+{
+	flex : 1;
+	display : flex;
+}
+
+
+#왼쪽 h1 .h1_분류,
+#왼쪽 h1 .h1_페이지,
+#왼쪽 h1 .h1_크기,
+.h1_종류,
+.버튼_이전,
+.버튼_지금,
+.버튼_다음,
+.이전_숫자,
+.지금_숫자,
+.다음_숫자
+{
+	flex : 1;
+	display : flex;
+	justify-content : space-evenly;
+}
+
+
+.버튼_지금
+{
+	display : flex;
+	justify-content : space-evenly;
+}
+
+
+
+
+
+
+
+
+
+.구역
+{
+	display : flex;
+	flex-direction : column;
+	align-items : center;
+	overflow : hidden;
+	width : 100%;
+	height : 100%;
+	min-width : 0;
+	min-height : 0;
+}
+
+.구역[data-type="video"],
+.구역[data-type="쇼츠"]
+{
+	display : grid;
+	grid-template-rows : auto 1fr;
+	justify-items : center;
+	align-items : start;
+	align-content : start;
+}
+
+
+.목록
+{
+	margin-top : 9px;
+	width : 100%;
+	height : 100%;
+	max-width : round(down, 95%, var(--가로));
+	max-height : round(down, 100%, var(--세로));
+	overflow : hidden;
+}
+
+
+
+.목록.쇼츠
+{
+	max-width : round(down, 90%, var(--세로));
+	max-height : round(down, 100%, var(--가로));
+}
+
+
+
+.페이지
+{
+	display : grid;
+	grid-template-columns : repeat(auto-fill, var(--가로));
+}
+
+
+
+.페이지.쇼츠
+{
+	grid-template-columns : repeat(auto-fill, var(--세로));
+}
+
+
+
+.버튼
+{
+	display : flex;
+	align-items : center;
+	justify-content : center;
+	position : relative;
+	width : var(--가로);
+	height : var(--세로);
+	overflow : hidden;
+	cursor : pointer;
+}
+
+.목록.쇼츠 .버튼
+{
+	width : var(--세로);
+	height : var(--가로);
+}
+
+.버튼:hover
+{
+	outline : 3px solid var(--강조1);
+	outline-offset : -3px;
+}
+
+.버튼.강조
+{
+	outline : 3px solid var(--강조1);
+	outline-offset : -3px;
+}
+
+.버튼.발기
+{
+	filter : brightness(25%);
+}
+
+.버튼.발기:hover
+{
+	filter : brightness(100%);
+}
+
+.버튼 img
+{
+	width : 100%;
+	height : 100%;
+	/* 이미지 비율 유지 + 가득 채움
+	// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
+	object-fit : cover;
+}
+
+#오른쪽
+{
+	position : relative;
+	display : flex;
+	flex : 1;
+	flex-direction : column;
+	align-items : center;
+	justify-content : center;
+	gap : 3px;
+	cursor : default;
+}
+
+#player
+{
+	position : relative;
+	width : clamp(480px, 100%, 640px);
+	height : clamp(270px, 100%, 360px);
+	margin-bottom : 10px;
+	z-index : 3;
+}
+
+#player iframe, #YTP
+{
+	width : 100%;
+	height : 100%;
+	display : block;
+}
+
+#클릭_방지
+{
+	position : absolute;
+	inset : 0;
+	z-index : 10;
+	cursor : default;
+	pointer-events : none;
+}
+
+#재생_시간_표시줄
+{
+	width : clamp(480px, 100%, 640px);
+	height : 9px;
+	background : #000000;
+	border-radius : var(--세로);
+	overflow : hidden;
+	margin-bottom : 10px;
+}
+
+#재생_시간_지금
+{
+	height : 100%;
+	width : 0%;
+	background : var(--강조2);
+	border-radius : var(--세로);
+	overflow : hidden;
+}
+
+#플레이어_메세지
+{
+	width : clamp(480px, 100%, 640px);
+	font-size : 14px;
+	color : var(--강조1);
+	text-align : center;
+}
+
+#볼륨
+{
+	display : flex;
+	align-items : center;
+	width : clamp(480px, 100%, 640px);
+	height : 50px;
+}
+
+#볼륨_조절
+{
+	flex : 1;
+	accent-color : var(--강조2);
+	height : 6px;
+}
+
+#볼륨_조절:hover
+{
+	cursor : grab;
+	accent-color : var(--강조2);
+}
+
+#볼륨_조절:active
+{
+	cursor : grabbing;
+	accent-color : var(--강조2);
+}
+
+.long_row1
+{
+	display : flex;
+	width : 80%;
+	gap : 3px;
+	flex : 1;
+}
+
+.long_row1 .long_lang
+{
+	flex : 1;
+	text-align : left;
+}
+
+.long_row1 .long_name
+{
+	flex : 3;
+	text-align : left;
+}
+
+.long_row1 .long_empty
+{
+	display : flex;
+	width : 100%;
+	height : 100%;
+	flex : 1;
+}
+
+.long_row2
+{
+	display : flex;
+	width : 80%;
+	flex : 1;
+}
+
+.long_row2 .long_title
+{
+	width : 100%;
+	text-align : left;
+}
+
+
+.long_ready
+{
+	width : 100%;
+	height : 100%;
+	display : flex;
+	align-items : center;
+	justify-content : center;
+	cursor : pointer;
+}
+
+.long_ready.강조
+{
+	opacity : 1;
+	pointer-events : auto;
+}
+
+.long_ready.발기
+{
+	opacity : 0.5;
+	pointer-events : none;
+}
+
+
+.문자열_클릭
+{
+	cursor : pointer;
+}
+
+.구역_재생목록,
+.버튼_지금
+{
+	cursor : default;
+}
+
+#오른쪽 h1
+{
+	position : absolute;
+	top : 0;
+	left : 3%;
+	display : flex;
+	gap : 30px;
+	font-size : 60px;
+}
+
+#help_btn
+{
+	color : var(--강조3);
+	cursor : help;
+}
+
+#help_btn:hover
+{
+	color : #ff0000;
+}
+
+#alert_btn
+{
+	color : var(--강조3);
+	cursor : progress;
+}
+
+#alert_btn:hover
+{
+	color : var(--강조1);
+}
+
+#popup
+{
+	display : none;
+	position : fixed;
+	top : 50%;
+	left : 50%;
+	transform : translate(-50%, -50%);
+	width : 500px;
+	height : 500px;
+	align-items : center;
+	justify-content : center;
+	z-index : 100;
+}
+
+#popup.강조
+{
+	display : flex;
+}
+
+#popup_close
+{
+	position : absolute;
+	top : 0;
+	right : 0;
+	font-size : 60px;
+	cursor : pointer;
+}
+#popup_txt
+{
+	white-space : pre-wrap;
+	tab-size : 4;
+}

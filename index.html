@@ -1,0 +1,47 @@
+<!-- http://developer.mozilla.org/ -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<title>유튜브 구간 반복 재생</title>
+	<link rel="stylesheet" href="css/화면.css">
+</head>
+
+<body>
+	<div id="이름_상자"></div>
+	<div id="화면">
+
+		<div id="왼쪽">
+		</div>
+
+		<div id="오른쪽">
+			<!-- <h1><span id="alert_btn">!</span><span id="help_btn">?</span></h1> -->
+			<div id="player">
+				<div id="클릭_방지"></div>
+				<div id="YTP"></div>
+			</div>
+			<div id="재생_시간_표시줄">
+				<div id="재생_시간_지금"></div>
+			</div>
+			<div id="플레이어_메세지">재생 목록에서 선택하세요</div>
+			<div id="볼륨">
+				<input id="볼륨_조절" type="range" min="0" max="100" value="25" step="1">
+			</div>
+		</div>
+
+	</div>
+	<!-- <div id="popup"><span id="popup_close">x</span><span id="popup_txt"></span></div> -->
+
+</body>
+
+<!--
+<script src="js/newapi.js"></script>
+<script src="anne/anne.js"></script>
+<script src="data/call.js"></script>
+-->
+
+<script src="nw/준비.js"></script>
+<script src="nw/생성.js"></script>
+<script src="nw/명령.js"></script>
+
+</html>
