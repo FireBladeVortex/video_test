@@ -455,11 +455,11 @@ function ready_data(id, start = 0, end = 0)
 // 이름 제목
 async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으로 변경
 {
-	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
+	// const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
 	const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
 	const 주소_2 = id
 	const 주소_3 = "&format=json"
-	const 주소 = 주소_1 + 주소_2 + 주소_3
+	const url = 주소_1 + 주소_2 + 주소_3
 	try
 	{
 		const input = await fetch(url)

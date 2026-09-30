@@ -23,6 +23,7 @@
 function fill_page(type_str)
 {
 	const 페이지 = document.querySelector(`.페이지.${type_str}`)
+	// const 페이지 = document.querySelector(".페이지." + type_str)
 	if (!페이지)
 		return
 
@@ -59,11 +60,11 @@ function fill_page(type_str)
 			const target = (type_str + "_" + (num + "").padStart(3, "0"))
 			if (img_click === target)
 			{
-				if (play())
+				if (재생())
 				{
 					player.pauseVideo()
 				}
-				else if (pause())
+				else if (일시중지())
 				{
 					player.playVideo()
 				}
@@ -257,6 +258,7 @@ function make_long()
 function render_nav(type_str)
 {
 	const 버튼_이전 = document.querySelector(`.버튼_이전[data-type="${type_str}"]`)
+	// const 버튼_이전 = document.querySelector(".버튼_이전[data-type=" + type_str + "]")
 	const 버튼_지금 = document.querySelector(`.버튼_지금[data-type="${type_str}"]`)
 	const 버튼_다음 = document.querySelector(`.버튼_다음[data-type="${type_str}"]`)
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
@@ -320,10 +322,10 @@ function make_list()
 
 
 	const has_ori = 유효_재확인(임시_목록.원곡)
-	const has_video = 유효_재확인(임시_목록.video)
+	const has_video = 유효_재확인(임시_목록.커버)
 
 	list_ori = has_ori ? 임시_목록.원곡 : []
-	list_non = has_video ? 임시_목록.video : []
+	list_non = has_video ? 임시_목록.커버 : []
 
 	const video_data = // (추가) 존재 조합에 따른 기본 표시 데이터 결정
 		has_ori && has_video ? list_ori.concat(list_non) :
@@ -333,9 +335,9 @@ function make_list()
 
 	const video_type =
 	[
-		{ type: "video", tag: "동영상", data: video_data ?? null }, // 수정
-		{ type: "쇼츠", tag: "쇼츠", data: 임시_목록.쇼츠 ?? null }, // 수정
-		{ type: "long", tag: "부분 재생", data: 임시_목록.part ?? null }, // 수정
+		{ type: "동영상", tag: "동영상", data: video_data ?? null },
+		{ type: "쇼츠", tag: "쇼츠", data: 임시_목록.쇼츠 ?? null },
+		{ type: "부분재생", tag: "부분 재생", data: 임시_목록.부분재생 ?? null },
 	]
 
 
@@ -521,26 +523,29 @@ function 만들기_이름표들(이름_상자)
 
 function 만들기_가나다(이름_상자)
 {
-	const 가나다_h1 = document.createElement("h1")
-	가나다_h1.className = "가나다_h1"
-	이름_상자.appendChild(가나다_h1)
+	const h1 = document.createElement("h1")
+	이름_상자.appendChild(h1)
 
-	const 가나다 =
+	const 가나다 = document.createElement("div")
+	가나다.className = "가나다"
+	h1.appendChild(가나다)
+
+	const 가나다순 =
 	[
 		"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
 		"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
 	]
 
-	가나다.forEach(가나다_순서대로 =>
+	가나다순.forEach(가나다_순서대로 =>
 	{
 		const 자음_상자 = document.createElement("span")
 		자음_상자.className = "자음_상자"
 		자음_상자.textContent = 가나다_순서대로
-		가나다_h1.appendChild(자음_상자)
+		가나다.appendChild(자음_상자)
 
 		const 자음_번호 = document.createElement("span")
 		자음_번호.className = "자음_번호"
-		가나다_h1.appendChild(자음_번호)
+		가나다.appendChild(자음_번호)
 	})
 }
 
