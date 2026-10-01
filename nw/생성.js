@@ -306,14 +306,11 @@ function render_nav(type_str)
 
 
 
-
 // id 값이 실제로 채워진 배열인지 확인 (추가)
-function 유효_재확인(arr)
+function 유효_재확인(종류)
 {
-	return Array.isArray(arr) && arr.some(video => video.id)
+	return Array.isArray(종류) && 종류.some(동영상 => 동영상.id)
 }
-
-
 
 
 
@@ -327,6 +324,22 @@ let pli_ori = null // (추가) 재생목록에서 받아온 원곡 목록 저장
 let pli_non = null // (추가) 재생목록에서 받아온 커버(video) 목록 저장
 let pli_short = null // (추가) 재생목록에서 받아온 쇼츠 목록 저장
 let pli_intro = null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function make_list()
