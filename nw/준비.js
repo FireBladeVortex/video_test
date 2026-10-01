@@ -125,7 +125,7 @@ function onYouTubeIframeAPIReady()
 			// 유튜브 일부 ui 숨김
 			// controls: 0,
 			// 뭐임?
-			origin: window.location.origin,
+			// origin: window.location.origin,
 			// 자막 한글 pip 모드 제작 대비
 			cc_lang_pref: "ko",
 			// 자막 자동 실행 pip 모드 제작 대비
