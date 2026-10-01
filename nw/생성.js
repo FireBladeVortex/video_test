@@ -269,9 +269,9 @@ function render_nav(type_str)
 	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
 
 
-	const last = get_last(type_str)
+	const 페이지_수 = get_last(type_str)
 
-	if (last <= 1)
+	if (페이지_수 <= 1)
 	{
 		버튼_이전_문자열.textContent = ""
 		버튼_지금.textContent = ""
@@ -283,7 +283,7 @@ function render_nav(type_str)
 
 	버튼_이전_문자열.textContent = multiple === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
-	버튼_다음_문자열.textContent = multiple >= last ? "" : "다음"
+	버튼_다음_문자열.textContent = multiple >= 페이지_수 ? "" : "다음"
 
 	const 이전_숫자 = document.createElement("div")
 	이전_숫자.className = "이전_숫자"
@@ -300,7 +300,7 @@ function render_nav(type_str)
 	const 다음_숫자 = document.createElement("div")
 	다음_숫자.className = "다음_숫자"
 	다음_숫자.dataset.type = type_str
-	다음_숫자.textContent = multiple + 1 > last ? "" : multiple + 1
+	다음_숫자.textContent = multiple + 1 > 페이지_수 ? "" : multiple + 1
 	버튼_지금.appendChild(다음_숫자)
 }
 
@@ -332,22 +332,34 @@ function make_list()
 		has_video ? list_non :
 		null
 
-	const video_type =
+	const 동영상_종류 =
 	[
-		{ type: "동영상", tag: "동영상", data: video_data ?? null },
-		{ type: "쇼츠", tag: "쇼츠", data: 임시_목록.쇼츠 ?? null },
-		{ type: "부분재생", tag: "부분 재생", data: 임시_목록.부분재생 ?? null },
+		{
+			종류 : "동영상",
+			tag: "동영상",
+			data: video_data ?? null
+		},
+		{
+			종류 : "쇼츠",
+			tag: "쇼츠",
+			data: 임시_목록.쇼츠 ?? null
+		},
+		{
+			종류 : "부분재생",
+			tag: "부분",
+			data: 임시_목록.부분재생 ?? null
+		},
 	]
 
 
-	video_type.forEach(type =>
+	동영상_종류.forEach(분류 =>
 	{
-		if (!type.data)
+		if (!분류.data)
 			return
 
 		const 구역 = document.createElement("div")
 		구역.className = "구역"
-		구역.dataset.type = type.type
+		구역.dataset.종류 = 분류.종류
 		왼쪽.appendChild(구역)
 
 		const h1 = document.createElement("h1")
@@ -355,7 +367,7 @@ function make_list()
 
 		const 구역_재생목록 = document.createElement("div")
 		구역_재생목록.className = "구역_재생목록"
-		구역_재생목록.textContent = type.tag + " 재생 목록"
+		구역_재생목록.textContent = 분류.tag + " 재생 목록"
 		h1.appendChild(구역_재생목록)
 
 
@@ -370,12 +382,12 @@ function make_list()
 			h1.appendChild(h1_페이지)
 
 
-		if (type.type !== "long")
+		if (분류.종류 !== "long")
 		{
-			active_data[type.type] = type.data
+			active_data[분류.종류] = 분류.data
 
 
-			if (type.type === "video")
+			if (분류.종류 === "video")
 			{
 				if (has_ori && has_video) // (수정) 위에서 계산한 값 재사용
 				{
@@ -414,7 +426,7 @@ function make_list()
 
 				const 버튼_이전 = document.createElement("div")
 				버튼_이전.className = "버튼_이전"
-				버튼_이전.dataset.type = type.type
+				버튼_이전.dataset.type = 분류.종류
 				h1_페이지.appendChild(버튼_이전)
 
 					const 버튼_이전_문자열 = document.createElement("span")
@@ -422,22 +434,22 @@ function make_list()
 					버튼_이전.appendChild(버튼_이전_문자열)
 					버튼_이전_문자열.addEventListener("click", () =>
 					{
-						if (type.type === "쇼츠")
+						if (분류.종류 === "쇼츠")
 							short_multiple = Math.max(1, short_multiple - 1)
 						else
 							video_multiple = Math.max(1, video_multiple - 1)
-						render_nav(type.type)
-						update_page(type.type)
+						render_nav(분류.종류)
+						update_page(분류.종류)
 					})
 
 				const 버튼_지금 = document.createElement("div")
 				버튼_지금.className = "버튼_지금"
-				버튼_지금.dataset.type = type.type
+				버튼_지금.dataset.type = 분류.종류
 				h1_페이지.appendChild(버튼_지금)
 
 				const 버튼_다음 = document.createElement("div")
 				버튼_다음.className = "버튼_다음"
-				버튼_다음.dataset.type = type.type
+				버튼_다음.dataset.type = 분류.종류
 				h1_페이지.appendChild(버튼_다음)
 
 					const 버튼_다음_문자열 = document.createElement("span")
@@ -445,18 +457,18 @@ function make_list()
 					버튼_다음.appendChild(버튼_다음_문자열)
 					버튼_다음_문자열.addEventListener("click", () =>
 					{
-						const last = get_last(type.type)
-						const multiple = type.type === "쇼츠" ? short_multiple : video_multiple
+						const last = get_last(분류.종류)
+						const multiple = 분류.종류 === "쇼츠" ? short_multiple : video_multiple
 						if (multiple >= last)
 							return
-						if (type.type === "쇼츠")
+						if (분류.종류 === "쇼츠")
 							short_multiple = short_multiple + 1
 						else
 							video_multiple = video_multiple + 1
-						render_nav(type.type)
-						update_page(type.type)
+						render_nav(분류.종류)
+						update_page(분류.종류)
 					})
-			render_nav(type.type)
+			render_nav(분류.종류)
 		}
 
 		const h1_크기 = document.createElement("div")
@@ -466,31 +478,28 @@ function make_list()
 			const 크기_조절 = document.createElement("span")
 			크기_조절.className = "문자열_클릭"
 			크기_조절.textContent = "크게"
-			크기_조절.dataset.type = type.type
+			크기_조절.dataset.type = 분류.종류
 			h1_크기.appendChild(크기_조절)
-			크기_조절.addEventListener("click", () => resize_section(type.type))
+			크기_조절.addEventListener("click", () => resize_section(분류.종류))
 
-		if (type.type === "long")
+		if (분류.종류 === "long")
 		{
 			make_long()
 			return
 		}
 
 
-
-
-
 		const 목록 = document.createElement("div")
-		목록.className = "목록" + type.type
+		목록.className = "목록" + 분류.종류
 		구역.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const 페이지 = document.createElement("div")
-		페이지.className = "페이지" + type.type
+		페이지.className = "페이지" + 분류.종류
 		목록.appendChild(페이지)
 
 
-		fill_page(type.type)
+		fill_page(분류.종류)
 	})
 }
 

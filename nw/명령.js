@@ -655,9 +655,9 @@ function 나만의_색깔(색깔)
 	if (색깔.강조1)
 		설정.setProperty("--강조1", 색깔.강조1)
 	if (색깔.강조2)
-		설정.setProperty("--강조1", 색깔.강조2)
+		설정.setProperty("--강조2", 색깔.강조2)
 	if (색깔.강조3)
-		설정.setProperty("--강조1", 색깔.강조3)
+		설정.setProperty("--강조3", 색깔.강조3)
 }
 
 
