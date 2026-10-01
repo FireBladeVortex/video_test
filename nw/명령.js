@@ -304,14 +304,14 @@ function ctrl_view()
 }
 
 
-let 구역_분류 = null // 현재 확대된 섹션 타입 저장
+let 구역_종류 = null // 현재 확대된 섹션 타입 저장
 // (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
 function resize_section(type_str)
 {
 	const 왼쪽 = document.getElementById("왼쪽")
 	const 행_비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
 
-	const next_big = 구역_분류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
+	const next_big = 구역_종류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
 
 	if (next_big)
 	{
@@ -323,11 +323,11 @@ function resize_section(type_str)
 	const 공백 = " "
 	왼쪽.style.gridTemplateRows = 행_비율.동영상 + 공백 + 행_비율.쇼츠 + 공백 + 행_비율.부분재생
 
-	구역_분류 = next_big // 상태 갱신
+	구역_종류 = next_big // 상태 갱신
 
 	document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span => // 모든 토글 문자열 재설정
 	{
-		span.textContent = span.dataset.type === 구역_분류 ? "작게" : "크게"
+		span.textContent = span.dataset.type === 구역_종류 ? "작게" : "크게"
 	})
 }
 
@@ -394,7 +394,7 @@ function update_page(type_str)
 	const min_num = (multiple - 1) * num
 	const max_num = (multiple * num) - 1
 
-	document.querySelectorAll(".버튼[data-type=" type_str + "]").forEach(버튼 =>
+	document.querySelectorAll(".버튼[data-종류=" + type_str + "]").forEach(버튼 =>
 	{
 		const idx = +버튼.dataset.num
 		const show = idx >= min_num && idx <= max_num
@@ -511,11 +511,11 @@ const resize = new ResizeObserver(구역 =>
 {
 	구역.forEach(목록 =>
 	{
-		const 분류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
-		total_cell[분류] = calc_size(목록)
+		const 종류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
+		total_cell[종류] = calc_size(목록)
 
-		reset_page(분류)
-		update_page(분류)
+		reset_page(종류)
+		update_page(종류)
 	})
 })
 
@@ -661,8 +661,8 @@ function 나만의_색깔(색깔)
 }
 
 
-
-async function 재생목록_조사(id) // (수정)
+let 재생목록_대기 = null
+async function 재생목록_조사(id)
 {
 	const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
 	const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))

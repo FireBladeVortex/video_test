@@ -88,7 +88,7 @@ function make_long()
 	if (!playlist.part)
 		return // long 파일 없으면 작동 안함
 
-	const 구역 = document.querySelector(".구역[data-type="long"]")
+	const 구역 = document.querySelector(".구역[data-종류=부분재생]")
 	if (!구역)
 		return
 
@@ -257,9 +257,9 @@ function make_long()
 // 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
 function render_nav(type_str)
 {
-	const 버튼_이전 = document.querySelector(".버튼_이전[data-type=" + type_str + "]")
-	const 버튼_지금 = document.querySelector(".버튼_지금[data-type=" + type_str + "]")
-	const 버튼_다음 = document.querySelector(".버튼_다음[data-type=" + type_str + "]")
+	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + type_str + "]")
+	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + type_str + "]")
+	const 버튼_다음 = document.querySelector(".버튼_다음[data-종류=" + type_str + "]")
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
 		return
 
@@ -359,9 +359,9 @@ function make_list()
 		h1.appendChild(구역_재생목록)
 
 
-		const h1_분류 = document.createElement("div")
-		h1_분류.className = "h1_분류"
-		h1.appendChild(h1_분류)
+		const h1_종류 = document.createElement("div")
+		h1_종류.className = "h1_종류"
+		h1.appendChild(h1_종류)
 
 
 
@@ -381,7 +381,7 @@ function make_list()
 				{
 					const h1_모두 = document.createElement("div")
 					h1_모두.className = "h1_모두"
-					h1_분류.appendChild(h1_모두)
+					h1_종류.appendChild(h1_모두)
 
 						const 모두 = document.createElement("span")
 						모두.className = "문자열_클릭"
@@ -391,7 +391,7 @@ function make_list()
 
 					const h1_원곡 = document.createElement("div")
 					h1_원곡.className = "h1_원곡"
-					h1_분류.appendChild(h1_원곡)
+					h1_종류.appendChild(h1_원곡)
 
 						const 원곡 = document.createElement("span")
 						원곡.className = "문자열_클릭"
@@ -401,7 +401,7 @@ function make_list()
 
 					const h1_커버 = document.createElement("div")
 					h1_커버.className = "h1_커버"
-					h1_분류.appendChild(h1_커버)
+					h1_종류.appendChild(h1_커버)
 
 						const 커버 = document.createElement("span")
 						커버.className = "문자열_클릭"
