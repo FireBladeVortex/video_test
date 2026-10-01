@@ -783,10 +783,14 @@ function 재생목록_불러오기(누구)
 	const script = document.createElement("script")
 	script.src = "data/" + 누구.이름 + ".js"
 
+
+
+	const api_준비 = api_불러오기()
 	// 준비 되었을때 실행
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
 	script.addEventListener("load", async () =>
 	{
+		await api_준비
 		await id_가공(window.재생목록)
 
 		나만의_색깔(window.재생목록.색깔)

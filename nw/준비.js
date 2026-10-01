@@ -98,7 +98,20 @@ const 임시_목록 = {}
 // YouTube Player iframe API 준비
 const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
-document.head.appendChild(api)
+// document.head.appendChild(api)
+
+let api_준비_끝 = null 
+const api_준비 = new Promise(resolve => { api_준비_끝 = resolve }) 
+
+function api_불러오기() 
+{ 
+	document.head.appendChild(api) 
+	return api_준비 
+} 
+
+
+
+
 
 // iframe 들어갈 변수 준비
 let player = null
@@ -139,6 +152,7 @@ function onYouTubeIframeAPIReady()
 			{
 				// 현재 value 적용
 				player.setVolume(+볼륨_조절.value)
+				api_준비_끝()
 			},
 			onError : () =>
 			{
