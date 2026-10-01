@@ -159,14 +159,14 @@ document.addEventListener("keydown", 키 =>
 		else if (키.code === "ArrowLeft")
 		{
 			키.preventDefault()
-			player.seekTo(Math.max(sec_start, player.getCurrentTime() - 5), true) // sec_start 보다 작아질 수 없음
+			player.seekTo(Math.max(시작_시간, player.getCurrentTime() - 5), true) // 시작_시간 보다 작아질 수 없음
 		}
 
 		// 방향키 오른쪽 = 5초 앞으로
 		else if (키.code === "ArrowRight")
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(sec_end, player.getCurrentTime() + 5), true) // sec_end 보다 커질 수 없음
+			player.seekTo(Math.min(종료_시간, player.getCurrentTime() + 5), true) // 종료_시간 보다 커질 수 없음
 		}
 
 		// 숫자키 0-9 = 현재 재생 위치 변경
@@ -174,7 +174,7 @@ document.addEventListener("keydown", 키 =>
 		{
 			키.preventDefault()
 			const 비율 = +(키.code.slice(-1)) / 10
-			const 숫자키 = sec_start + Math.floor((sec_end - sec_start) * 비율)
+			const 숫자키 = 시작_시간 + Math.floor((종료_시간 - 시작_시간) * 비율)
 			player.seekTo(숫자키, true)
 		}
 
@@ -286,19 +286,19 @@ function ctrl_view()
 {
 	// 지금 재생 중인 동영상 시간 확인
 	const cur = player.getCurrentTime()
-	const ratio = (cur - sec_start) / (sec_end - sec_start)
+	const ratio = (cur - 시작_시간) / (종료_시간 - 시작_시간)
 	document.getElementById("재생_시간_지금").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
 
 	// const [, msg_cur] = 시간_표기법(cur)
-	// if (msg_end && msg_start)
+	// if (종료_문자열 && 시작_문자열)
 	// {
-	// 	if (sec_start === 0)
+	// 	if (시작_시간 === 0)
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = msg_cur + "<" + msg_end
+	// 		document.getElementById("플레이어_메세지").textContent = msg_cur + "<" + 종료_문자열
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = msg_start + "< + msg_cur + ">" + msg_end
+	// 		document.getElementById("플레이어_메세지").textContent = 시작_문자열 + "< + msg_cur + ">" + 종료_문자열
 	// 	}
 	// }
 }
@@ -341,6 +341,7 @@ function get_last(type_str)
 }
 
 
+let 이미지_클릭 = null
 function click_img(target)
 {
 	// 활성화 버튼 강조 나머지 버튼 어둡게
@@ -352,7 +353,7 @@ function click_img(target)
 		버튼.classList.toggle("발기", !click_img)
 	})
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
-	img_click = target
+	이미지_클릭 = target
 }
 
 
@@ -390,7 +391,7 @@ function update_page(type_str)
 	if (!num)
 		return
 
-	const multiple = type_str === "쇼츠" ? short_multiple : video_multiple
+	const multiple = type_str === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 	const min_num = (multiple - 1) * num
 	const max_num = (multiple * num) - 1
 
@@ -406,15 +407,32 @@ function update_page(type_str)
 function reset_page(type_str)
 {
 	if (type_str === "쇼츠")
-		short_multiple = 1
+		페이지_쇼츠 = 1
 	else
-		video_multiple = 1
+		페이지_동영상 = 1
 
 
 	render_nav(type_str)
 }
 
 
+// 시간 관리
+let 시작_시간 = null
+let 종료_시간 = null
+
+// 시간 메세지
+let 시작_문자열 = null
+let 종료_문자열 = null
+
+// 정보 관리
+let set_id = null
+let set_name = null
+let set_title = null
+let set_ch = null
+
+
+let 페이지_동영상 = 1
+let 페이지_쇼츠 = 1
 
 // youtube 정보 가져오기 cue 상태 되기전
 function ready_data(id, start = 0, end = 0)
@@ -434,20 +452,20 @@ function ready_data(id, start = 0, end = 0)
 	// const get_start = parseInt(url.searchParams.get("t"))
 	// const set_start = !Number.isNaN(get_start) ? get_start : start
 	const start_t = 시간_표기법(start)
-	sec_start = start_t[0]
-	msg_start = start_t[1]
+	시작_시간 = start_t[0]
+	시작_문자열 = start_t[1]
 
 	// 종료 시간 결정(getDuration() 아님)
 	const end_t = 시간_표기법(end)
-	sec_end = end_t[0]
-	msg_end = end_t[1]
+	종료_시간 = end_t[0]
+	종료_문자열 = end_t[1]
 
 	// 영상 불러오기
 	player.cueVideoById(
 	{
 		videoId : get_id,
-		startSeconds : sec_start, // 광고 때문에 sec_start 대신 임시로 0
-		...(sec_end > 0 && {endSeconds : sec_end})
+		startSeconds : 시작_시간, // 광고 때문에 시작_시간 대신 임시로 0
+		...(종료_시간 > 0 && {endSeconds : 종료_시간})
 	})
 
 }
@@ -498,7 +516,7 @@ function switch_video_data(next_data)
 
 	fill_page("video") // 새 데이터로 다시 채움
 
-	video_multiple = 1 // 페이지 번호 초기화
+	페이지_동영상 = 1 // 페이지 번호 초기화
 	render_nav("video")
 	update_page("video")
 }
@@ -523,6 +541,9 @@ const resize = new ResizeObserver(구역 =>
 
 
 
+// 상태 변화 감지에서 사용할 재생 막대 변수
+let 재생_시간_표시줄 = null
+
 // 영상 상태 확인
 // YT.PlayerState.ENDED = 0
 // YT.PlayerState.PLAYING = 1
@@ -545,9 +566,9 @@ function onPlayerStateChange(event)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
-		if (sec_end === 0)
+		if (종료_시간 === 0)
 		{
-			[sec_end, msg_end] = 시간_표기법(player.getDuration())
+			[종료_시간, 종료_문자열] = 시간_표기법(player.getDuration())
 		}
 		let title = null
 		try
@@ -571,9 +592,9 @@ function onPlayerStateChange(event)
 	// 재생 중일 때 100ms마다 진행바 갱신
 	if (event.data === 1)
 	{
-		if (player.getCurrentTime() < sec_start)
+		if (player.getCurrentTime() < 시작_시간)
 		{
-			player.seekTo(sec_start, true)
+			player.seekTo(시작_시간, true)
 		}
 		clearInterval(재생_시간_표시줄) // 인터벌 중복 호출 방지
 		재생_시간_표시줄 = setInterval(ctrl_view, 100)
@@ -585,7 +606,7 @@ function onPlayerStateChange(event)
 	// 영상 재시작
 	if (event.data === 0)
 	{
-		player.seekTo(sec_start, true)
+		player.seekTo(시작_시간, true)
 		player.playVideo()
 	}
 	//

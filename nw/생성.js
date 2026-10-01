@@ -58,7 +58,7 @@ function fill_page(type_str)
 		버튼.addEventListener("click", () =>
 		{
 			const target = (type_str + "_" + (num + "").padStart(3, "0"))
-			if (img_click === target)
+			if (이미지_클릭 === target)
 			{
 				if (재생())
 				{
@@ -279,7 +279,7 @@ function render_nav(type_str)
 		return
 	}
 
-	const multiple = type_str === "쇼츠" ? short_multiple : video_multiple
+	const multiple = type_str === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 
 	버튼_이전_문자열.textContent = multiple === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
@@ -312,6 +312,21 @@ function 유효_재확인(arr)
 {
 	return Array.isArray(arr) && arr.some(video => video.id)
 }
+
+
+
+
+
+
+
+
+let active_data = { video: null, 쇼츠: null } // 현재 표시중인 목록 데이터
+let list_ori = [] // original 값을 가진 데이터만 모음
+let list_non = [] // original 값이 없는 데이터만 모음
+let pli_ori = null // (추가) 재생목록에서 받아온 원곡 목록 저장
+let pli_non = null // (추가) 재생목록에서 받아온 커버(video) 목록 저장
+let pli_short = null // (추가) 재생목록에서 받아온 쇼츠 목록 저장
+let pli_intro = null
 
 
 function make_list()
@@ -435,9 +450,9 @@ function make_list()
 					버튼_이전_문자열.addEventListener("click", () =>
 					{
 						if (분류.종류 === "쇼츠")
-							short_multiple = Math.max(1, short_multiple - 1)
+							페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
 						else
-							video_multiple = Math.max(1, video_multiple - 1)
+							페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
 						render_nav(분류.종류)
 						update_page(분류.종류)
 					})
@@ -458,13 +473,13 @@ function make_list()
 					버튼_다음_문자열.addEventListener("click", () =>
 					{
 						const last = get_last(분류.종류)
-						const multiple = 분류.종류 === "쇼츠" ? short_multiple : video_multiple
+						const multiple = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 						if (multiple >= last)
 							return
 						if (분류.종류 === "쇼츠")
-							short_multiple = short_multiple + 1
+							페이지_쇼츠 = 페이지_쇼츠 + 1
 						else
-							video_multiple = video_multiple + 1
+							페이지_동영상 = 페이지_동영상 + 1
 						render_nav(분류.종류)
 						update_page(분류.종류)
 					})
