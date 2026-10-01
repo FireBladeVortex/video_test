@@ -624,25 +624,19 @@ function onPlayerStateChange(event)
 
 
 
-// intro 데이터 재생 준비 (추가) - 재생목록이면 cuePlaylist(랜덤), 일반 동영상이면 cueVideoById
-function cue_intro(intro)
+// 소개 데이터 재생 준비 (추가) - 재생목록이면 cuePlaylist(랜덤), 일반 동영상이면 cueVideoById
+function 소개_불러오기(소개)
 {
-	if (재생목록인가(intro))
+	if (!소개)
+		return
+
+	const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
+
+	player.cueVideoById(
 	{
-		player.setShuffle(true) // 랜덤 선택
-		player.cuePlaylist(
-		{
-			listType: "playlist",
-			list: intro
-		})
-	}
-	else
-	{
-		player.cueVideoById(
-		{
-			videoId : intro,
-		})
-	}
+		videoId : 소개.id,
+	})
+
 }
 
 
@@ -799,7 +793,7 @@ function 재생목록_불러오기(누구)
 
 		switch_click()
 
-		await cue_intro(임시_목록.소개)
+		await 소개_불러오기(임시_목록.소개)
 
 		document.getElementById("이름_상자").remove()
 		document.getElementById("안내_상자").remove()
