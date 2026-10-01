@@ -294,39 +294,40 @@ function ctrl_view()
 	// {
 	// 	if (sec_start === 0)
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = `${msg_cur} < ${msg_end}`
+	// 		document.getElementById("플레이어_메세지").textContent = msg_cur + "<" + msg_end
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = `${msg_start} < ${msg_cur} > ${msg_end}`
+	// 		document.getElementById("플레이어_메세지").textContent = msg_start + "< + msg_cur + ">" + msg_end
 	// 	}
 	// }
 }
 
 
-let big_type = null // 현재 확대된 섹션 타입 저장
+let 구역_분류 = null // 현재 확대된 섹션 타입 저장
 // (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
 function resize_section(type_str)
 {
 	const 왼쪽 = document.getElementById("왼쪽")
-	const rows = { video: "2fr", 쇼츠: "2fr", long: "1fr" }
+	const 행_비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
 
-	const next_big = big_type === type_str ? null : type_str // 같은 타입 재클릭 시 해제
+	const next_big = 구역_분류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
 
 	if (next_big)
 	{
-		rows.video = type_str === "video" ? "1fr" : "0fr"
-		rows.쇼츠 = type_str === "쇼츠" ? "1fr" : "0fr"
-		rows.long = type_str === "long" ? "1fr" : "0fr"
+		행_비율.동영상 = type_str === "동영상" ? "1fr" : "0fr"
+		행_비율.쇼츠 = type_str === "쇼츠" ? "1fr" : "0fr"
+		행_비율.부분재생 = type_str === "부분재생" ? "1fr" : "0fr"
 	}
 
-	왼쪽.style.gridTemplateRows = `${rows.video} ${rows.쇼츠} ${rows.long}`
+	const 공백 = " "
+	왼쪽.style.gridTemplateRows = 행_비율.동영상 + 공백 + 행_비율.쇼츠 + 공백 + 행_비율.부분재생
 
-	big_type = next_big // 상태 갱신
+	구역_분류 = next_big // 상태 갱신
 
 	document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span => // 모든 토글 문자열 재설정
 	{
-		span.textContent = span.dataset.type === big_type ? "작게" : "크게"
+		span.textContent = span.dataset.type === 구역_분류 ? "작게" : "크게"
 	})
 }
 
@@ -393,7 +394,7 @@ function update_page(type_str)
 	const min_num = (multiple - 1) * num
 	const max_num = (multiple * num) - 1
 
-	document.querySelectorAll(`.버튼[data-type="${type_str}"]`).forEach(버튼 =>
+	document.querySelectorAll(".버튼[data-type=" type_str + "]").forEach(버튼 =>
 	{
 		const idx = +버튼.dataset.num
 		const show = idx >= min_num && idx <= max_num
@@ -455,7 +456,6 @@ function ready_data(id, start = 0, end = 0)
 // 이름 제목
 async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으로 변경
 {
-	// const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
 	const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
 	const 주소_2 = id
 	const 주소_3 = "&format=json"
@@ -489,7 +489,7 @@ function switch_video_data(next_data)
 {
 	active_data.video = next_data // 현재 데이터 갱신
 
-	const 페이지 = document.querySelector(`.페이지.video`)
+	const 페이지 = document.querySelector(".페이지.video")
 	if (페이지)
 	{
 		// 기존 썸네일 제거 후 재생성
@@ -511,7 +511,7 @@ const resize = new ResizeObserver(구역 =>
 {
 	구역.forEach(목록 =>
 	{
-		const 분류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "video"
+		const 분류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
 		total_cell[분류] = calc_size(목록)
 
 		reset_page(분류)
@@ -781,6 +781,7 @@ function 재생목록_불러오기(누구)
 		await cue_intro(임시_목록.소개)
 
 		document.getElementById("이름_상자").remove()
+		document.getElementById("안내_상자").remove()
 	})
 
 	document.head.appendChild(script)

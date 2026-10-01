@@ -22,7 +22,7 @@
 // total_cell 값에 맞춰 썸네일 버튼을 (재)생성하는 함수
 function fill_page(type_str)
 {
-	const 페이지 = document.querySelector(`.페이지.${type_str}`)
+	const 페이지 = document.querySelector(".페이지." + type_str)
 	// const 페이지 = document.querySelector(".페이지." + type_str)
 	if (!페이지)
 		return
@@ -88,7 +88,7 @@ function make_long()
 	if (!playlist.part)
 		return // long 파일 없으면 작동 안함
 
-	const 구역 = document.querySelector('.구역[data-type="long"]')
+	const 구역 = document.querySelector(".구역[data-type="long"]")
 	if (!구역)
 		return
 
@@ -257,10 +257,9 @@ function make_long()
 // 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
 function render_nav(type_str)
 {
-	const 버튼_이전 = document.querySelector(`.버튼_이전[data-type="${type_str}"]`)
-	// const 버튼_이전 = document.querySelector(".버튼_이전[data-type=" + type_str + "]")
-	const 버튼_지금 = document.querySelector(`.버튼_지금[data-type="${type_str}"]`)
-	const 버튼_다음 = document.querySelector(`.버튼_다음[data-type="${type_str}"]`)
+	const 버튼_이전 = document.querySelector(".버튼_이전[data-type=" + type_str + "]")
+	const 버튼_지금 = document.querySelector(".버튼_지금[data-type=" + type_str + "]")
+	const 버튼_다음 = document.querySelector(".버튼_다음[data-type=" + type_str + "]")
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
 		return
 
@@ -381,7 +380,7 @@ function make_list()
 				if (has_ori && has_video) // (수정) 위에서 계산한 값 재사용
 				{
 					const h1_모두 = document.createElement("div")
-					h1_모두.className = "h1_종류"
+					h1_모두.className = "h1_모두"
 					h1_분류.appendChild(h1_모두)
 
 						const 모두 = document.createElement("span")
@@ -391,7 +390,7 @@ function make_list()
 						모두.addEventListener("click", () => switch_video_data(list_ori.concat(list_non))) // (수정)
 
 					const h1_원곡 = document.createElement("div")
-					h1_원곡.className = "h1_종류"
+					h1_원곡.className = "h1_원곡"
 					h1_분류.appendChild(h1_원곡)
 
 						const 원곡 = document.createElement("span")
@@ -401,7 +400,7 @@ function make_list()
 						원곡.addEventListener("click", () => switch_video_data(list_ori))
 
 					const h1_커버 = document.createElement("div")
-					h1_커버.className = "h1_종류"
+					h1_커버.className = "h1_커버"
 					h1_분류.appendChild(h1_커버)
 
 						const 커버 = document.createElement("span")
@@ -482,12 +481,12 @@ function make_list()
 
 
 		const 목록 = document.createElement("div")
-		목록.className = `목록 ${type.type}`
+		목록.className = "목록" + type.type
 		구역.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const 페이지 = document.createElement("div")
-		페이지.className = `페이지 ${type.type}`
+		페이지.className = "페이지" + type.type
 		목록.appendChild(페이지)
 
 

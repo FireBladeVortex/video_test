@@ -110,7 +110,7 @@ body
 	width : 50%;
 	height : 100vh;
 	height : 100dvh;
-	background : var(--강조2);
+	background : var(--오른쪽바탕색);
 	cursor : default;
 	z-index : 50;
 	display: flex;
@@ -163,7 +163,9 @@ body
 #왼쪽 h1 .h1_분류,
 #왼쪽 h1 .h1_페이지,
 #왼쪽 h1 .h1_크기,
-.h1_종류,
+.h1_모두,
+.h1_원곡,
+.h1_커버,
 .버튼_이전,
 .버튼_지금,
 .버튼_다음,
