@@ -23,16 +23,6 @@ const 임시_목록 = {}
 
 
 
-let list_ori = [] // original 값을 가진 데이터만 모음
-let list_non = [] // original 값이 없는 데이터만 모음
-let pli_ori = null // (추가) 재생목록에서 받아온 원곡 목록 저장
-let pli_non = null // (추가) 재생목록에서 받아온 커버(video) 목록 저장
-let pli_short = null // (추가) 재생목록에서 받아온 쇼츠 목록 저장
-let pli_intro = null
-
-
-
-
 
 
 

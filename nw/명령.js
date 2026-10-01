@@ -336,7 +336,7 @@ function resize_section(type_str)
 function get_last(type_str)
 {
 	const num = total_cell[type_str]
-	const data = active_data[type_str] ?? list_data[type_str]
+	const data = active_data[type_str] ?? 임시_목록[type_str]
 	return Math.ceil(data.length / num)
 }
 

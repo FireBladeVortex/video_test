@@ -27,7 +27,7 @@ function fill_page(type_str)
 	if (!페이지)
 		return
 
-	const data = active_data[type_str] ?? list_data[type_str]
+	const data = active_data[type_str] ?? 임시_목록[type_str]
 	if (!data)
 		return
 
@@ -153,7 +153,7 @@ function make_long()
 		const lang_value = lang_select.value
 		const names = new Set()
 
-		playlist.part.forEach(video => // valid_list 대신 list_data.long 직접 순회
+		playlist.part.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
 			get_songs(video).forEach(song =>
 			{
@@ -185,7 +185,7 @@ function make_long()
 
 		const titles = new Set()
 
-		playlist.part.forEach(video => // valid_list 대신 list_data.long 직접 순회
+		playlist.part.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
 			get_songs(video).forEach(song =>
 			{
@@ -228,7 +228,7 @@ function make_long()
 			const title_value = title_select.value
 
 			let song = null
-			for (const video of playlist.part) // valid_list 대신 list_data.long 직접 순회
+			for (const video of playlist.part) // valid_list 대신 임시_목록.long 직접 순회
 			{
 				const found = get_songs(video).find(s =>
 					s.lang && // id만 가진 항목은 제외
