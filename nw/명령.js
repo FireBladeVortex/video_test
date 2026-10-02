@@ -1,63 +1,150 @@
 
+// YouTube Player iframe API 준비
+const api = document.createElement("script")
+api.src = "https://www.youtube.com/iframe_api"
+// document.head.appendChild(api)
 
-// 이름 가나다순_정렬
-function 가나다순_정렬(목록)
+let api_준비_끝 = null
+const api_준비 = new Promise(resolve => { api_준비_끝 = resolve })
+
+function api_불러오기()
 {
-	const 규칙 = new Intl.Collator("ko")
-	const 정렬 = [...목록].sort((앞, 뒤) =>
-	{
-		const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
-		return 비교
-	})
+	document.head.appendChild(api)
+	return api_준비
+}
 
-	const map = new Map()
-	정렬.forEach(이거 =>
+// iframe 들어갈 변수 준비
+let player = null
+let 재생_대기 = null
+
+// iframe 호출한다면
+function onYouTubeIframeAPIReady()
+{
+	player = new YT.Player("YTP",
 	{
-		const 그거 = 이거.이름.trim()
-		if (map.has(그거))
+		width: "100%",
+		height: "100%",
+		videoId: "",
+		playerVars:
 		{
-			map.get(그거).중복 = true
+			// 다음 자동재생 방지
+			autoplay: 0,
+			// 영상 종료 때 추천 방지
+			rel: 0,
+			// 풀 스크린 버튼 숨김
+			// fs: 0,
+			// 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
+			disablekb: 1,
+			// 유튜브 일부 ui 숨김
+			// controls: 0,
+			// 자막 한글 pip 모드 제작 대비
+			// cc_lang_pref: "ko",
+			// 자막 자동 실행 pip 모드 제작 대비
+			// cc_load_policy: 1,
+		},
+
+		// 현재 상태 불러오기
+		events:
+		{
+			onReady: () =>
+			{
+				// 현재 value 적용
+				player.setVolume(+볼륨_조절.value)
+				api_준비_끝()
+			},
+			onError : () =>
+			{
+				if (재생목록_대기)
+				{
+					재생목록_대기()
+					재생목록_대기 = null
+				}
+			},
+			onStateChange : onPlayerStateChange,
+		}
+	})
+}
+
+
+
+// 상태 변화 감지에서 사용할 재생 막대 변수
+let 재생_시간_표시줄 = null
+
+// 영상 상태 확인
+// YT.PlayerState.ENDED = 0
+// YT.PlayerState.PLAYING = 1
+// YT.PlayerState.PAUSED = 2
+// YT.PlayerState.BUFFERING = 3
+// YT.PlayerState.CUED = 5
+
+// 동영상 상태가 변화하면 즉시 작동
+function onPlayerStateChange(event)
+{
+
+	if (event.data === 5 && 재생목록_대기)
+	{
+		재생목록_대기()
+		재생목록_대기 = null
+		return
+	}
+
+	// 영상 정보 불러온 상태(재생 시작 전)
+	if (event.data === 5)
+	{
+		player.setPlaybackRate(1)
+		if (종료_시간 === 0)
+		{
+			[종료_시간, 종료_문자열] = 시간_표기법(player.getDuration())
+		}
+		let title = null
+		try
+		{
+			title = player.getVideoData().title
+		}
+		catch
+		{
+		}
+		if (title)
+		{
+			document.getElementById("플레이어_메세지").style.textAlign = "start"
+			document.getElementById("플레이어_메세지").textContent = title
+			fetch_oembed(set_id, title)
 		}
 		else
 		{
-			map.set(그거, { ...이거 })
+			fetch_oembed(set_id)
 		}
+	}
+	// 재생 중일 때 100ms마다 진행바 갱신
+	if (event.data === 1)
+	{
+		if (player.getCurrentTime() < 시작_시간)
+		{
+			player.seekTo(시작_시간, true)
+		}
+		clearInterval(재생_시간_표시줄) // 인터벌 중복 호출 방지
+		재생_시간_표시줄 = setInterval(ctrl_view, 100)
+	}
+	else
+	{
+		clearInterval(재생_시간_표시줄)
+	}
+	// 영상 재시작
+	if (event.data === 0)
+	{
+		player.seekTo(시작_시간, true)
+		player.playVideo()
+	}
+	//
+	const pop = [1, 2, 3].includes(event.data)
+	// ("#오른쪽, #클릭_방지") // #클릭_방지 임시 중지 사용자 선택으로 버튼 만들기 전까지
+	document.querySelectorAll("#오른쪽").forEach(overlay =>
+	{
+		overlay.style.cursor = pop ? "pointer" : "default"
+		overlay.onclick = pop ? play_or_pause : null
 	})
-
-	const 결과 = [...map.values()]
-
-	return 결과
+	// document.getElementById("클릭_방지").style.pointerEvents = pop ? "auto" : "none"
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 song 목록을 즉석에서 반환
-{
-	const song_list = video.song ?? []
-
-	if (song_list.length === 0)
-		return [{ id: video.id }] // id만 가진 경우 유효
-
-	return song_list
-		.filter(song => song.lang && song.name && song.title && song.start && song.end) // 모두 가진 것만 유효
-		.map(song => ({ id: video.id, ...song }))
-}
-
-
 
 
 
@@ -90,6 +177,8 @@ function 재생_일시중지_조작()
 		player.playVideo()
 	}
 }
+
+
 
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
@@ -226,6 +315,528 @@ function 재생_속도_조절(키, 증감)
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
+function switch_video_data(next_data)
+{
+	active_data.video = next_data // 현재 데이터 갱신
+
+	const 페이지 = document.querySelector(".페이지.video")
+	if (페이지)
+	{
+		// 기존 썸네일 제거 후 재생성
+		페이지.innerHTML = ""
+	}
+
+	fill_page("video") // 새 데이터로 다시 채움
+
+	페이지_동영상 = 1 // 페이지 번호 초기화
+	render_nav("video")
+	update_page("video")
+}
+
+// multiple 값에 맞는 범위만 썸네일 표시/숨김
+function update_page(type_str)
+{
+	const num = total_cell[type_str]
+	if (!num)
+		return
+
+	const multiple = type_str === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const min_num = (multiple - 1) * num
+	const max_num = (multiple * num) - 1
+
+	document.querySelectorAll(".버튼[data-종류=" + type_str + "]").forEach(버튼 =>
+	{
+		const idx = +버튼.dataset.num
+		const show = idx >= min_num && idx <= max_num
+		버튼.style.display = show ? "" : "none"
+	})
+}
+
+// 크기 변경 시 multiple, 표시값 초기화
+function reset_page(type_str)
+{
+	if (type_str === "쇼츠")
+		페이지_쇼츠 = 1
+	else
+		페이지_동영상 = 1
+
+
+	render_nav(type_str)
+}
+
+let 구역_종류 = null // 현재 확대된 섹션 타입 저장
+// (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
+function resize_section(type_str)
+{
+	const 왼쪽 = document.getElementById("왼쪽")
+	const 행_비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
+
+	const next_big = 구역_종류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
+
+	if (next_big)
+	{
+		행_비율.동영상 = type_str === "동영상" ? "1fr" : "0fr"
+		행_비율.쇼츠 = type_str === "쇼츠" ? "1fr" : "0fr"
+		행_비율.부분재생 = type_str === "부분재생" ? "1fr" : "0fr"
+	}
+
+	const 공백 = " "
+	왼쪽.style.gridTemplateRows = 행_비율.동영상 + 공백 + 행_비율.쇼츠 + 공백 + 행_비율.부분재생
+
+	구역_종류 = next_big // 상태 갱신
+
+	document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span => // 모든 토글 문자열 재설정
+	{
+		span.textContent = span.dataset.type === 구역_종류 ? "작게" : "크게"
+	})
+}
+
+
+// 마지막 페이지 번호 계산 공통 함수
+function get_last(type_str)
+{
+	const num = total_cell[type_str]
+	const data = active_data[type_str] ?? 임시_목록[type_str]
+	return Math.ceil(data.length / num)
+}
+
+
+function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 song 목록을 즉석에서 반환
+{
+	const song_list = video.song ?? []
+
+	if (song_list.length === 0)
+		return [{ id: video.id }] // id만 가진 경우 유효
+
+	return song_list
+		.filter(song => song.lang && song.name && song.title && song.start && song.end) // 모두 가진 것만 유효
+		.map(song => ({ id: video.id, ...song }))
+}
+
+
+
+
+
+// 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
+function render_nav(type_str)
+{
+	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + type_str + "]")
+	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + type_str + "]")
+	const 버튼_다음 = document.querySelector(".버튼_다음[data-종류=" + type_str + "]")
+	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
+		return
+
+
+
+	const 버튼_이전_문자열 = 버튼_이전.querySelector(".문자열_클릭")
+	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
+
+
+	const 페이지_수 = get_last(type_str)
+
+	if (페이지_수 <= 1)
+	{
+		버튼_이전_문자열.textContent = ""
+		버튼_지금.textContent = ""
+		버튼_다음_문자열.textContent = ""
+		return
+	}
+
+	const multiple = type_str === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+
+	버튼_이전_문자열.textContent = multiple === 1 ? "" : "이전"
+	버튼_지금.textContent = ""
+	버튼_다음_문자열.textContent = multiple >= 페이지_수 ? "" : "다음"
+
+	const 이전_숫자 = document.createElement("div")
+	이전_숫자.className = "이전_숫자"
+	이전_숫자.dataset.type = type_str
+	이전_숫자.textContent = multiple === 1 ? "" : multiple - 1
+	버튼_지금.appendChild(이전_숫자)
+
+	const 지금_숫자 = document.createElement("div")
+	지금_숫자.className = "지금_숫자"
+	지금_숫자.dataset.type = type_str
+	지금_숫자.textContent = multiple
+	버튼_지금.appendChild(지금_숫자)
+
+	const 다음_숫자 = document.createElement("div")
+	다음_숫자.className = "다음_숫자"
+	다음_숫자.dataset.type = type_str
+	다음_숫자.textContent = multiple + 1 > 페이지_수 ? "" : multiple + 1
+	버튼_지금.appendChild(다음_숫자)
+}
+
+
+
+
+
+
+// total_cell 값에 맞춰 썸네일 버튼을 (재)생성하는 함수
+function fill_page(type_str)
+{
+	const 페이지 = document.querySelector(".페이지." + type_str)
+	// const 페이지 = document.querySelector(".페이지." + type_str)
+	if (!페이지)
+		return
+
+	const data = active_data[type_str] ?? 임시_목록[type_str]
+	if (!data)
+		return
+
+	const crrt_data_count = 페이지.children.length
+	const nxxt_data_count = data.length
+
+	// const next_count = total_cell[type_str] 새로 계산된 필요 개수
+
+	for (let num = 0; data.length; num++)
+	{
+		const ready = data[num]
+		if (!ready) break
+
+		const 버튼 = document.createElement("button")
+		버튼.className = "버튼"
+		버튼.dataset.num = num
+		버튼.dataset.type = type_str
+
+		const img = document.createElement("img")
+		const src_1 = "https://img.youtube.com/vi/"
+		const src_2 = ready.id
+		const src_3 = "/mqdefault.jpg"
+		img.src = src_1 + src_2 + src_3
+
+		버튼.appendChild(img)
+		페이지.appendChild(버튼)
+
+		버튼.addEventListener("click", () =>
+		{
+			const target = (type_str + "_" + (num + "").padStart(3, "0"))
+			if (이미지_클릭 === target)
+			{
+				if (재생())
+				{
+					player.pauseVideo()
+				}
+				else if (일시중지())
+				{
+					player.playVideo()
+				}
+				else
+					return
+			}
+			else
+			{
+				click_img(target)
+				const 쇼츠 = type_str === "쇼츠"
+				ready_data(ready.id, 쇼츠 ? 0 : ready.start, 쇼츠 ? 0 : ready.end)
+			}
+		})
+	}
+}
+
+
+
+
+
+
+
+
+
+function 만들기_목록()
+{
+
+	const 왼쪽 = document.getElementById("왼쪽")
+
+	const 원곡 = 임시_목록.원곡 ?? []
+	const 커버 = 임시_목록.커버 ?? []
+	const 동영상 = 원곡.concat(커버)
+
+	const 쇼츠 = 임시_목록.쇼츠 ?? []
+	const 부분재생 = 임시_목록.부분재생 ?? []
+
+	const 종류_확인 =
+	[
+		{
+			종류 : "동영상",
+			자료 : 동영상
+		},
+		{
+			종류 : "쇼츠",
+			자료 : 쇼츠
+		},
+		{
+			종류 : "부분",
+			자료 : 부분재생
+		},
+	]
+
+	종류_확인.forEach(분류 =>
+	{
+		if (!유효_재확인(분류.자료))
+			return
+
+		const 구역 = document.createElement("div")
+		구역.className = "구역"
+		구역.dataset.종류 = 분류.종류
+		왼쪽.appendChild(구역)
+
+		const h1 = document.createElement("h1")
+		구역.appendChild(h1)
+
+			const 구역_재생목록 = document.createElement("div")
+			구역_재생목록.className = "구역_재생목록"
+			구역_재생목록.textContent = 분류.종류 + " 재생 목록"
+			h1.appendChild(구역_재생목록)
+
+			const h1_종류 = document.createElement("div")
+			h1_종류.className = "h1_종류"
+			h1.appendChild(h1_종류)
+
+			const h1_페이지 = document.createElement("div")
+			h1_페이지.className = "h1_페이지"
+			h1.appendChild(h1_페이지)
+
+			const h1_크기 = document.createElement("div")
+			h1_크기.className = "h1_크기"
+			h1.appendChild(h1_크기)
+
+				const 크기_조절 = document.createElement("span")
+				크기_조절.className = "문자열_클릭"
+				크기_조절.textContent = "크게"
+				크기_조절.dataset.type = 분류.종류
+				h1_크기.appendChild(크기_조절)
+				크기_조절.addEventListener("click", () => resize_section(분류.종류))
+
+		if (분류.종류 !== "부분")
+		{
+			if (부분.종류 === "동영상")
+			{
+				if (유효_재확인(원곡) && 유효_재확인(커버))
+				{
+					const h1_모두 = document.createElement("div")
+					h1_모두.className = "h1_모두"
+					h1_종류.appendChild(h1_모두)
+
+						const 문자열_모두 = document.createElement("span")
+						문자열_모두.className = "문자열_클릭"
+						문자열_모두.textContent = "모두"
+						h1_모두.appendChild(문자열_모두)
+						문자열_모두.addEventListener("click", () => switch_video_data(동영상))
+
+					const h1_원곡 = document.createElement("div")
+					h1_원곡.className = "h1_원곡"
+					h1_종류.appendChild(h1_원곡)
+
+						const 문자열_원곡 = document.createElement("span")
+						문자열_원곡.className = "문자열_클릭"
+						문자열_원곡.textContent = "원곡"
+						h1_원곡.appendChild(문자열_원곡)
+						문자열_원곡.addEventListener("click", () => switch_video_data(원곡))
+
+					const h1_커버 = document.createElement("div")
+					h1_커버.className = "h1_커버"
+					h1_종류.appendChild(h1_커버)
+
+						const 문자열_커버 = document.createElement("span")
+						문자열_커버.className = "문자열_클릭"
+						문자열_커버.textContent = "커버"
+						h1_커버.appendChild(문자열_커버)
+						문자열_커버.addEventListener("click", () => switch_video_data(커버))
+				}
+			}
+
+			const 버튼_이전 = document.createElement("div")
+			버튼_이전.className = "버튼_이전"
+			버튼_이전.dataset.type = 분류.종류
+			h1_페이지.appendChild(버튼_이전)
+
+				const 버튼_이전_문자열 = document.createElement("span")
+				버튼_이전_문자열.className = "문자열_클릭"
+				버튼_이전.appendChild(버튼_이전_문자열)
+				버튼_이전_문자열.addEventListener("click", () =>
+				{
+					if (분류.종류 === "쇼츠")
+						페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
+					else
+						페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
+					render_nav(분류.종류)
+					update_page(분류.종류)
+				})
+
+			const 버튼_지금 = document.createElement("div")
+			버튼_지금.className = "버튼_지금"
+			버튼_지금.dataset.type = 분류.종류
+			h1_페이지.appendChild(버튼_지금)
+
+			const 버튼_다음 = document.createElement("div")
+			버튼_다음.className = "버튼_다음"
+			버튼_다음.dataset.type = 분류.종류
+			h1_페이지.appendChild(버튼_다음)
+
+				const 버튼_다음_문자열 = document.createElement("span")
+				버튼_다음_문자열.className = "문자열_클릭"
+				버튼_다음.appendChild(버튼_다음_문자열)
+				버튼_다음_문자열.addEventListener("click", () =>
+				{
+					const last = get_last(분류.종류)
+					const multiple = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+					if (multiple >= last)
+						return
+					if (분류.종류 === "쇼츠")
+						페이지_쇼츠 = 페이지_쇼츠 + 1
+					else
+						페이지_동영상 = 페이지_동영상 + 1
+					render_nav(분류.종류)
+					update_page(분류.종류)
+				})
+
+			render_nav(분류.종류)
+		}
+
+		// const h1_크기 = document.createElement("div")
+		// h1_크기.className = "h1_크기"
+		// h1.appendChild(h1_크기)
+
+		// 	const 크기_조절 = document.createElement("span")
+		// 	크기_조절.className = "문자열_클릭"
+		// 	크기_조절.textContent = "크게"
+		// 	크기_조절.dataset.type = 분류.종류
+		// 	h1_크기.appendChild(크기_조절)
+		// 	크기_조절.addEventListener("click", () => resize_section(분류.종류))
+
+		if (분류.종류 === "부분")
+		{
+			make_long()
+			return
+		}
+
+		// 이거 2개가 뭐였지?
+		const 목록 = document.createElement("div")
+		목록.className = "목록" + 분류.종류
+		구역.appendChild(목록)
+
+		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
+		const 페이지 = document.createElement("div")
+		페이지.className = "페이지" + 분류.종류
+		목록.appendChild(페이지)
+
+
+		fill_page(분류.종류)
+
+
+	})
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 이름 가나다순_정렬
+function 가나다순_정렬(목록)
+{
+	const 규칙 = new Intl.Collator("ko")
+	const 정렬 = [...목록].sort((앞, 뒤) =>
+	{
+		const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
+		return 비교
+	})
+
+	const map = new Map()
+	정렬.forEach(이거 =>
+	{
+		const 그거 = 이거.이름.trim()
+		if (map.has(그거))
+		{
+			map.get(그거).중복 = true
+		}
+		else
+		{
+			map.set(그거, { ...이거 })
+		}
+	})
+
+	const 결과 = [...map.values()]
+
+	return 결과
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // 시간 표시 변환
@@ -304,42 +915,6 @@ function ctrl_view()
 }
 
 
-let 구역_종류 = null // 현재 확대된 섹션 타입 저장
-// (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
-function resize_section(type_str)
-{
-	const 왼쪽 = document.getElementById("왼쪽")
-	const 행_비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
-
-	const next_big = 구역_종류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
-
-	if (next_big)
-	{
-		행_비율.동영상 = type_str === "동영상" ? "1fr" : "0fr"
-		행_비율.쇼츠 = type_str === "쇼츠" ? "1fr" : "0fr"
-		행_비율.부분재생 = type_str === "부분재생" ? "1fr" : "0fr"
-	}
-
-	const 공백 = " "
-	왼쪽.style.gridTemplateRows = 행_비율.동영상 + 공백 + 행_비율.쇼츠 + 공백 + 행_비율.부분재생
-
-	구역_종류 = next_big // 상태 갱신
-
-	document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span => // 모든 토글 문자열 재설정
-	{
-		span.textContent = span.dataset.type === 구역_종류 ? "작게" : "크게"
-	})
-}
-
-
-// 마지막 페이지 번호 계산 공통 함수
-function get_last(type_str)
-{
-	const num = total_cell[type_str]
-	const data = active_data[type_str] ?? 임시_목록[type_str]
-	return Math.ceil(data.length / num)
-}
-
 
 let 이미지_클릭 = null
 function click_img(target)
@@ -382,38 +957,6 @@ function calc_size(목록)
 
 
 
-
-
-// multiple 값에 맞는 범위만 썸네일 표시/숨김
-function update_page(type_str)
-{
-	const num = total_cell[type_str]
-	if (!num)
-		return
-
-	const multiple = type_str === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-	const min_num = (multiple - 1) * num
-	const max_num = (multiple * num) - 1
-
-	document.querySelectorAll(".버튼[data-종류=" + type_str + "]").forEach(버튼 =>
-	{
-		const idx = +버튼.dataset.num
-		const show = idx >= min_num && idx <= max_num
-		버튼.style.display = show ? "" : "none"
-	})
-}
-
-// 크기 변경 시 multiple, 표시값 초기화
-function reset_page(type_str)
-{
-	if (type_str === "쇼츠")
-		페이지_쇼츠 = 1
-	else
-		페이지_동영상 = 1
-
-
-	render_nav(type_str)
-}
 
 
 // 시간 관리
@@ -502,26 +1045,6 @@ async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으�
 
 
 
-// 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
-function switch_video_data(next_data)
-{
-	active_data.video = next_data // 현재 데이터 갱신
-
-	const 페이지 = document.querySelector(".페이지.video")
-	if (페이지)
-	{
-		// 기존 썸네일 제거 후 재생성
-		페이지.innerHTML = ""
-	}
-
-	fill_page("video") // 새 데이터로 다시 채움
-
-	페이지_동영상 = 1 // 페이지 번호 초기화
-	render_nav("video")
-	update_page("video")
-}
-
-
 // 크기 계산
 const total_cell = { video: 0, 쇼츠: 0 }
 
@@ -540,85 +1063,6 @@ const resize = new ResizeObserver(구역 =>
 
 
 
-
-// 상태 변화 감지에서 사용할 재생 막대 변수
-let 재생_시간_표시줄 = null
-
-// 영상 상태 확인
-// YT.PlayerState.ENDED = 0
-// YT.PlayerState.PLAYING = 1
-// YT.PlayerState.PAUSED = 2
-// YT.PlayerState.BUFFERING = 3
-// YT.PlayerState.CUED = 5
-
-// 동영상 상태가 변화하면 즉시 작동
-function onPlayerStateChange(event)
-{
-
-	if (event.data === 5 && 재생목록_대기)
-	{
-		재생목록_대기()
-		재생목록_대기 = null
-		return
-	}
-
-	// 영상 정보 불러온 상태(재생 시작 전)
-	if (event.data === 5)
-	{
-		player.setPlaybackRate(1)
-		if (종료_시간 === 0)
-		{
-			[종료_시간, 종료_문자열] = 시간_표기법(player.getDuration())
-		}
-		let title = null
-		try
-		{
-			title = player.getVideoData().title
-		}
-		catch
-		{
-		}
-		if (title)
-		{
-			document.getElementById("플레이어_메세지").style.textAlign = "start"
-			document.getElementById("플레이어_메세지").textContent = title
-			fetch_oembed(set_id, title)
-		}
-		else
-		{
-			fetch_oembed(set_id)
-		}
-	}
-	// 재생 중일 때 100ms마다 진행바 갱신
-	if (event.data === 1)
-	{
-		if (player.getCurrentTime() < 시작_시간)
-		{
-			player.seekTo(시작_시간, true)
-		}
-		clearInterval(재생_시간_표시줄) // 인터벌 중복 호출 방지
-		재생_시간_표시줄 = setInterval(ctrl_view, 100)
-	}
-	else
-	{
-		clearInterval(재생_시간_표시줄)
-	}
-	// 영상 재시작
-	if (event.data === 0)
-	{
-		player.seekTo(시작_시간, true)
-		player.playVideo()
-	}
-	//
-	const pop = [1, 2, 3].includes(event.data)
-	// ("#오른쪽, #클릭_방지") // #클릭_방지 임시 중지 사용자 선택으로 버튼 만들기 전까지
-	document.querySelectorAll("#오른쪽").forEach(overlay =>
-	{
-		overlay.style.cursor = pop ? "pointer" : "default"
-		overlay.onclick = pop ? play_or_pause : null
-	})
-	// document.getElementById("클릭_방지").style.pointerEvents = pop ? "auto" : "none"
-}
 
 
 
