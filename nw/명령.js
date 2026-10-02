@@ -851,18 +851,17 @@ function 미리보기_교체(next_data)
 
 let 구역_종류 = null // 현재 확대된 섹션 타입 저장
 // (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
-function 크기_조절(type_str)
+function 크기_조절(왼쪽, 그거)
 {
-	const 왼쪽 = document.getElementById("왼쪽")
 	const 행_비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
 
-	const next_big = 구역_종류 === type_str ? null : type_str // 같은 타입 재클릭 시 해제
+	const next_big = 구역_종류 === 그거 ? null : 그거 // 같은 타입 재클릭 시 해제
 
 	if (next_big)
 	{
-		행_비율.동영상 = type_str === "동영상" ? "1fr" : "0fr"
-		행_비율.쇼츠 = type_str === "쇼츠" ? "1fr" : "0fr"
-		행_비율.부분재생 = type_str === "부분재생" ? "1fr" : "0fr"
+		행_비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
+		행_비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
+		행_비율.부분재생 = 그거 === "부분재생" ? "1fr" : "0fr"
 	}
 
 	const 공백 = " "
@@ -949,7 +948,7 @@ function 만들기_목록()
 				크기_조절.textContent = "크게"
 				크기_조절.dataset.type = 분류.종류
 				h1_크기.appendChild(크기_조절)
-				크기_조절.addEventListener("click", () => 크기_조절(분류.종류))
+				크기_조절.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 
 		if (분류.종류 !== "부분")
 		{
@@ -1054,7 +1053,7 @@ function 만들기_목록()
 			return
 		}
 
-		// 이거 2개가 뭐였지?
+		// 미리보기 들어갈 공간
 		const 목록 = document.createElement("div")
 		목록.className = "목록" + 분류.종류
 		구역.appendChild(목록)
@@ -1078,8 +1077,10 @@ function 만들기_목록()
 // 스위치 클릭 시 실제 초기화 실행 (추가)
 function 만들기_구역()
 {
-	make_list() // 뼈대(.list, .page) + 썸네일 DOM 생성
-	document.querySelectorAll(".목록").forEach(목록 => 재구성.observe(목록)) // 크기 관찰 시작
+	만들기_목록()
+
+	// 크기 관찰 시작
+	document.querySelectorAll(".목록").forEach(목록 => 재구성.observe(목록))
 }
 
 
@@ -1131,8 +1132,7 @@ async function 재생목록_조사(id)
 
 function 재생목록인가(id)
 {
-	const 참_거짓 = id.startsWith("PL")
-	return 참_거짓
+	return id.startsWith("PL")
 }
 
 
