@@ -949,12 +949,12 @@ function 만들기_목록()
 
 		// 미리보기 들어갈 공간
 		const 목록 = document.createElement("div")
-		목록.className = "목록" + 분류.종류
+		목록.className = "목록 " + 분류.종류
 		구역.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const 페이지 = document.createElement("div")
-		페이지.className = "페이지" + 분류.종류
+		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
 
 		페이지_채우기(분류.종류)
