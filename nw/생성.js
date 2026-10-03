@@ -8,9 +8,10 @@ function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 
 	if (song_list.length === 0)
 		return [{ id: video.id }] // id만 가진 경우 유효
 
-	return song_list
+	const asdasd = song_list
 		.filter(song => song.lang && song.name && song.title && song.start && song.end) // 모두 가진 것만 유효
 		.map(song => ({ id: video.id, ...song }))
+	return asdasd
 }
 
 
