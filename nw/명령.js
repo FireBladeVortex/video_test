@@ -404,7 +404,7 @@ function 소개_불러오기(소개)
 
 	player.cueVideoById(
 	{
-		videoId : 소개.id,
+		videoId : 무작위.id,
 	})
 
 }
@@ -445,7 +445,7 @@ function 크기_계산(목록)
 
 
 // 크기 계산
-const 이거_몇칸임 = { video: 0, 쇼츠: 0 }
+const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
 const 재구성 = new ResizeObserver(구역 =>
 {
 	구역.forEach(목록 =>
@@ -592,7 +592,7 @@ function 시간_표기법(시간)
 
 
 // 현재 표시중인 목록 데이터
-let active_data = { video: null, 쇼츠: null }
+let active_data = { 동영상: null, 쇼츠: null }
 
 
 
@@ -727,7 +727,7 @@ function 페이지_채우기(이거)
 // 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
 function 미리보기_교체(next_data)
 {
-	active_data.video = next_data // 현재 데이터 갱신
+	active_data.동영상 = next_data // 현재 데이터 갱신
 
 	const 페이지 = document.querySelector(".페이지.동영상")
 	if (페이지)
@@ -735,11 +735,11 @@ function 미리보기_교체(next_data)
 		페이지.innerHTML = ""
 	}
 
-	페이지_채우기("video")
+	페이지_채우기("동영상")
 
 	페이지_동영상 = 1
-	버튼_설정("video")
-	페이지_재구성("video")
+	버튼_설정("동영상")
+	페이지_재구성("동영상")
 }
 
 
@@ -747,7 +747,7 @@ let 구역_종류 = null // 현재 확대된 섹션 타입 저장
 // (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
 function 크기_조절(왼쪽, 그거)
 {
-	const 비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분재생: "1fr" }
+	const 비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분: "1fr" }
 
 	const 조절_딸깍 = 구역_종류 === 그거 ? null : 그거
 
@@ -755,11 +755,11 @@ function 크기_조절(왼쪽, 그거)
 	{
 		비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
 		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
-		비율.부분재생 = 그거 === "부분재생" ? "1fr" : "0fr"
+		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
 	}
 
 	const 공백 = " "
-	왼쪽.style.gridTemplateRows = 비율.동영상 + 공백 + 비율.쇼츠 + 공백 + 비율.부분재생
+	왼쪽.style.gridTemplateRows = 비율.동영상 + 공백 + 비율.쇼츠 + 공백 + 비율.부분
 
 	구역_종류 = 조절_딸깍
 
@@ -789,7 +789,7 @@ function 만들기_목록()
 	const 동영상 = 원곡.concat(커버)
 
 	const 쇼츠 = 임시_목록.쇼츠 ?? []
-	const 부분재생 = 임시_목록.부분재생 ?? []
+	const 부분 = 임시_목록.부분 ?? []
 
 	const 종류_확인 =
 	[
@@ -803,7 +803,7 @@ function 만들기_목록()
 		},
 		{
 			종류 : "부분",
-			자료 : 부분재생
+			자료 : 부분
 		},
 	]
 
@@ -1079,9 +1079,9 @@ async function id_가공(재생목록)
 		if (!Array.isArray(재생목록[key]))
 			continue
 
-		for (const video of 재생목록[key])
+		for (const 동영상 of 재생목록[key])
 		{
-			const id = id_찾기(video.id)
+			const id = id_찾기(동영상.id)
 			const 값 = Array.isArray(id) ? id[0] : id
 			if (값)
 			{
@@ -1092,7 +1092,7 @@ async function id_가공(재생목록)
 				}
 				else
 				{
-					const { id, ...rest } = video
+					const { id, ...rest } = 동영상
 					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id: 값, ...rest }])
 				}
 			}

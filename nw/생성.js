@@ -19,10 +19,10 @@ function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 
 // long 섹션 필터 드롭다운 생성 (수정/추가)
 function make_long()
 {
-	if (!임시_목록.부분재생)
+	if (!임시_목록.부분)
 		return // long 파일 없으면 작동 안함
 
-	const 구역 = document.querySelector(".구역[data-종류=부분재생]")
+	const 구역 = document.querySelector(".구역[data-종류=부분]")
 	if (!구역)
 		return
 
@@ -87,7 +87,7 @@ function make_long()
 		const lang_value = lang_select.value
 		const names = new Set()
 
-		임시_목록.부분재생.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
+		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
 			get_songs(video).forEach(song =>
 			{
@@ -119,7 +119,7 @@ function make_long()
 
 		const titles = new Set()
 
-		임시_목록.부분재생.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
+		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
 			get_songs(video).forEach(song =>
 			{
@@ -162,7 +162,7 @@ function make_long()
 			const title_value = title_select.value
 
 			let song = null
-			for (const video of 임시_목록.부분재생) // valid_list 대신 임시_목록.long 직접 순회
+			for (const video of 임시_목록.부분) // valid_list 대신 임시_목록.long 직접 순회
 			{
 				const found = get_songs(video).find(s =>
 					s.lang && // id만 가진 항목은 제외

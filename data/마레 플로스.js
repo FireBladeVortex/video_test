@@ -38,7 +38,7 @@ window.재생목록 ??= {}
 	},
 ]
 
-재생목록.부분재생 =
+재생목록.부분 =
 [
 	{
 		id: "https://youtu.be/ux7en3vXRVE?si=EZ77ZtDKSi26Yw2N", // 5만 기념

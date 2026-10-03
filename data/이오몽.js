@@ -38,7 +38,7 @@ window.재생목록 ??= {}
 	},
 ]
 
-재생목록.부분재생 =
+재생목록.부분 =
 [
 	{
 		id: "https://youtu.be/Gkxc6yil_wQ?si=txSdKscAoVzC0lRC",
