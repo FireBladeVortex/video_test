@@ -193,14 +193,14 @@ function onPlayerStateChange(event)
 		player.playVideo()
 	}
 	//
-	const pop = [1, 2, 3].includes(event.data)
+	const 상태 = [1, 2, 3].includes(event.data)
 	// ("#오른쪽, #클릭_방지") // #클릭_방지 임시 중지 사용자 선택으로 버튼 만들기 전까지
-	document.querySelectorAll("#오른쪽").forEach(overlay =>
+	document.querySelectorAll("#오른쪽").forEach(화면 =>
 	{
-		overlay.style.cursor = pop ? "pointer" : "default"
-		overlay.onclick = pop ? play_or_pause : null
+		화면.style.cursor = 상태 ? "pointer" : "default"
+		화면.onclick = 상태 ? 재생_일시중지_조작 : null
 	})
-	// document.getElementById("클릭_방지").style.pointerEvents = pop ? "auto" : "none"
+	// document.getElementById("클릭_방지").style.pointerEvents = 상태 ? "auto" : "none"
 }
 
 
@@ -483,7 +483,7 @@ function 페이지_재구성(이거)
 function 페이지_최대(이거)
 {
 	const 숫자 = 이거_몇칸임[이거]
-	const data = active_data[이거] ?? 임시_목록[이거]
+	const data = 사용할_동영상[이거] ?? 임시_목록[이거]
 	return Math.ceil(data.length / 숫자)
 }
 
@@ -592,7 +592,7 @@ function 시간_표기법(시간)
 
 
 // 현재 표시중인 목록 데이터
-let active_data = { 동영상: null, 쇼츠: null }
+let 사용할_동영상 = { 동영상: null, 쇼츠: null }
 
 
 
@@ -668,7 +668,7 @@ function 페이지_채우기(이거)
 	if (!페이지)
 		return
 
-	const data = active_data[이거] ?? 임시_목록[이거]
+	const data = 사용할_동영상[이거] ?? 임시_목록[이거]
 	if (!data)
 		return
 
@@ -727,7 +727,7 @@ function 페이지_채우기(이거)
 // 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
 function 미리보기_교체(next_data)
 {
-	active_data.동영상 = next_data // 현재 데이터 갱신
+	사용할_동영상.동영상 = next_data // 현재 데이터 갱신
 
 	const 페이지 = document.querySelector(".페이지.동영상")
 	if (페이지)
@@ -812,6 +812,8 @@ function 만들기_목록()
 		if (!유효_재확인(분류.자료))
 			return
 
+		사용할_동영상[분류.종류] = 분류.자료
+
 		const 구역 = document.createElement("div")
 		구역.className = "구역"
 		구역.dataset.종류 = 분류.종류
@@ -837,12 +839,12 @@ function 만들기_목록()
 			h1_크기.className = "h1_크기"
 			h1.appendChild(h1_크기)
 
-				const 크기_조절 = document.createElement("span")
-				크기_조절.className = "문자열_클릭"
-				크기_조절.textContent = "크게"
-				크기_조절.dataset.종류 = 분류.종류
-				h1_크기.appendChild(크기_조절)
-				크기_조절.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
+				const 크기_조절_문자열 = document.createElement("span")
+				크기_조절_문자열.className = "문자열_클릭"
+				크기_조절_문자열.textContent = "크게"
+				크기_조절_문자열.dataset.종류 = 분류.종류
+				h1_크기.appendChild(크기_조절_문자열)
+				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 
 		if (분류.종류 === "부분")
 		{
@@ -850,7 +852,7 @@ function 만들기_목록()
 			return
 		}
 
-		if (부분.종류 === "동영상")
+		if (분류.종류 === "동영상")
 		{
 			if (유효_재확인(원곡) && 유효_재확인(커버))
 			{

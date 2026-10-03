@@ -156,7 +156,7 @@ function make_long()
 	{
 		const target = "long_ready"
 		{
-			click_img(target)
+			이미지_클릭_강조(target)
 			const lang_value = lang_select.value
 			const name_value = name_select.value
 			const title_value = title_select.value
