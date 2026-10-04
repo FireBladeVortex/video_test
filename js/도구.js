@@ -276,3 +276,5 @@ document.getElementById("초기화").addEventListener("click", () =>
 주소_입력.addEventListener("input", 버튼_갱신)
 이름_선택.addEventListener("change", 버튼_갱신)
 종류_선택.addEventListener("change", 버튼_갱신)
+
+버튼_갱신() // (추가)
