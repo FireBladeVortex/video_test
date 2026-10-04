@@ -1109,7 +1109,7 @@ async function id_가공(재생목록)
 function 불러오기_재생목록(누구)
 {
 	const script = document.createElement("script")
-	script.src = "data/" + 누구.이름 + ".js"
+	script.src = "명단/" + 누구.이름 + ".js"
 
 
 
