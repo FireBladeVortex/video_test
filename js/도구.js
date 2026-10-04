@@ -255,8 +255,8 @@ document.getElementById("비교하기").addEventListener("click", async () =>
 
 	상태_칸.textContent = "기존 " + 기존.size + "개 / 새로운 영상 " + 새것.length + "개"
 	결과_칸.textContent = 결과_출력(새것)
-			마지막_비교 = 이름_선택.value + "/" + 종류_선택.value
-		버튼_갱신()
+	마지막_비교 = 이름_선택.value + "/" + 종류_선택.value
+	버튼_갱신()
 })
 
 
@@ -277,4 +277,4 @@ document.getElementById("초기화").addEventListener("click", () =>
 이름_선택.addEventListener("change", 버튼_갱신)
 종류_선택.addEventListener("change", 버튼_갱신)
 
-버튼_갱신() // (추가)
+버튼_갱신()
