@@ -191,6 +191,10 @@ document.getElementById("불러오기").addEventListener("click", async () =>
     await api_준비
     불러온_값 = await 주소_조사(주소)
     상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
+
+    결과_칸.textContent = 불러온_값
+        .map(동영상 => '{\n\tid : "https://youtu.be/' + 동영상.id + '",\n},')
+        .join("\n")
 })
 
 
