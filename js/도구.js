@@ -182,7 +182,16 @@ async function 기존_id_모으기(이름, 종류)
 
 function 결과_출력(값)
 {
-	const 출력 = 값.map(동영상 => "\t{\n\t\tid : \"https://youtu.be/" + 동영상.id + "\",\n\t},").join("\n")
+	const 앞 = "\t{\n\t\tid : "
+	const 뒤 = ",\n\t},"
+
+	const 출력 = 값.map(동영상 =>
+	{
+		const 주소 = "https://youtu.be/" + 동영상.id
+		const 결과 = 주소.replace(/^|$/g, "\"")
+		return 앞 + 결과 + 뒤
+	}).join("\n")
+
 	return 출력
 }
 
@@ -201,10 +210,10 @@ function 버튼_갱신()
 	document.getElementById("비교하기").disabled = 불러온_값.length === 0 || 비교_같음
 	document.getElementById("복사하기").disabled = 결과_칸.textContent === ""
 
-	if (주소_입력.value.trim() === "") // (추가)
-		상태_칸.textContent = "주소를 입력하세요" // (추가)
-	else // (추가)
-		상태_칸.textContent = "" // (추가)
+	if (주소_입력.value.trim() === "")
+		상태_칸.textContent = "주소를 입력하세요"
+	else
+		상태_칸.textContent = ""
 }
 
 
