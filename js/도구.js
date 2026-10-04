@@ -212,8 +212,8 @@ function 버튼_갱신()
 
 	if (주소_입력.value.trim() === "")
 		상태_칸.textContent = "주소를 입력하세요"
-	else
-		상태_칸.textContent = ""
+	// else
+	// 	상태_칸.textContent = ""
 }
 
 
