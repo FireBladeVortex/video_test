@@ -103,6 +103,17 @@
 			width : 200px;
 			height : 200px;
 		}
+
+		.줄 button
+		{
+			width : 80px;
+			flex : 0 0 80px;
+		}
+
+		.아래줄
+		{
+			justify-content : space-between;
+		}
 	</style>
 </head>
 
@@ -113,24 +124,29 @@
 			<button id="불러오기">불러오기</button>
 		</div>
 		<div class="줄">
-			<select id="이름_선택"></select>
+			<select id="이름_선택">
+			</select>
 			<select id="종류_선택">
 				<option value="원곡">원곡</option>
 				<option value="커버">커버</option>
 				<option value="쇼츠">쇼츠</option>
 			</select>
 			<button id="비교하기">비교하기</button>
+		</div>
+		<div class="줄 아래줄">
 			<button id="초기화">초기화</button>
 			<button id="복사하기">복사하기</button>
 		</div>
-		<div id="상태"></div>
 	</div>
+	<div id="상태"></div>
 
 	<div id="오른쪽">
 		<div id="결과"></div>
 	</div>
-
-	<div id="api_숨김"><div id="YTP"></div></div>
+	<div id="api_숨김">
+		<div id="YTP">
+		</div>
+	</div>
 </body>
 
 <script src="js/준비.js"></script>
