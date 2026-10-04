@@ -3,9 +3,15 @@ const 상태_칸 = document.getElementById("상태")
 const 결과_칸 = document.getElementById("결과")
 const 이름_선택 = document.getElementById("이름_선택")
 
+
+const 주소_입력 = document.getElementById("주소_입력")
+const 종류_선택 = document.getElementById("종류_선택")
+
+
 let 불러온_값 = []
 
-
+let 마지막_주소 = ""
+let 마지막_비교 = ""
 
 // 이름 드롭다운 채우기 (준비.js의 이름_목록 사용, 중복 제거)
 ;[...new Set(이름_목록.map(누구 => 누구.이름.trim()))].forEach(이름 =>
@@ -186,6 +192,22 @@ function 버튼_잠금(잠금)
 	document.getElementById("비교하기").disabled = 잠금
 }
 
+function 버튼_갱신()
+{
+	const 주소_같음 = 주소_입력.value.trim() === 마지막_주소
+	const 비교_같음 = (이름_선택.value + "/" + 종류_선택.value) === 마지막_비교
+
+	document.getElementById("불러오기").disabled = 주소_같음
+	document.getElementById("비교하기").disabled = 불러온_값.length === 0 || 비교_같음
+	document.getElementById("복사하기").disabled = 결과_칸.textContent === ""
+
+	if (주소_입력.value.trim() === "") // (추가)
+		상태_칸.textContent = "주소를 입력하세요" // (추가)
+	else // (추가)
+		상태_칸.textContent = "" // (추가)
+}
+
+
 document.getElementById("불러오기").addEventListener("click", async () =>
 {
 	const 주소 = document.getElementById("주소_입력").value.trim()
@@ -201,7 +223,9 @@ document.getElementById("불러오기").addEventListener("click", async () =>
 	상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
 
 	결과_칸.textContent = 결과_출력(불러온_값)
-	버튼_잠금(false)
+	마지막_주소 = 불러온_값.length > 0 ? 주소 : ""
+	마지막_비교 = ""
+	버튼_갱신()
 })
 
 
@@ -222,7 +246,8 @@ document.getElementById("비교하기").addEventListener("click", async () =>
 
 	상태_칸.textContent = "기존 " + 기존.size + "개 / 새로운 영상 " + 새것.length + "개"
 	결과_칸.textContent = 결과_출력(새것)
-	버튼_잠금(false)
+			마지막_비교 = 이름_선택.value + "/" + 종류_선택.value
+		버튼_갱신()
 })
 
 
@@ -238,3 +263,7 @@ document.getElementById("초기화").addEventListener("click", () =>
 {
 	location.reload()
 })
+
+주소_입력.addEventListener("input", 버튼_갱신)
+이름_선택.addEventListener("change", 버튼_갱신)
+종류_선택.addEventListener("change", 버튼_갱신)

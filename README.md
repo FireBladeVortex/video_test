@@ -1,3 +1,3 @@
 https://firebladevortex.github.io/video_test/
 
-https://firebladevortex.github.io/video_test/재생목록불러오기.html
+https://firebladevortex.github.io/video_test/도구.html
