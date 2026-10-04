@@ -73,19 +73,18 @@
 			color : var(--강조1);
 		}
 
+
+		.줄 button:disabled
+		{
+			opacity : 0.4;
+			cursor : default;
+		}
+
+
 		#상태
 		{
 			width : 80%;
 			text-align : left;
-		}
-
-		#오른쪽 h1
-		{
-			width : 100%;
-			display : flex;
-			justify-content : center;
-			padding : 10px 0;
-			border-bottom : 3px solid var(--강조2);
 		}
 
 		#결과
@@ -121,12 +120,13 @@
 				<option value="쇼츠">쇼츠</option>
 			</select>
 			<button id="비교하기">비교하기</button>
+			<button id="초기화">초기화</button>
+			<button id="복사하기">복사하기</button>
 		</div>
 		<div id="상태"></div>
 	</div>
 
 	<div id="오른쪽">
-		<h1><button id="복사하기">복사하기</button></h1>
 		<div id="결과"></div>
 	</div>
 

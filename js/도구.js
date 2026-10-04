@@ -131,8 +131,6 @@ async function 주소_조사(주소)
 	return [{ id : 값 }]
 }
 
-
-
 // 명단/이름.js 에서 선택한 종류의 영상 id 목록 얻기
 function 파일_불러오기(이름)
 {
@@ -182,6 +180,12 @@ function 결과_출력(값)
 	return 출력
 }
 
+function 버튼_잠금(잠금)
+{
+	document.getElementById("불러오기").disabled = 잠금
+	document.getElementById("비교하기").disabled = 잠금
+}
+
 document.getElementById("불러오기").addEventListener("click", async () =>
 {
 	const 주소 = document.getElementById("주소_입력").value.trim()
@@ -190,13 +194,14 @@ document.getElementById("불러오기").addEventListener("click", async () =>
 		상태_칸.textContent = "주소를 입력하세요"
 		return
 	}
-
+	버튼_잠금(true)
 	상태_칸.textContent = "불러오는 중"
 	await api_준비
 	불러온_값 = await 주소_조사(주소)
 	상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
 
 	결과_칸.textContent = 결과_출력(불러온_값)
+	버튼_잠금(false)
 })
 
 
@@ -208,15 +213,16 @@ document.getElementById("비교하기").addEventListener("click", async () =>
 		상태_칸.textContent = "먼저 불러오기를 실행하세요"
 		return
 	}
-
+	버튼_잠금(true)
 	상태_칸.textContent = "비교하는 중"
 	await api_준비
 
 	const 기존 = await 기존_id_모으기(이름_선택.value, document.getElementById("종류_선택").value)
 	const 새것 = 불러온_값.filter(동영상 => !기존.has(동영상.id))
 
-	결과_칸.textContent = 결과_출력(새것)
 	상태_칸.textContent = "기존 " + 기존.size + "개 / 새로운 영상 " + 새것.length + "개"
+	결과_칸.textContent = 결과_출력(새것)
+	버튼_잠금(false)
 })
 
 
@@ -225,4 +231,10 @@ document.getElementById("복사하기").addEventListener("click", async () =>
 {
 	await navigator.clipboard.writeText(결과_칸.textContent)
 	상태_칸.textContent = "복사됨"
+
+})
+
+document.getElementById("초기화").addEventListener("click", () =>
+{
+	location.reload()
 })
