@@ -17,10 +17,18 @@ window.재생목록 ??= {}
 	},
 ]
 
+// 재생목록.원곡 =
+// [
+// 	{
+// 		id : "https://youtube.com/playlist?list=PLbRx9niHx0ks&si=Sl5UD5IpMatYFGdV",
+// 	},
+// ]
+
+
 재생목록.원곡 =
 [
 	{
-		id : "https://youtube.com/playlist?list=PLbRx9niHx0ks&si=Sl5UD5IpMatYFGdV",
+		id : "https://youtu.be/rsfFoMuWKBQ",
 	},
 ]
 

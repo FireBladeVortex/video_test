@@ -17,12 +17,52 @@ window.재생목록 ??= {}
 	},
 ]
 
+// 재생목록.원곡 =
+// [
+// 	{
+// 		id : "https://youtube.com/playlist?list=PLV2rkco2b_wI&si=4O7cqGp2Gr5XCDt7",
+// 	},
+// ]
+
+
 재생목록.원곡 =
 [
 	{
-		id : "https://youtube.com/playlist?list=PLV2rkco2b_wI&si=4O7cqGp2Gr5XCDt7",
+		id : "https://youtu.be/Rdo8-3kt_JE",
+	},
+	{
+		id : "https://youtu.be/K1FiGikQ4D8",
+	},
+	{
+		id : "https://youtu.be/6_FDG2JTQN8",
+	},
+	{
+		id : "https://youtu.be/vqXH6NPcZYw",
+	},
+	{
+		id : "https://youtu.be/Xcjc4GxGdC8",
+	},
+	{
+		id : "https://youtu.be/OTBlzjWSesY",
+	},
+	{
+		id : "https://youtu.be/WddLi5cr1lw",
+	},
+	{
+		id : "https://youtu.be/cNuRxaVoU6E",
+	},
+	{
+		id : "https://youtu.be/K5CdFoJXO_I",
+	},
+	{
+		id : "https://youtu.be/qDWgka-jww8",
 	},
 ]
+
+
+
+
+
 
 재생목록.커버 =
 [
