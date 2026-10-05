@@ -69,34 +69,43 @@ function 만들기_부분()
 
 	make_option(선택지_언어, "", "언어", true)
 	const 언어_목록 = ["한국어", "영어", "일본어", "외국어", "개사"]
-	언어_목록.forEach(lang => make_option(선택지_언어, lang, lang))
+	for (const 언어 of 언어_목록)
+	{
+		make_option(선택지_언어, 언어, 언어)
+	}
+	// 언어_목록.forEach(lang => make_option(선택지_언어, lang, lang))
 
-	make_option(선택지_이름, "", "부른 이", true)
+	make_option(선택지_이름, "", "부른 사람", true)
 	make_option(선택지_제목, "", "제목", true)
 
 	// lang 값에 맞는 name 목록 갱신
 	function update_name()
 	{
 		const lang_value = 선택지_언어.value
-		const names = new Set()
+		const 이름들 = new Set()
 
-		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
+		// 임시_목록.부분.forEach(video =>
+		for (const 동영상 of 임시_목록.부분)
 		{
-			불러오기_노래들(video).forEach(노래 =>
+			for (const 노래 of 불러오기_노래들(동영상))
+			// 불러오기_노래들(video).forEach(노래 =>
 			{
 				if (!노래.언어)
 					return // id만 가진 항목은 lang이 없으므로 제외
 				if (!lang_value || 노래.언어.includes(lang_value)) // (수정) === → includes
 				{
-					names.add(노래.이름)
+					이름들.add(노래.이름)
 				}
-			})
-		})
+			}
+		}
 
 		선택지_이름.innerHTML = ""
-		make_option(선택지_이름, "", "부른 이", true)
-		// ;[...names].forEach(name => make_option(선택지_이름, name, name))
-		for (const name of names) make_option(선택지_이름, name, name)
+		make_option(선택지_이름, "", "부른 사람", true)
+		// ;[...이름들].forEach(name => make_option(선택지_이름, name, name))
+		for (const 이름 of 이름들)
+		{
+			make_option(선택지_이름, 이름, 이름)
+		}
 	}
 
 	// lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
@@ -112,11 +121,13 @@ function 만들기_부분()
 		if (!name_value)
 			return // name 기본값이면 목록 비움
 
-		const titles = new Set()
+		const 제목들 = new Set()
 
-		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
+		// 임시_목록.부분.forEach(video =>
+		for (const 동영상 of 임시_목록.부분)
 		{
-			불러오기_노래들(video).forEach(노래 =>
+			for (const 노래 of 불러오기_노래들(동영상))
+			// 불러오기_노래들(동영상).forEach(노래 =>
 			{
 				if (!노래.언어)
 					return // id만 가진 항목은 제외
@@ -124,14 +135,17 @@ function 만들기_부분()
 				const name_match = 노래.이름 === name_value
 				if (lang_match && name_match)
 				{
-					titles.add(노래.제목)
+					제목들.add(노래.제목)
 				}
-			})
-		})
+			}
+		}
 
 
-		// ;[...titles].forEach(title => make_option(선택지_제목, title, title))
-		for (const title of titles) make_option(선택지_제목, title, title)
+		// ;[...제목들].forEach(title => make_option(선택지_제목, title, title))
+		for (const 제목 of 제목들)
+		{
+			make_option(선택지_제목, 제목, 제목)
+		}
 		// 재생_준비_버튼.classList.toggle("강조", false)
 	}
 

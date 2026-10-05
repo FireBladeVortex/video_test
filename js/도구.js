@@ -13,17 +13,8 @@ let 불러온_값 = []
 let 마지막_주소 = ""
 let 마지막_비교 = ""
 
-// // 이름 드롭다운 채우기 (준비.js의 이름_목록 사용, 중복 제거)
-// ;[...new Set(이름_목록.map(누구 => 누구.이름.trim()))].forEach(이름 =>
-// {
-// 	const 항목 = document.createElement("option")
-// 	항목.value = 이름
-// 	항목.textContent = 이름
-// 	이름_선택.appendChild(항목)
-// })
-
 const 이름_모음 = new Set(이름_목록.map(누구 => 누구.이름.trim()))
-for (const 이름 of 이름_모음) 
+for (const 이름 of 이름_모음)
 {
 	const 항목 = document.createElement("option")
 	항목.value = 이름
@@ -181,7 +172,11 @@ async function 기존_id_모으기(이름, 종류)
 	for (const 동영상 of 자료[종류])
 	{
 		const 결과 = await 주소_조사(동영상.id ?? "")
-		결과.forEach(그것 => 모음.add(그것.id))
+		for (const 그것 of 결과)
+		{
+			모음.add(그것.id)
+		}
+		// 결과.forEach(그것 => 모음.add(그것.id))
 	}
 
 	return 모음

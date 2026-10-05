@@ -195,11 +195,17 @@ function onPlayerStateChange(event)
 	//
 	const 상태 = [1, 2, 3].includes(event.data)
 	// ("#오른쪽, #클릭_방지") // #클릭_방지 임시 중지 사용자 선택으로 버튼 만들기 전까지
-	document.querySelectorAll("#오른쪽").forEach(화면 =>
+	const 오른쪽 = document.querySelectorAll("#오른쪽")
+	for (const 화면 of 오른쪽)
 	{
 		화면.style.cursor = 상태 ? "pointer" : "default"
 		화면.onclick = 상태 ? 재생_일시중지_조작 : null
-	})
+	}
+	// document.querySelectorAll("#오른쪽").forEach(화면 =>
+	// {
+	// 	화면.style.cursor = 상태 ? "pointer" : "default"
+	// 	화면.onclick = 상태 ? 재생_일시중지_조작 : null
+	// })
 	// document.getElementById("클릭_방지").style.pointerEvents = 상태 ? "auto" : "none"
 }
 
@@ -448,14 +454,15 @@ function 크기_계산(목록)
 const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
 const 재구성 = new ResizeObserver(구역 =>
 {
-	구역.forEach(목록 =>
+	// 구역.forEach(목록 =>
+	for (const 목록 of 구역)
 	{
 		const 종류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
 		이거_몇칸임[종류] = 크기_계산(목록)
 
 		페이지_초기화(종류)
 		페이지_재구성(종류)
-	})
+	}
 })
 
 // multiple 값에 맞는 범위만 썸네일 표시/숨김
@@ -469,12 +476,20 @@ function 페이지_재구성(이거)
 	const 숫자_최소 = (multiple - 1) * 숫자
 	const 숫자_최대 = (multiple * 숫자) - 1
 
-	document.querySelectorAll(".버튼[data-종류=" + 이거 + "]").forEach(버튼 =>
+	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 이거 + "]")
+	for (const 버튼 of 그거)
 	{
 		const 번호 = +버튼.dataset.숫자
 		const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
 		버튼.style.display = 몇번 ? "" : "none"
-	})
+
+	}
+	// document.querySelectorAll(".버튼[data-종류=" + 이거 + "]").forEach(버튼 =>
+	// {
+	// 	const 번호 = +버튼.dataset.숫자
+	// 	const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
+	// 	버튼.style.display = 몇번 ? "" : "none"
+	// })
 }
 
 
@@ -649,13 +664,22 @@ let 이미지_클릭 = null
 function 이미지_클릭_강조(이거)
 {
 	// 활성화 버튼 강조 나머지 버튼 어둡게
-	document.querySelectorAll(".버튼").forEach(버튼 =>
+	const 딸깍 = document.querySelectorAll(".버튼")
+	for (const 버튼 of 딸깍)
 	{
 		const 그거 = (버튼.dataset.종류 + (버튼.dataset.숫자 + "").padStart(3, "0"))
 		const 클릭 = 그거 === 이거
 		버튼.classList.toggle("강조", 클릭)
 		버튼.classList.toggle("발기", !클릭)
-	})
+
+	}
+	// document.querySelectorAll(".버튼").forEach(버튼 =>
+	// {
+	// 	const 그거 = (버튼.dataset.종류 + (버튼.dataset.숫자 + "").padStart(3, "0"))
+	// 	const 클릭 = 그거 === 이거
+	// 	버튼.classList.toggle("강조", 클릭)
+	// 	버튼.classList.toggle("발기", !클릭)
+	// })
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
 	이미지_클릭 = 이거
 }
@@ -763,10 +787,15 @@ function 크기_조절(왼쪽, 그거)
 
 	구역_종류 = 조절_딸깍
 
-	document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span =>
+	const 이거 = document.querySelectorAll(".h1_크기 .문자열_클릭")
+	for (const 크기 of 이거)
 	{
-		span.textContent = span.dataset.종류 === 구역_종류 ? "작게" : "크게"
-	})
+		크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
+	}
+	// document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span =>
+	// {
+	// 	span.textContent = span.dataset.종류 === 구역_종류 ? "작게" : "크게"
+	// })
 }
 
 
@@ -807,7 +836,8 @@ function 만들기_목록()
 		},
 	]
 
-	종류_확인.forEach(분류 =>
+	// 종류_확인.forEach(분류 =>
+	for (const 분류 of 종류_확인)
 	{
 		if (!유효_재확인(분류.자료))
 			return
@@ -951,7 +981,7 @@ function 만들기_목록()
 		목록.appendChild(페이지)
 
 		페이지_채우기(분류.종류)
-	})
+	}
 
 }
 
@@ -964,7 +994,12 @@ function 만들기_구역()
 	만들기_목록()
 
 	// 크기 관찰 시작
-	document.querySelectorAll(".목록").forEach(목록 => 재구성.observe(목록))
+	const 목록 = document.querySelectorAll(".목록")
+	for (const 감지 of 목록)
+	{
+		재구성.observe(감지)
+	}
+	// document.querySelectorAll(".목록").forEach(목록 => 재구성.observe(목록))
 }
 
 
@@ -1136,7 +1171,8 @@ function 가나다순_정렬(목록)
 	})
 
 	const map = new Map()
-	정렬.forEach(이거 =>
+	// 정렬.forEach(이거 =>
+	for (const 이거 of 정렬)
 	{
 		const 그거 = 이거.이름.trim()
 		if (map.has(그거))
@@ -1147,7 +1183,7 @@ function 가나다순_정렬(목록)
 		{
 			map.set(그거, { ...이거 })
 		}
-	})
+	}
 
 	const 결과 = [...map.values()]
 
@@ -1163,7 +1199,9 @@ function 만들기_이름표들(이름_상자)
 	이름표_목록.className = "이름표_목록"
 	이름_상자.appendChild(이름표_목록)
 
-	가나다순_정렬(이름_목록).forEach(누구 =>
+	const 이름 = 가나다순_정렬(이름_목록)
+	for (const 누구 of 이름)
+	// 가나다순_정렬(이름_목록).forEach(누구 =>
 	{
 		const 이름표 = document.createElement("div")
 		이름표.className = "이름표"
@@ -1177,7 +1215,7 @@ function 만들기_이름표들(이름_상자)
 			이름_상자.textContent = "불러오는 중"
 			불러오기_재생목록(누구)
 		})
-	})
+	}
 }
 
 
@@ -1197,17 +1235,18 @@ function 만들기_가나다(이름_상자)
 		"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
 	]
 
-	가나다순.forEach(가나다_순서대로 =>
+	for (const 순서대로 of 가나다순)
+	// 가나다순.forEach(순서대로 =>
 	{
 		const 자음_상자 = document.createElement("span")
 		자음_상자.className = "자음_상자"
-		자음_상자.textContent = 가나다_순서대로
+		자음_상자.textContent = 순서대로
 		가나다.appendChild(자음_상자)
 
 		const 자음_번호 = document.createElement("span")
 		자음_번호.className = "자음_번호"
 		가나다.appendChild(자음_번호)
-	})
+	}
 }
 
 
