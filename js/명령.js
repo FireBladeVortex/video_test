@@ -677,7 +677,7 @@ function 페이지_채우기(이거)
 
 	// const next_count = 이거_몇칸임[이거] 새로 계산된 필요 개수
 
-	for (let 숫자 = 0; data.length; 숫자++)
+	for (let 숫자 = 0 ; data.length ; 숫자++)
 	{
 		const ready = data[숫자]
 		if (!ready) break

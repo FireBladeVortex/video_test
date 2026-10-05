@@ -437,7 +437,7 @@ body
 	cursor : pointer;
 }
 
-.재생_준비_버튼.강조
+/* .재생_준비_버튼.강조
 {
 	opacity : 1;
 	pointer-events : auto;
@@ -447,8 +447,13 @@ body
 {
 	opacity : 0.5;
 	pointer-events : none;
-}
+} */
 
+.재생_준비_버튼:disabled 
+{
+	opacity : 0.5;
+	cursor : default;
+}
 
 .문자열_클릭
 {

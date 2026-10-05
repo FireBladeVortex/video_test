@@ -6,7 +6,7 @@ function 불러오기_노래들(노래)
 	const 필터_1차 = 노래.song ?? []
 
 	const 필터_2차 = 필터_1차
-		.filter(song => song.lang && song.name && song.title && song.start && song.end)
+		.filter(song => song.언어 && song.이름 && song.제목 && song.시작 && song.종료)
 		.map(song => ({ id: 노래.id, ...song }))
 	return 필터_2차
 }
@@ -14,7 +14,7 @@ function 불러오기_노래들(노래)
 
 
 
-function 만들기_부분(구역)
+function 만들기_부분()
 {
 	if (!임시_목록.부분)
 		return
@@ -48,7 +48,8 @@ function 만들기_부분(구역)
 	재생_준비_버튼.className = "재생_준비_버튼"
 	재생_준비_버튼.textContent = "재생 준비"
 	선택지_재생.appendChild(재생_준비_버튼)
-	재생_준비_버튼.classList.add("발기")
+	재생_준비_버튼.disabled = true
+	// 재생_준비_버튼.classList.add("발기")
 
 
 	// option 생성 도우미
@@ -67,7 +68,8 @@ function 만들기_부분(구역)
 	}
 
 	make_option(선택지_언어, "", "언어", true)
-	;["한국어", "영어", "일본어", "외국어", "개사"].forEach(lang => make_option(선택지_언어, lang, lang))
+	const 언어_목록 = ["한국어", "영어", "일본어", "외국어", "개사"]
+	언어_목록.forEach(lang => make_option(선택지_언어, lang, lang))
 
 	make_option(선택지_이름, "", "부른 이", true)
 	make_option(선택지_제목, "", "제목", true)
@@ -93,12 +95,14 @@ function 만들기_부분(구역)
 
 		선택지_이름.innerHTML = ""
 		make_option(선택지_이름, "", "부른 이", true)
-		;[...names].forEach(name => make_option(선택지_이름, name, name))
+		// ;[...names].forEach(name => make_option(선택지_이름, name, name))
+		for (const name of names) make_option(선택지_이름, name, name)
 	}
 
 	// lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
 	function update_title()
 	{
+		재생_준비_버튼.disabled = true
 		const lang_value = 선택지_언어.value
 		const name_value = 선택지_이름.value
 
@@ -126,8 +130,9 @@ function 만들기_부분(구역)
 		})
 
 
-		;[...titles].forEach(title => make_option(선택지_제목, title, title))
-		재생_준비_버튼.classList.toggle("강조", false)
+		// ;[...titles].forEach(title => make_option(선택지_제목, title, title))
+		for (const title of titles) make_option(선택지_제목, title, title)
+		// 재생_준비_버튼.classList.toggle("강조", false)
 	}
 
 	선택지_언어.addEventListener("change", () =>
@@ -140,8 +145,9 @@ function 만들기_부분(구역)
 
 	선택지_제목.addEventListener("change", () =>
 	{
-		재생_준비_버튼.classList.toggle("강조", 선택지_제목.value)
-		재생_준비_버튼.classList.toggle("발기", !선택지_제목.value)
+		재생_준비_버튼.disabled = !선택지_제목.value
+		// 재생_준비_버튼.classList.toggle("강조", 선택지_제목.value)
+		// 재생_준비_버튼.classList.toggle("발기", !선택지_제목.value)
 	})
 
 	재생_준비_버튼.addEventListener("click", () =>
