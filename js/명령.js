@@ -848,7 +848,7 @@ function 만들기_목록()
 
 		if (분류.종류 === "부분")
 		{
-			make_long()
+			만들기_부분()
 			return
 		}
 
@@ -939,18 +939,6 @@ function 만들기_목록()
 			})
 
 		버튼_설정(분류.종류)
-
-
-		// const h1_크기 = document.createElement("div")
-		// h1_크기.className = "h1_크기"
-		// h1.appendChild(h1_크기)
-
-		// 	const 크기_조절 = document.createElement("span")
-		// 	크기_조절.className = "문자열_클릭"
-		// 	크기_조절.textContent = "크게"
-		// 	크기_조절.dataset.종류 = 분류.종류
-		// 	h1_크기.appendChild(크기_조절)
-		// 	크기_조절.addEventListener("click", () => 크기_조절(분류.종류))
 
 		// 미리보기 들어갈 공간
 		const 목록 = document.createElement("div")

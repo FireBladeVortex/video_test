@@ -14,7 +14,7 @@ function 불러오기_노래들(노래)
 
 
 
-function make_long()
+function 만들기_부분(구역)
 {
 	if (!임시_목록.부분)
 		return
