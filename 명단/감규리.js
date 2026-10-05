@@ -1,6 +1,8 @@
 
 window.재생목록 ??= {}
 
+
+
 재생목록.색깔 =
 {
 	오른쪽바탕색 : "",
@@ -10,12 +12,16 @@ window.재생목록 ??= {}
 	강조3 : "",
 }
 
+
+
 재생목록.소개 =
 [
 	{
-		id : "https://youtube.com/playlist?list=PLJFRohzTTqAo&si=BVT387KP64jbKKbX"
+		id : "https://youtu.be/w0dn6qxsjBM",
 	},
 ]
+
+
 
 재생목록.원곡 =
 [
@@ -24,12 +30,7 @@ window.재생목록 ??= {}
 	},
 ]
 
-// 재생목록.커버 =
-// [
-// 	{
-// 		id : "https://youtube.com/playlist?list=PLRFFDzd67X4w&si=3RehAJ8LJQyzvrpd",
-// 	},
-// ]
+
 
 재생목록.커버 =
 [
@@ -75,12 +76,15 @@ window.재생목록 ??= {}
 ]
 
 
+
 재생목록.쇼츠 =
 [
 	{
 		id : "",
 	},
 ]
+
+
 
 재생목록.부분 =
 [

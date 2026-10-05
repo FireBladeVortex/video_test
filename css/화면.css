@@ -391,7 +391,7 @@ body
 	accent-color : var(--강조2);
 }
 
-.long_row1
+.선택지_공간
 {
 	display : flex;
 	width : 80%;
@@ -399,41 +399,35 @@ body
 	flex : 1;
 }
 
-.long_row1 .long_lang
+.선택지_공간 .선택지_언어
 {
 	flex : 1;
 	text-align : left;
 }
 
-.long_row1 .long_name
+.선택지_공간 .선택지_이름
+{
+	flex : 2;
+	text-align : left;
+}
+
+.선택지_공간 .선택지_제목
 {
 	flex : 3;
+	/* width : auto; */
 	text-align : left;
 }
 
-.long_row1 .long_empty
+.선택지_공간 .선택지_재생
 {
 	display : flex;
-	width : 100%;
-	height : 100%;
+	/* width : 100%;
+	height : auto; */
 	flex : 1;
 }
 
-.long_row2
-{
-	display : flex;
-	width : 80%;
-	flex : 1;
-}
 
-.long_row2 .long_title
-{
-	width : 100%;
-	text-align : left;
-}
-
-
-.long_ready
+.재생_준비_버튼
 {
 	width : 100%;
 	height : 100%;
@@ -443,13 +437,13 @@ body
 	cursor : pointer;
 }
 
-.long_ready.강조
+.재생_준비_버튼.강조
 {
 	opacity : 1;
 	pointer-events : auto;
 }
 
-.long_ready.발기
+.재생_준비_버튼.발기
 {
 	opacity : 0.5;
 	pointer-events : none;

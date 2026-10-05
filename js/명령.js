@@ -1045,7 +1045,8 @@ function id_찾기(주소)
 		const id_재생목록 = url.searchParams.get("list")
 		// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
 		if (id_재생목록 && 재생목록인가(id_재생목록))
-			return id_재생목록
+			// return id_재생목록
+			return
 
 		// 해당 링크가 동영상 링크인지 확인
 		// 링크 모양에 따라 경우의 수 대비

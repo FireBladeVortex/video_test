@@ -1,64 +1,55 @@
 
 
 
-function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 song 목록을 즉석에서 반환
+function 불러오기_노래들(노래)
 {
-	const song_list = video.song ?? []
+	const 필터_1차 = 노래.song ?? []
 
-	if (song_list.length === 0)
-		return [{ id: video.id }] // id만 가진 경우 유효
-
-	const asdasd = song_list
-		.filter(song => song.lang && song.name && song.title && song.start && song.end) // 모두 가진 것만 유효
-		.map(song => ({ id: video.id, ...song }))
-	return asdasd
+	const 필터_2차 = 필터_1차
+		.filter(song => song.lang && song.name && song.title && song.start && song.end)
+		.map(song => ({ id: 노래.id, ...song }))
+	return 필터_2차
 }
 
 
 
 
-// long 섹션 필터 드롭다운 생성 (수정/추가)
 function make_long()
 {
 	if (!임시_목록.부분)
-		return // long 파일 없으면 작동 안함
+		return
 
 	const 구역 = document.querySelector(".구역[data-종류=부분]")
 	if (!구역)
 		return
 
 	// 1행 (3칸, 1:3:1)
-	const row1 = document.createElement("div")
-	row1.className = "long_row1"
-	구역.appendChild(row1)
+	const 선택지_공간 = document.createElement("div")
+	선택지_공간.className = "선택지_공간"
+	구역.appendChild(선택지_공간)
 
-	const lang_select = document.createElement("select")
-	lang_select.className = "long_lang"
-	row1.appendChild(lang_select)
+	const 선택지_언어 = document.createElement("select")
+	선택지_언어.className = "선택지_언어"
+	선택지_공간.appendChild(선택지_언어)
 
-	const name_select = document.createElement("select")
-	name_select.className = "long_name"
-	row1.appendChild(name_select)
+	const 선택지_이름 = document.createElement("select")
+	선택지_이름.className = "선택지_이름"
+	선택지_공간.appendChild(선택지_이름)
 
-	const empty_col = document.createElement("div")
-	empty_col.className = "long_empty"
-	row1.appendChild(empty_col)
+	const 선택지_제목 = document.createElement("select")
+	선택지_제목.className = "선택지_제목"
+	선택지_공간.appendChild(선택지_제목)
 
-	const ready_btn = document.createElement("button")
-	ready_btn.className = "long_ready"
-	ready_btn.textContent = "재생 준비"
-	empty_col.appendChild(ready_btn)
-	ready_btn.classList.add("발기")
+	const 선택지_재생 = document.createElement("div")
+	선택지_재생.className = "선택지_재생"
+	선택지_공간.appendChild(선택지_재생)
 
+	const 재생_준비_버튼 = document.createElement("button")
+	재생_준비_버튼.className = "재생_준비_버튼"
+	재생_준비_버튼.textContent = "재생 준비"
+	선택지_재생.appendChild(재생_준비_버튼)
+	재생_준비_버튼.classList.add("발기")
 
-	// 2행 (1칸, 100%)
-	const row2 = document.createElement("div")
-	row2.className = "long_row2"
-	구역.appendChild(row2)
-
-	const title_select = document.createElement("select")
-	title_select.className = "long_title"
-	row2.appendChild(title_select)
 
 	// option 생성 도우미
 	function make_option(select, value, text, selected = false)
@@ -67,30 +58,29 @@ function make_long()
 		option.value = value
 		option.textContent = text
 		if (selected)
-			{
-				option.selected = true
-
-		option.disabled = true
-		option.hidden = true
-			}
+		{
+			option.selected = true
+			option.disabled = true
+			option.hidden = true
+		}
 		select.appendChild(option)
 	}
 
-	make_option(lang_select, "", "언어", true)
-	;["한국어", "영어", "일본어", "외국어", "개사"].forEach(lang => make_option(lang_select, lang, lang))
+	make_option(선택지_언어, "", "언어", true)
+	;["한국어", "영어", "일본어", "외국어", "개사"].forEach(lang => make_option(선택지_언어, lang, lang))
 
-	make_option(name_select, "", "부른 이", true)
-	make_option(title_select, "", "제목", true)
+	make_option(선택지_이름, "", "부른 이", true)
+	make_option(선택지_제목, "", "제목", true)
 
 	// lang 값에 맞는 name 목록 갱신
 	function update_name()
 	{
-		const lang_value = lang_select.value
+		const lang_value = 선택지_언어.value
 		const names = new Set()
 
 		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
-			get_songs(video).forEach(song =>
+			불러오기_노래들(video).forEach(song =>
 			{
 				if (!song.lang)
 					return // id만 가진 항목은 lang이 없으므로 제외
@@ -101,19 +91,19 @@ function make_long()
 			})
 		})
 
-		name_select.innerHTML = ""
-		make_option(name_select, "", "부른 이", true)
-		;[...names].forEach(name => make_option(name_select, name, name))
+		선택지_이름.innerHTML = ""
+		make_option(선택지_이름, "", "부른 이", true)
+		;[...names].forEach(name => make_option(선택지_이름, name, name))
 	}
 
 	// lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
 	function update_title()
 	{
-		const lang_value = lang_select.value
-		const name_value = name_select.value
+		const lang_value = 선택지_언어.value
+		const name_value = 선택지_이름.value
 
-		title_select.innerHTML = ""
-		make_option(title_select, "", "제목", true)
+		선택지_제목.innerHTML = ""
+		make_option(선택지_제목, "", "제목", true)
 
 		if (!name_value)
 			return // name 기본값이면 목록 비움
@@ -122,7 +112,7 @@ function make_long()
 
 		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
-			get_songs(video).forEach(song =>
+			불러오기_노래들(video).forEach(song =>
 			{
 				if (!song.lang)
 					return // id만 가진 항목은 제외
@@ -136,36 +126,37 @@ function make_long()
 		})
 
 
-		;[...titles].forEach(title => make_option(title_select, title, title))
-		ready_btn.classList.toggle("강조", false)
+		;[...titles].forEach(title => make_option(선택지_제목, title, title))
+		재생_준비_버튼.classList.toggle("강조", false)
 	}
 
-	lang_select.addEventListener("change", () =>
+	선택지_언어.addEventListener("change", () =>
 	{
 		update_name()
 		update_title()
 	})
-	name_select.addEventListener("change", update_title)
 
-	title_select.addEventListener("change", () =>
+	선택지_이름.addEventListener("change", update_title)
+
+	선택지_제목.addEventListener("change", () =>
 	{
-		ready_btn.classList.toggle("강조", title_select.value)
-		ready_btn.classList.toggle("발기", !title_select.value)
+		재생_준비_버튼.classList.toggle("강조", 선택지_제목.value)
+		재생_준비_버튼.classList.toggle("발기", !선택지_제목.value)
 	})
 
-	ready_btn.addEventListener("click", () =>
+	재생_준비_버튼.addEventListener("click", () =>
 	{
-		const target = "long_ready"
+		const target = "재생_준비_버튼"
 		{
 			이미지_클릭_강조(target)
-			const lang_value = lang_select.value
-			const name_value = name_select.value
-			const title_value = title_select.value
+			const lang_value = 선택지_언어.value
+			const name_value = 선택지_이름.value
+			const title_value = 선택지_제목.value
 
 			let song = null
-			for (const video of 임시_목록.부분) // valid_list 대신 임시_목록.long 직접 순회
+			for (const 노래 of 임시_목록.부분) // valid_list 대신 임시_목록.long 직접 순회
 			{
-				const found = get_songs(video).find(s =>
+				const found = 불러오기_노래들(노래).find(s =>
 					s.lang && // id만 가진 항목은 제외
 					(!lang_value || s.lang.includes(lang_value)) &&
 					s.name === name_value &&

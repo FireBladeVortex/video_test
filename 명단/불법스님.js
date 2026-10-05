@@ -1,6 +1,8 @@
 
 window.재생목록 ??= {}
 
+
+
 재생목록.색깔 =
 {
 	오른쪽바탕색 : "",
@@ -10,12 +12,16 @@ window.재생목록 ??= {}
 	강조3 : "",
 }
 
+
+
 재생목록.소개 =
 [
 	{
 		id : "https://youtu.be/GhiU-IvtBHo?si=NIhfhheEv50_EAk1",
 	},
 ]
+
+
 
 재생목록.원곡 =
 [
@@ -24,12 +30,7 @@ window.재생목록 ??= {}
 	},
 ]
 
-// 재생목록.커버 =
-// [
-// 	{
-// 		id : "https://youtube.com/playlist?list=PLb8LSvEXeCbo&si=EH-6queDKFjh3LQ9",
-// 	},
-// ]
+
 
 재생목록.커버 =
 [
@@ -100,6 +101,8 @@ window.재생목록 ??= {}
 		id : "",
 	},
 ]
+
+
 
 재생목록.부분 =
 [

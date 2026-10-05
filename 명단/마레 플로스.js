@@ -1,6 +1,8 @@
 
 window.재생목록 ??= {}
 
+
+
 재생목록.색깔 =
 {
 	오른쪽바탕색 : "",
@@ -10,19 +12,15 @@ window.재생목록 ??= {}
 	강조3 : "",
 }
 
+
+
 재생목록.소개 =
 [
 	{
-		id : "https://youtu.be/d8dqNFNrXPk?si=wSS9YNVGFHjeMy2o",
+		id : "https://youtu.be/d8dqNFNrXPk",
 	},
 ]
 
-// 재생목록.원곡 =
-// [
-// 	{
-// 		id : "https://youtube.com/playlist?list=PLH9yc0jVu0zg&si=GH1RW_pyR-KpA1rK",
-// 	},
-// ]
 
 
 재생목록.원곡 =
@@ -41,12 +39,7 @@ window.재생목록 ??= {}
 	},
 ]
 
-// 재생목록.커버 =
-// [
-// 	{
-// 		id : "https://youtube.com/playlist?list=PLE21tp32aHko&si=oJoYfrEexYslRUys",
-// 	},
-// ]
+
 
 재생목록.커버 =
 [
@@ -67,12 +60,6 @@ window.재생목록 ??= {}
 	},
 ]
 
-// 재생목록.쇼츠 =
-// [
-// 	{
-// 		id : "https://youtube.com/playlist?list=PLbb18kSPKZhk&si=1TcFaFxYqDJ-ZD5J",
-// 	},
-// ]
 
 
 재생목록.쇼츠 =
@@ -117,7 +104,7 @@ window.재생목록 ??= {}
 재생목록.부분 =
 [
 	{
-		id: "https://youtu.be/ux7en3vXRVE?si=EZ77ZtDKSi26Yw2N", // 5만 기념
+		id: "https://youtu.be/ux7en3vXRVE", // 5만 기념
 		노래 :
 		[
 			{
