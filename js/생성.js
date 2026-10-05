@@ -49,10 +49,8 @@ function 만들기_부분()
 	재생_준비_버튼.textContent = "재생 준비"
 	선택지_재생.appendChild(재생_준비_버튼)
 	재생_준비_버튼.disabled = true
-	// 재생_준비_버튼.classList.add("발기")
 
 
-	// option 생성 도우미
 	function make_option(select, value, text, selected = false)
 	{
 		const option = document.createElement("option")
@@ -73,7 +71,6 @@ function 만들기_부분()
 	{
 		make_option(선택지_언어, 언어, 언어)
 	}
-	// 언어_목록.forEach(lang => make_option(선택지_언어, lang, lang))
 
 	make_option(선택지_이름, "", "부른 사람", true)
 	make_option(선택지_제목, "", "제목", true)
@@ -84,14 +81,12 @@ function 만들기_부분()
 		const lang_value = 선택지_언어.value
 		const 이름들 = new Set()
 
-		// 임시_목록.부분.forEach(video =>
 		for (const 동영상 of 임시_목록.부분)
 		{
 			for (const 노래 of 불러오기_노래들(동영상))
-			// 불러오기_노래들(video).forEach(노래 =>
 			{
 				if (!노래.언어)
-					return // id만 가진 항목은 lang이 없으므로 제외
+					continue // id만 가진 항목은 lang이 없으므로 제외
 				if (!lang_value || 노래.언어.includes(lang_value)) // (수정) === → includes
 				{
 					이름들.add(노래.이름)
@@ -101,7 +96,6 @@ function 만들기_부분()
 
 		선택지_이름.innerHTML = ""
 		make_option(선택지_이름, "", "부른 사람", true)
-		// ;[...이름들].forEach(name => make_option(선택지_이름, name, name))
 		for (const 이름 of 이름들)
 		{
 			make_option(선택지_이름, 이름, 이름)
@@ -123,14 +117,12 @@ function 만들기_부분()
 
 		const 제목들 = new Set()
 
-		// 임시_목록.부분.forEach(video =>
 		for (const 동영상 of 임시_목록.부분)
 		{
 			for (const 노래 of 불러오기_노래들(동영상))
-			// 불러오기_노래들(동영상).forEach(노래 =>
 			{
 				if (!노래.언어)
-					return // id만 가진 항목은 제외
+					continue // id만 가진 항목은 제외
 				const lang_match = !lang_value || 노래.언어.includes(lang_value) // (수정) === → includes
 				const name_match = 노래.이름 === name_value
 				if (lang_match && name_match)
@@ -141,12 +133,10 @@ function 만들기_부분()
 		}
 
 
-		// ;[...제목들].forEach(title => make_option(선택지_제목, title, title))
 		for (const 제목 of 제목들)
 		{
 			make_option(선택지_제목, 제목, 제목)
 		}
-		// 재생_준비_버튼.classList.toggle("강조", false)
 	}
 
 	선택지_언어.addEventListener("change", () =>
@@ -160,8 +150,6 @@ function 만들기_부분()
 	선택지_제목.addEventListener("change", () =>
 	{
 		재생_준비_버튼.disabled = !선택지_제목.value
-		// 재생_준비_버튼.classList.toggle("강조", 선택지_제목.value)
-		// 재생_준비_버튼.classList.toggle("발기", !선택지_제목.value)
 	})
 
 	재생_준비_버튼.addEventListener("click", () =>
@@ -191,7 +179,7 @@ function 만들기_부분()
 
 			if (song)
 			{
-				ready_data(song.id, song.시작, song.종료) // video.id 대신 song.id (valid_list에 이미 포함됨)
+				ready_data(song.id, song.시작, song.종료)
 			}
 		}
 	})

@@ -201,11 +201,6 @@ function onPlayerStateChange(event)
 		화면.style.cursor = 상태 ? "pointer" : "default"
 		화면.onclick = 상태 ? 재생_일시중지_조작 : null
 	}
-	// document.querySelectorAll("#오른쪽").forEach(화면 =>
-	// {
-	// 	화면.style.cursor = 상태 ? "pointer" : "default"
-	// 	화면.onclick = 상태 ? 재생_일시중지_조작 : null
-	// })
 	// document.getElementById("클릭_방지").style.pointerEvents = 상태 ? "auto" : "none"
 }
 
@@ -349,19 +344,19 @@ document.addEventListener("keydown", 키 =>
 		}
 
 		// 재생 속도 조절
-		else if (컨트롤_쉬프트 && 증가 || 감소)
-		{
-			키.preventDefault()
-			const 증감 = 증가 ? 0.05 : -0.05
-			const 제한 = 증가 ? 2 : 0.25
-			const 최대최소  = 증가 ? Math.min : Math.max
-			player.setPlaybackRate(최대최소(제한, (player.getPlaybackRate() + 증감)))
-		}
-		else if (키.code === "Numpad0")
-		{
-			키.preventDefault()
-			player.setPlaybackRate(1)
-		}
+		// else if (컨트롤_쉬프트 && 증가 || 감소)
+		// {
+		// 	키.preventDefault()
+		// 	const 증감 = 증가 ? 0.05 : -0.05
+		// 	const 제한 = 증가 ? 2 : 0.25
+		// 	const 최대최소  = 증가 ? Math.min : Math.max
+		// 	player.setPlaybackRate(최대최소(제한, (player.getPlaybackRate() + 증감)))
+		// }
+		// else if (키.code === "Numpad0")
+		// {
+		// 	키.preventDefault()
+		// 	player.setPlaybackRate(1)
+		// }
 	}
 })
 
@@ -454,7 +449,6 @@ function 크기_계산(목록)
 const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
 const 재구성 = new ResizeObserver(구역 =>
 {
-	// 구역.forEach(목록 =>
 	for (const 목록 of 구역)
 	{
 		const 종류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
@@ -484,12 +478,6 @@ function 페이지_재구성(이거)
 		버튼.style.display = 몇번 ? "" : "none"
 
 	}
-	// document.querySelectorAll(".버튼[data-종류=" + 이거 + "]").forEach(버튼 =>
-	// {
-	// 	const 번호 = +버튼.dataset.숫자
-	// 	const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
-	// 	버튼.style.display = 몇번 ? "" : "none"
-	// })
 }
 
 
@@ -673,13 +661,6 @@ function 이미지_클릭_강조(이거)
 		버튼.classList.toggle("발기", !클릭)
 
 	}
-	// document.querySelectorAll(".버튼").forEach(버튼 =>
-	// {
-	// 	const 그거 = (버튼.dataset.종류 + (버튼.dataset.숫자 + "").padStart(3, "0"))
-	// 	const 클릭 = 그거 === 이거
-	// 	버튼.classList.toggle("강조", 클릭)
-	// 	버튼.classList.toggle("발기", !클릭)
-	// })
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
 	이미지_클릭 = 이거
 }
@@ -700,8 +681,8 @@ function 페이지_채우기(이거)
 	const nxxt_data_count = data.length
 
 	// const next_count = 이거_몇칸임[이거] 새로 계산된 필요 개수
-
-	for (let 숫자 = 0 ; data.length ; 숫자++)
+	for (let 숫자 = 0 ; 숫자 < data.length ; 숫자++)
+	// for (let 숫자 = 0 ; data.length ; 숫자++)
 	{
 		const ready = data[숫자]
 		if (!ready) break
@@ -792,10 +773,6 @@ function 크기_조절(왼쪽, 그거)
 	{
 		크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
 	}
-	// document.querySelectorAll(".h1_크기 .문자열_클릭").forEach(span =>
-	// {
-	// 	span.textContent = span.dataset.종류 === 구역_종류 ? "작게" : "크게"
-	// })
 }
 
 
@@ -836,11 +813,10 @@ function 만들기_목록()
 		},
 	]
 
-	// 종류_확인.forEach(분류 =>
 	for (const 분류 of 종류_확인)
 	{
 		if (!유효_재확인(분류.자료))
-			return
+			continue
 
 		사용할_동영상[분류.종류] = 분류.자료
 
@@ -879,7 +855,7 @@ function 만들기_목록()
 		if (분류.종류 === "부분")
 		{
 			만들기_부분()
-			return
+			continue
 		}
 
 		if (분류.종류 === "동영상")
@@ -999,7 +975,6 @@ function 만들기_구역()
 	{
 		재구성.observe(감지)
 	}
-	// document.querySelectorAll(".목록").forEach(목록 => 재구성.observe(목록))
 }
 
 
@@ -1171,7 +1146,6 @@ function 가나다순_정렬(목록)
 	})
 
 	const map = new Map()
-	// 정렬.forEach(이거 =>
 	for (const 이거 of 정렬)
 	{
 		const 그거 = 이거.이름.trim()
@@ -1201,7 +1175,6 @@ function 만들기_이름표들(이름_상자)
 
 	const 이름 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름)
-	// 가나다순_정렬(이름_목록).forEach(누구 =>
 	{
 		const 이름표 = document.createElement("div")
 		이름표.className = "이름표"
@@ -1236,7 +1209,6 @@ function 만들기_가나다(이름_상자)
 	]
 
 	for (const 순서대로 of 가나다순)
-	// 가나다순.forEach(순서대로 =>
 	{
 		const 자음_상자 = document.createElement("span")
 		자음_상자.className = "자음_상자"

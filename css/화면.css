@@ -296,7 +296,7 @@ body
 	width : 100%;
 	height : 100%;
 	/* 이미지 비율 유지 + 가득 채움
-	// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
+	contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
 	object-fit : cover;
 }
 
@@ -449,7 +449,7 @@ body
 	pointer-events : none;
 } */
 
-.재생_준비_버튼:disabled 
+.재생_준비_버튼:disabled
 {
 	opacity : 0.5;
 	cursor : default;
