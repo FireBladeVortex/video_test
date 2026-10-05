@@ -195,6 +195,17 @@ function 결과_출력(값)
 	return 출력
 }
 
+function 결과_표시(값) // (추가)
+{
+	const 종류 = 종류_선택.value // (추가)
+	const 내용 = 결과_출력(값) // (추가)
+
+	if (종류 === "") // (추가)
+		return 내용 // (추가)
+
+	return "재생목록." + 종류 + " =\n[\n" + 내용 + "\n]" // (추가)
+}
+
 function 버튼_잠금(잠금)
 {
 	document.getElementById("불러오기").disabled = 잠금
@@ -205,33 +216,26 @@ function 버튼_갱신()
 {
 	const 주소_같음 = 주소_입력.value.trim() === 마지막_주소
 	const 비교_같음 = (이름_선택.value + "/" + 종류_선택.value) === 마지막_비교
+	const 선택_안함 = 이름_선택.value === "" || 종류_선택.value === "" // (추가)
 
 	document.getElementById("불러오기").disabled = 주소_같음
-	document.getElementById("비교하기").disabled = 불러온_값.length === 0 || 비교_같음
+	document.getElementById("비교하기").disabled = 불러온_값.length === 0 || 선택_안함 || 비교_같음
 	document.getElementById("복사하기").disabled = 결과_칸.textContent === ""
 
-	if (주소_입력.value.trim() === "")
-		상태_칸.textContent = "주소를 입력하세요"
-	// else
-	// 	상태_칸.textContent = ""
 }
 
 
 document.getElementById("불러오기").addEventListener("click", async () =>
 {
 	const 주소 = document.getElementById("주소_입력").value.trim()
-	if (!주소)
-	{
-		상태_칸.textContent = "주소를 입력하세요"
-		return
-	}
+
 	버튼_잠금(true)
 	상태_칸.textContent = "불러오는 중"
 	await api_준비
 	불러온_값 = await 주소_조사(주소)
 	상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
 
-	결과_칸.textContent = 결과_출력(불러온_값)
+	결과_칸.textContent = 결과_표시(불러온_값)
 	마지막_주소 = 불러온_값.length > 0 ? 주소 : ""
 	마지막_비교 = ""
 	버튼_갱신()
@@ -254,7 +258,7 @@ document.getElementById("비교하기").addEventListener("click", async () =>
 	const 새것 = 불러온_값.filter(동영상 => !기존.has(동영상.id))
 
 	상태_칸.textContent = "기존 " + 기존.size + "개 / 새로운 영상 " + 새것.length + "개"
-	결과_칸.textContent = 결과_출력(새것)
+	결과_칸.textContent = 결과_표시(새것)
 	마지막_비교 = 이름_선택.value + "/" + 종류_선택.value
 	버튼_갱신()
 })
@@ -276,5 +280,14 @@ document.getElementById("초기화").addEventListener("click", () =>
 주소_입력.addEventListener("input", 버튼_갱신)
 이름_선택.addEventListener("change", 버튼_갱신)
 종류_선택.addEventListener("change", 버튼_갱신)
+
+종류_선택.addEventListener("change", () => // (추가)
+{
+	if (불러온_값.length === 0) // (추가)
+		return // (추가)
+
+	결과_칸.textContent = 결과_표시(불러온_값) // (추가)
+	버튼_갱신() // (추가)
+})
 
 버튼_갱신()
