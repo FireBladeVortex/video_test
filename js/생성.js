@@ -1,13 +1,13 @@
 
 
 
-function 불러오기_노래들(노래)
+function 불러오기_노래들(그거)
 {
-	const 필터_1차 = 노래.song ?? []
+	const 필터_1차 = 그거.노래 ?? []
 
 	const 필터_2차 = 필터_1차
-		.filter(song => song.언어 && song.이름 && song.제목 && song.시작 && song.종료)
-		.map(song => ({ id: 노래.id, ...song }))
+		.filter(노래 => 노래.언어 && 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
+		.map(노래 => ({ id: 그거.id, ...노래 }))
 	return 필터_2차
 }
 
@@ -82,13 +82,13 @@ function 만들기_부분()
 
 		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
-			불러오기_노래들(video).forEach(song =>
+			불러오기_노래들(video).forEach(노래 =>
 			{
-				if (!song.언어)
+				if (!노래.언어)
 					return // id만 가진 항목은 lang이 없으므로 제외
-				if (!lang_value || song.언어.includes(lang_value)) // (수정) === → includes
+				if (!lang_value || 노래.언어.includes(lang_value)) // (수정) === → includes
 				{
-					names.add(song.이름)
+					names.add(노래.이름)
 				}
 			})
 		})
@@ -116,15 +116,15 @@ function 만들기_부분()
 
 		임시_목록.부분.forEach(video => // valid_list 대신 임시_목록.long 직접 순회
 		{
-			불러오기_노래들(video).forEach(song =>
+			불러오기_노래들(video).forEach(노래 =>
 			{
-				if (!song.언어)
+				if (!노래.언어)
 					return // id만 가진 항목은 제외
-				const lang_match = !lang_value || song.언어.includes(lang_value) // (수정) === → includes
-				const name_match = song.이름 === name_value
+				const lang_match = !lang_value || 노래.언어.includes(lang_value) // (수정) === → includes
+				const name_match = 노래.이름 === name_value
 				if (lang_match && name_match)
 				{
-					titles.add(song.제목)
+					titles.add(노래.제목)
 				}
 			})
 		})
