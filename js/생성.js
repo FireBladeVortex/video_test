@@ -6,7 +6,7 @@ function 불러오기_노래들(그거)
 	const 필터_1차 = 그거.노래 ?? []
 
 	const 필터_2차 = 필터_1차
-		.filter(노래 => 노래.언어 && 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
+		.filter(노래 => && 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
 		.map(노래 => ({ id: 그거.id, ...노래 }))
 	return 필터_2차
 }
@@ -23,82 +23,39 @@ function 만들기_부분()
 	if (!구역)
 		return
 
-	// 1행 (3칸, 1:3:1)
 	const 선택지_공간 = document.createElement("div")
 	선택지_공간.className = "선택지_공간"
 	구역.appendChild(선택지_공간)
 
-	const 선택지_언어 = document.createElement("select")
-	선택지_언어.className = "선택지_언어"
-	선택지_공간.appendChild(선택지_언어)
+		const 선택지_노래 = document.createElement("select")
+		선택지_노래.className = "선택지_노래"
+		선택지_공간.appendChild(선택지_노래)
 
-	const 선택지_이름 = document.createElement("select")
-	선택지_이름.className = "선택지_이름"
-	선택지_공간.appendChild(선택지_이름)
+			const 설정 = document.createElement("option")
+			설정.value = ""
+			설정.textContent = "듣고 싶은 노래를 선택하세요"
+			설정.selected = true
+			설정.disabled = true
+			설정.hidden = true
+			선택지_노래.appendChild(설정)
 
-	const 선택지_제목 = document.createElement("select")
-	선택지_제목.className = "선택지_제목"
-	선택지_공간.appendChild(선택지_제목)
+		const 선택지_재생 = document.createElement("div")
+		선택지_재생.className = "선택지_재생"
+		선택지_공간.appendChild(선택지_재생)
 
-	const 선택지_재생 = document.createElement("div")
-	선택지_재생.className = "선택지_재생"
-	선택지_공간.appendChild(선택지_재생)
-
-	const 재생_준비_버튼 = document.createElement("button")
-	재생_준비_버튼.className = "재생_준비_버튼"
-	재생_준비_버튼.textContent = "재생 준비"
-	선택지_재생.appendChild(재생_준비_버튼)
-	재생_준비_버튼.disabled = true
+			const 재생_준비_버튼 = document.createElement("button")
+			재생_준비_버튼.className = "재생_준비_버튼"
+			재생_준비_버튼.textContent = "재생 준비"
+			선택지_재생.appendChild(재생_준비_버튼)
+			재생_준비_버튼.disabled = true
 
 
-	function make_option(select, value, text, selected = false)
+	const 노래들 = new Set()
+	for (const 동영상 of 임시목록.부분)
 	{
-		const option = document.createElement("option")
-		option.value = value
-		option.textContent = text
-		if (selected)
+		for (const 노래 of 불러오기_노래들(동영상))
 		{
-			option.selected = true
-			option.disabled = true
-			option.hidden = true
-		}
-		select.appendChild(option)
-	}
-
-	make_option(선택지_언어, "", "언어", true)
-	const 언어_목록 = ["한국어", "영어", "일본어", "외국어", "개사"]
-	for (const 언어 of 언어_목록)
-	{
-		make_option(선택지_언어, 언어, 언어)
-	}
-
-	make_option(선택지_이름, "", "부른 사람", true)
-	make_option(선택지_제목, "", "제목", true)
-
-	// lang 값에 맞는 name 목록 갱신
-	function update_name()
-	{
-		const lang_value = 선택지_언어.value
-		const 이름들 = new Set()
-
-		for (const 동영상 of 임시_목록.부분)
-		{
-			for (const 노래 of 불러오기_노래들(동영상))
-			{
-				if (!노래.언어)
-					continue // id만 가진 항목은 lang이 없으므로 제외
-				if (!lang_value || 노래.언어.includes(lang_value)) // (수정) === → includes
-				{
-					이름들.add(노래.이름)
-				}
-			}
-		}
-
-		선택지_이름.innerHTML = ""
-		make_option(선택지_이름, "", "부른 사람", true)
-		for (const 이름 of 이름들)
-		{
-			make_option(선택지_이름, 이름, 이름)
+			
 		}
 	}
 
@@ -162,7 +119,7 @@ function 만들기_부분()
 			const title_value = 선택지_제목.value
 
 			let song = null
-			for (const 노래들 of 임시_목록.부분) 
+			for (const 노래들 of 임시_목록.부분)
 			{
 				const found = 불러오기_노래들(노래들).find(노래 =>
 					노래.언어 && // id만 가진 항목은 제외

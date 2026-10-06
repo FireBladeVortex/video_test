@@ -399,22 +399,9 @@ body
 	flex : 1;
 }
 
-.선택지_공간 .선택지_언어
+.선택지_공간 .선택지_노래
 {
-	flex : 1;
-	text-align : left;
-}
-
-.선택지_공간 .선택지_이름
-{
-	flex : 2;
-	text-align : left;
-}
-
-.선택지_공간 .선택지_제목
-{
-	flex : 3;
-	/* width : auto; */
+	flex : 5;
 	text-align : left;
 }
 
@@ -426,7 +413,6 @@ body
 	flex : 1;
 }
 
-
 .재생_준비_버튼
 {
 	width : 100%;
@@ -436,18 +422,6 @@ body
 	justify-content : center;
 	cursor : pointer;
 }
-
-/* .재생_준비_버튼.강조
-{
-	opacity : 1;
-	pointer-events : auto;
-}
-
-.재생_준비_버튼.발기
-{
-	opacity : 0.5;
-	pointer-events : none;
-} */
 
 .재생_준비_버튼:disabled
 {
