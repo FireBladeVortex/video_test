@@ -162,7 +162,7 @@ function 만들기_부분()
 			const title_value = 선택지_제목.value
 
 			let song = null
-			for (const 노래들 of 임시_목록.부분) // valid_list 대신 임시_목록.long 직접 순회
+			for (const 노래들 of 임시_목록.부분) 
 			{
 				const found = 불러오기_노래들(노래들).find(노래 =>
 					노래.언어 && // id만 가진 항목은 제외

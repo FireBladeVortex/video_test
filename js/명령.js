@@ -685,7 +685,8 @@ function 페이지_채우기(이거)
 	// for (let 숫자 = 0 ; data.length ; 숫자++)
 	{
 		const ready = data[숫자]
-		if (!ready) break
+		if (!ready)
+			continue
 
 		const 버튼 = document.createElement("button")
 		버튼.className = "버튼"
