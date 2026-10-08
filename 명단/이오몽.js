@@ -17,7 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		id : "https://youtu.be/z2JKKivW6SY?si=TS6HsSq4EH2N376F",
+		id : "https://youtu.be/z2JKKivW6SY",
 	},
 ]
 
@@ -80,7 +80,7 @@ window.재생목록 ??= {}
 재생목록.부분 =
 [
 	{
-		id: "https://youtu.be/Gkxc6yil_wQ?si=txSdKscAoVzC0lRC",
+		id: "https://youtu.be/Gkxc6yil_wQ",
 		노래 :
 		[
 			{

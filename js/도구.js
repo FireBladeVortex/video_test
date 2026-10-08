@@ -232,7 +232,12 @@ document.getElementById("불러오기").addEventListener("click", async () =>
 
 	버튼_잠금(true)
 	상태_칸.textContent = "불러오는 중"
-	await api_준비
+
+
+	const 값 = id_찾기(주소)
+	if (값 && 재생목록인가(값))
+		await api_준비
+
 	불러온_값 = await 주소_조사(주소)
 	상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
 
@@ -288,7 +293,7 @@ document.getElementById("초기화").addEventListener("click", () =>
 		return
 
 	결과_칸.textContent = 결과_표시(불러온_값)
-	버튼_갱신() 
+	버튼_갱신()
 })
 
 버튼_갱신()

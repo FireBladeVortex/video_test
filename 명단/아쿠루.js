@@ -17,7 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		id : "https://youtu.be/NsA8O9JIVj0?si=MZcH43M93CRySq7j"
+		id : "https://youtu.be/NsA8O9JIVj0",
 	},
 ]
 
@@ -404,7 +404,7 @@ window.재생목록 ??= {}
 재생목록.부분 =
 [
 	{
-		id : "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG",
+		id : "https://youtu.be/h3l1SyPMpoE",
 		노래 :
 		[
 			{
@@ -414,7 +414,7 @@ window.재생목록 ??= {}
 		]
 	},
 	{
-		id: "https://youtu.be/Gre8r41eWYw?si=vBGq6Exoi1aY7IB5",
+		id: "https://youtu.be/Gre8r41eWYw",
 		노래:
 		[
 			{

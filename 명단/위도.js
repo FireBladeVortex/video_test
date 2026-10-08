@@ -17,7 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		id : "https://youtu.be/FePuk8xH4b0?si=7qH4VaKGY1qlrCsR",
+		id : "https://youtu.be/FePuk8xH4b0",
 	},
 ]
 
