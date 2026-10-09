@@ -763,9 +763,8 @@ function 크기_조절(왼쪽, 그거)
 		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
 		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
 	}
-
-	const 공백 = " "
-	왼쪽.style.gridTemplateRows = 비율.동영상 + 공백 + 비율.쇼츠 + 공백 + 비율.부분
+	
+	왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
 
 	구역_종류 = 조절_딸깍
 
@@ -784,116 +783,8 @@ function 유효_재확인(종류)
 }
 
 
-
-
-function 만들기_목록()
+function 만들기_페이지_버튼()
 {
-
-	const 왼쪽 = document.getElementById("왼쪽")
-
-	const 원곡 = 임시_목록.원곡 ?? []
-	const 커버 = 임시_목록.커버 ?? []
-	const 동영상 = 원곡.concat(커버)
-
-	const 쇼츠 = 임시_목록.쇼츠 ?? []
-	const 부분 = 임시_목록.부분 ?? []
-
-	const 종류_확인 =
-	[
-		{
-			종류 : "동영상",
-			자료 : 동영상
-		},
-		{
-			종류 : "쇼츠",
-			자료 : 쇼츠
-		},
-		{
-			종류 : "부분",
-			자료 : 부분
-		},
-	]
-
-	for (const 분류 of 종류_확인)
-	{
-		if (!유효_재확인(분류.자료))
-			continue
-
-		사용할_동영상[분류.종류] = 분류.자료
-
-		const 구역 = document.createElement("div")
-		구역.className = "구역"
-		구역.dataset.종류 = 분류.종류
-		왼쪽.appendChild(구역)
-
-		const h1 = document.createElement("header")
-		구역.appendChild(h1)
-
-			const 구역_재생목록 = document.createElement("div")
-			구역_재생목록.className = "구역_재생목록"
-			구역_재생목록.textContent = 분류.종류 + " 재생 목록"
-			h1.appendChild(구역_재생목록)
-
-			const h1_종류 = document.createElement("div")
-			h1_종류.className = "h1_종류"
-			h1.appendChild(h1_종류)
-
-			const h1_페이지 = document.createElement("div")
-			h1_페이지.className = "h1_페이지"
-			h1.appendChild(h1_페이지)
-
-			const h1_크기 = document.createElement("div")
-			h1_크기.className = "h1_크기"
-			h1.appendChild(h1_크기)
-
-				const 크기_조절_문자열 = document.createElement("span")
-				크기_조절_문자열.className = "문자열_클릭"
-				크기_조절_문자열.textContent = "크게"
-				크기_조절_문자열.dataset.종류 = 분류.종류
-				h1_크기.appendChild(크기_조절_문자열)
-				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
-
-		if (분류.종류 === "부분")
-		{
-			// 만들기_부분()
-			continue
-		}
-
-		if (분류.종류 === "동영상")
-		{
-			if (유효_재확인(원곡) && 유효_재확인(커버))
-			{
-				const h1_모두 = document.createElement("div")
-				h1_모두.className = "h1_모두"
-				h1_종류.appendChild(h1_모두)
-
-					const 문자열_모두 = document.createElement("span")
-					문자열_모두.className = "문자열_클릭"
-					문자열_모두.textContent = "모두"
-					h1_모두.appendChild(문자열_모두)
-					문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
-
-				const h1_원곡 = document.createElement("div")
-				h1_원곡.className = "h1_원곡"
-				h1_종류.appendChild(h1_원곡)
-
-					const 문자열_원곡 = document.createElement("span")
-					문자열_원곡.className = "문자열_클릭"
-					문자열_원곡.textContent = "원곡"
-					h1_원곡.appendChild(문자열_원곡)
-					문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
-
-				const h1_커버 = document.createElement("div")
-				h1_커버.className = "h1_커버"
-				h1_종류.appendChild(h1_커버)
-
-					const 문자열_커버 = document.createElement("span")
-					문자열_커버.className = "문자열_클릭"
-					문자열_커버.textContent = "커버"
-					h1_커버.appendChild(문자열_커버)
-					문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
-			}
-		}
 
 		const 버튼_이전 = document.createElement("div")
 		버튼_이전.className = "버튼_이전"
@@ -944,7 +835,133 @@ function 만들기_목록()
 				버튼_설정(분류.종류)
 				페이지_재구성(분류.종류)
 			})
+}
 
+
+
+
+function 만들기_종류_구분(원곡, 커버)
+{
+	if (유효_재확인(원곡) && 유효_재확인(커버))
+	{
+		const h1_모두 = document.createElement("div")
+		h1_모두.className = "h1_모두"
+		h1_종류.appendChild(h1_모두)
+
+			const 문자열_모두 = document.createElement("span")
+			문자열_모두.className = "문자열_클릭"
+			문자열_모두.textContent = "모두"
+			h1_모두.appendChild(문자열_모두)
+			문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
+
+		const h1_원곡 = document.createElement("div")
+		h1_원곡.className = "h1_원곡"
+		h1_종류.appendChild(h1_원곡)
+
+			const 문자열_원곡 = document.createElement("span")
+			문자열_원곡.className = "문자열_클릭"
+			문자열_원곡.textContent = "원곡"
+			h1_원곡.appendChild(문자열_원곡)
+			문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
+
+		const h1_커버 = document.createElement("div")
+		h1_커버.className = "h1_커버"
+		h1_종류.appendChild(h1_커버)
+
+			const 문자열_커버 = document.createElement("span")
+			문자열_커버.className = "문자열_클릭"
+			문자열_커버.textContent = "커버"
+			h1_커버.appendChild(문자열_커버)
+			문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
+	}
+}
+
+
+function 만들기_기초(왼쪽)
+{
+	const 구역 = document.createElement("div")
+	구역.className = "구역"
+	구역.dataset.종류 = 분류.종류
+	왼쪽.appendChild(구역)
+
+	const h1 = document.createElement("header")
+	구역.appendChild(h1)
+
+		const 구역_재생목록 = document.createElement("div")
+		구역_재생목록.className = "구역_재생목록"
+		구역_재생목록.textContent = 분류.종류 + " 재생 목록"
+		h1.appendChild(구역_재생목록)
+
+		const h1_종류 = document.createElement("div")
+		h1_종류.className = "h1_종류"
+		h1.appendChild(h1_종류)
+
+		const h1_페이지 = document.createElement("div")
+		h1_페이지.className = "h1_페이지"
+		h1.appendChild(h1_페이지)
+
+		const h1_크기 = document.createElement("div")
+		h1_크기.className = "h1_크기"
+		h1.appendChild(h1_크기)
+
+			const 크기_조절_문자열 = document.createElement("span")
+			크기_조절_문자열.className = "문자열_클릭"
+			크기_조절_문자열.textContent = "크게"
+			크기_조절_문자열.dataset.종류 = 분류.종류
+			h1_크기.appendChild(크기_조절_문자열)
+			크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
+}
+
+
+function 만들기_목록()
+{
+
+	const 왼쪽 = document.getElementById("왼쪽")
+
+	const 원곡 = 임시_목록.원곡 ?? []
+	const 커버 = 임시_목록.커버 ?? []
+	const 동영상 = 원곡.concat(커버)
+
+	const 쇼츠 = 임시_목록.쇼츠 ?? []
+	const 부분 = 임시_목록.부분 ?? []
+
+	const 종류_확인 =
+	[
+		{
+			종류 : "동영상",
+			자료 : 동영상
+		},
+		{
+			종류 : "쇼츠",
+			자료 : 쇼츠
+		},
+		{
+			종류 : "부분",
+			자료 : 부분
+		},
+	]
+
+	for (const 분류 of 종류_확인)
+	{
+		if (!유효_재확인(분류.자료))
+			continue
+
+		사용할_동영상[분류.종류] = 분류.자료
+
+		만들기_기초(왼쪽)
+
+		if (분류.종류 === "부분")
+		{
+			// 만들기_부분()
+			continue
+		}
+
+		if (분류.종류 === "동영상")
+		{
+			만들기_종류_구분(원곡, 커버)
+		}
+
+		만들기_페이지_버튼()
 		버튼_설정(분류.종류)
 
 		// 미리보기 들어갈 공간
