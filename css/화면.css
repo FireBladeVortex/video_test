@@ -39,23 +39,20 @@ body
 	background : var(--오른쪽바탕색);
 }
 
- /* 바탕 크기 결정 */
 #화면
 {
-	display : flex;
+	display : grid;
+	grid-template-columns : minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-rows : 100%;
 	width : 100%;
 	height : 100%;
 }
 
 #이름_상자
 {
-	position : fixed;
-	top : 0;
-	left : 0;
-	width : 50%;
-	height : 100%;
+	grid-column : 1;
+	grid-row : 1;
 	background : var(--강조2);
-	/* cursor : default; */
 	z-index : 50;
 	display: flex;
 	flex-direction: column;
@@ -106,14 +103,8 @@ body
 
 #안내_상자
 {
-	position : fixed;
-	top : 0;
-	right : 0;
-	width : 50%;
-	height : 100%;
-	height : 100%;
-	/* background : var(--오른쪽바탕색); */
-	cursor : default;
+	grid-column : 2;
+	grid-row : 1;
 	z-index : 50;
 	display: flex;
 	flex-direction: column;
@@ -125,9 +116,10 @@ body
 
 #왼쪽
 {
+	grid-column : 1;
+	grid-row : 1;
 	display : grid;
 	grid-template-rows : 2fr 2fr 1fr;
-	flex : 0 0 50%;
 	min-width : 0;
 	background : var(--왼쪽바탕색);
 	height : 100%;
@@ -200,7 +192,6 @@ body
 	display : flex;
 	flex-direction : column;
 	align-items : center;
-
 	width : 100%;
 	height : 100%;
 	min-width : 0;
@@ -304,9 +295,10 @@ body
 
 #오른쪽
 {
+	grid-column : 2;
+	grid-row : 1;
 	position : relative;
 	display : flex;
-	flex : 1;
 	flex-direction : column;
 	align-items : center;
 	justify-content : center;
