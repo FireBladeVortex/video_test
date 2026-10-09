@@ -826,7 +826,7 @@ function 만들기_목록()
 		구역.dataset.종류 = 분류.종류
 		왼쪽.appendChild(구역)
 
-		const h1 = document.createElement("h1")
+		const h1 = document.createElement("header")
 		구역.appendChild(h1)
 
 			const 구역_재생목록 = document.createElement("div")
@@ -1170,14 +1170,14 @@ function 가나다순_정렬(목록)
 
 function 만들기_이름표들(이름_상자)
 {
-	const 이름표_목록 = document.createElement("div")
+	const 이름표_목록 = document.createElement("section")
 	이름표_목록.className = "이름표_목록"
 	이름_상자.appendChild(이름표_목록)
 
 	const 이름 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름)
 	{
-		const 이름표 = document.createElement("div")
+		const 이름표 = document.createElement("menu")
 		이름표.className = "이름표"
 
 		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
@@ -1196,10 +1196,10 @@ function 만들기_이름표들(이름_상자)
 
 function 만들기_가나다(이름_상자)
 {
-	const h1 = document.createElement("h1")
+	const h1 = document.createElement("section")
 	이름_상자.appendChild(h1)
 
-	const 가나다 = document.createElement("div")
+	const 가나다 = document.createElement("menu")
 	가나다.className = "가나다"
 	h1.appendChild(가나다)
 
@@ -1211,12 +1211,12 @@ function 만들기_가나다(이름_상자)
 
 	for (const 순서대로 of 가나다순)
 	{
-		const 자음_상자 = document.createElement("span")
+		const 자음_상자 = document.createElement("button")
 		자음_상자.className = "자음_상자"
 		자음_상자.textContent = 순서대로
 		가나다.appendChild(자음_상자)
 
-		const 자음_번호 = document.createElement("span")
+		const 자음_번호 = document.createElement("button")
 		자음_번호.className = "자음_번호"
 		가나다.appendChild(자음_번호)
 	}
