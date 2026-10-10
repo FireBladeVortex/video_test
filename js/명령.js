@@ -667,7 +667,7 @@ function 이미지_클릭_강조(이거)
 
 
 // 이거_몇칸임 값에 맞춰 썸네일 버튼을 (재)생성하는 함수
-function 페이지_채우기(이거)
+function 채우기_페이지(이거)
 {
 	const 페이지 = document.querySelector(".페이지." + 이거)
 	if (!페이지)
@@ -741,7 +741,7 @@ function 미리보기_교체(next_data)
 		페이지.innerHTML = ""
 	}
 
-	페이지_채우기("동영상")
+	채우기_페이지("동영상")
 
 	페이지_동영상 = 1
 	버튼_설정("동영상")
@@ -974,7 +974,7 @@ function 만들기_목록()
 		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
 
-		페이지_채우기(분류.종류)
+		채우기_페이지(분류.종류)
 	}
 
 }
@@ -1185,16 +1185,9 @@ function 가나다순_정렬(목록)
 
 
 
-function 만들기_이름표들(왼쪽_이름)
+function 채우기_이름표들(왼쪽_이름)
 {
-	const 이름표_목록 = document.createElement("section")
-	이름표_목록.className = "이름표_목록"
-	왼쪽_이름.appendChild(이름표_목록)
-
-
-	const 가나다 = document.getElementById("가나다")
-
-	
+	const 이름표들 = document.getElementById("이름표들")
 
 	const 이름 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름)
@@ -1203,7 +1196,7 @@ function 만들기_이름표들(왼쪽_이름)
 		이름표.className = "이름표"
 
 		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
-		이름표_목록.appendChild(이름표)
+		이름표들.appendChild(이름표)
 
 		이름표.addEventListener("click", () =>
 		{
@@ -1216,15 +1209,8 @@ function 만들기_이름표들(왼쪽_이름)
 
 
 
-function 만들기_가나다(왼쪽_이름)
+function 채우기_가나다(왼쪽_이름)
 {
-	// const h1 = document.createElement("header")
-	// 왼쪽_이름.appendChild(h1)
-
-	// const 가나다 = document.createElement("menu")
-	// 가나다.className = "가나다"
-	// h1.appendChild(가나다)
-
 	const 가나다 = document.getElementById("가나다")
 
 	const 가나다순 =
@@ -1251,8 +1237,8 @@ function render_switch()
 {
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 
-	만들기_가나다(왼쪽_이름)
-	만들기_이름표들(왼쪽_이름)
+	채우기_가나다(왼쪽_이름)
+	채우기_이름표들(왼쪽_이름)
 }
 
 render_switch()

@@ -72,7 +72,8 @@ body
 }
 
 
-#가나다
+#가나다,
+#소속
 {
 	display : grid;
 	grid-template-columns : repeat(7, 3fr 1fr);
@@ -90,7 +91,7 @@ body
 	justify-content : center;
 }
 
-.이름표_목록
+#이름표들
 {
 	display : grid;
 	grid-template-columns : repeat(5, 1fr);
