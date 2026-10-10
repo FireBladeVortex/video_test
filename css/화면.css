@@ -48,7 +48,7 @@ body
 	height : 100%;
 }
 
-#이름_상자
+#왼쪽_이름
 {
 	grid-column : 1;
 	grid-row : 1;
@@ -60,7 +60,19 @@ body
 	justify-content: flex-start;
 }
 
-.가나다
+.머리말
+{
+	width : 95%;
+	font-size : 14px;
+	color : var(--강조1);
+	border-bottom : 3px solid var(--강조2);
+	padding-bottom : 3px;
+	display : flex;
+	align-items : center;
+}
+
+
+#가나다
 {
 	display : grid;
 	grid-template-columns : repeat(7, 3fr 1fr);
@@ -101,7 +113,7 @@ body
 
 
 
-#안내_상자
+#오른쪽_안내
 {
 	grid-column : 2;
 	grid-row : 1;
@@ -126,8 +138,8 @@ body
 }
 
 #왼쪽 h1,
-#이름_상자 h1,
-#안내_상자 h1
+#왼쪽_이름 h1,
+#오른쪽_안내 h1
 {
 	width : 95%;
 	font-size : 14px;
@@ -139,8 +151,8 @@ body
 }
 
 
-#이름_상자 h1,
-#안내_상자 h1
+#왼쪽_이름 h1,
+#오른쪽_안내 h1
 {
 	border-bottom : 3px solid var(--강조1);
 }

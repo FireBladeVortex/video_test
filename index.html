@@ -1,40 +1,45 @@
 <!-- http://developer.mozilla.org/ -->
 <!DOCTYPE html>
-<html lang="ko">
+<html lang = "ko">
 <head>
-	<meta charset="UTF-8">
+	<meta charset = "UTF-8">
 	<title>유튜브 구간 반복 재생</title>
-	<link rel="stylesheet" href="css/화면.css">
+	<link rel = "stylesheet" href = "css/화면.css">
 </head>
 
 <body>
-	<main id="화면">
+	<main id = "화면">
 
-		<section id="이름_상자"></section>
-		<section id="안내_상자"></section>
-
-		<section id="왼쪽">
+		<section id = "왼쪽_이름">
+			<header class = "머리말"></header>
+			<section id = "이름표_목록"></section>
 		</section>
 
-		<section id="오른쪽">
-			<div id="player">
-				<div id="클릭_방지"></div>
-				<div id="YTP"></div>
+		<section id = "오른쪽_안내">
+		</section>
+
+		<section id = "왼쪽">
+		</section>
+
+		<section id = "오른쪽">
+			<div id = "player">
+				<div id = "클릭_방지"></div>
+				<div id = "YTP"></div>
 			</div>
-			<div id="재생_시간_표시줄">
-				<div id="재생_시간_지금"></div>
+			<div id = "재생_시간_표시줄">
+				<div id = "재생_시간_지금"></div>
 			</div>
-			<div id="플레이어_메세지">재생 목록에서 선택하세요</div>
-			<div id="볼륨">
-				<input id="볼륨_조절" type="range" min="0" max="100" value="25" step="1">
+			<div id = "플레이어_메세지">재생 목록에서 선택하세요</div>
+			<div id = "볼륨">
+				<input id = "볼륨_조절" type = "range" min = "0" max = "100" value = "25" step = "1">
 			</div>
 		</section>
 
 	</main>
 </body>
 
-<script src="js/준비.js"></script>
-<script src="js/생성.js"></script>
-<script src="js/명령.js"></script>
+<script src = "js/준비.js"></script>
+<script src = "js/생성.js"></script>
+<script src = "js/명령.js"></script>
 
 </html>

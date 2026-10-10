@@ -763,7 +763,7 @@ function 크기_조절(왼쪽, 그거)
 		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
 		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
 	}
-	
+
 	왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
 
 	구역_종류 = 조절_딸깍
@@ -1144,8 +1144,8 @@ function 불러오기_재생목록(누구)
 
 		await 불러오기_소개(임시_목록.소개)
 
-		document.getElementById("이름_상자").remove()
-		document.getElementById("안내_상자").remove()
+		document.getElementById("왼쪽_이름").remove()
+		document.getElementById("오른쪽_안내").remove()
 	})
 
 	document.head.appendChild(script)
@@ -1185,11 +1185,16 @@ function 가나다순_정렬(목록)
 
 
 
-function 만들기_이름표들(이름_상자)
+function 만들기_이름표들(왼쪽_이름)
 {
 	const 이름표_목록 = document.createElement("section")
 	이름표_목록.className = "이름표_목록"
-	이름_상자.appendChild(이름표_목록)
+	왼쪽_이름.appendChild(이름표_목록)
+
+
+	const 가나다 = document.getElementById("가나다")
+
+	
 
 	const 이름 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름)
@@ -1202,8 +1207,8 @@ function 만들기_이름표들(이름_상자)
 
 		이름표.addEventListener("click", () =>
 		{
-			이름_상자.innerHTML = ""
-			이름_상자.textContent = "불러오는 중"
+			왼쪽_이름.innerHTML = ""
+			왼쪽_이름.textContent = "불러오는 중"
 			불러오기_재생목록(누구)
 		})
 	}
@@ -1211,14 +1216,16 @@ function 만들기_이름표들(이름_상자)
 
 
 
-function 만들기_가나다(이름_상자)
+function 만들기_가나다(왼쪽_이름)
 {
-	const h1 = document.createElement("section")
-	이름_상자.appendChild(h1)
+	// const h1 = document.createElement("header")
+	// 왼쪽_이름.appendChild(h1)
 
-	const 가나다 = document.createElement("menu")
-	가나다.className = "가나다"
-	h1.appendChild(가나다)
+	// const 가나다 = document.createElement("menu")
+	// 가나다.className = "가나다"
+	// h1.appendChild(가나다)
+
+	const 가나다 = document.getElementById("가나다")
 
 	const 가나다순 =
 	[
@@ -1242,10 +1249,10 @@ function 만들기_가나다(이름_상자)
 
 function render_switch()
 {
-	const 이름_상자 = document.getElementById("이름_상자")
+	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 
-	만들기_가나다(이름_상자)
-	만들기_이름표들(이름_상자)
+	만들기_가나다(왼쪽_이름)
+	만들기_이름표들(왼쪽_이름)
 }
 
 render_switch()
