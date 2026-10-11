@@ -418,7 +418,7 @@ function 페이지_초기화(이거)
 	else
 		페이지_동영상 = 1
 
-	버튼_설정(이거)
+	채우기_페이지_버튼(이거)
 }
 
 
@@ -491,7 +491,7 @@ function 페이지_최대(이거)
 }
 
 // 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
-function 버튼_설정(이거)
+function 채우기_페이지_버튼(이거)
 {
 	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + 이거 + "]")
 	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + 이거 + "]")
@@ -744,7 +744,7 @@ function 미리보기_교체(next_data)
 	채우기_페이지("동영상")
 
 	페이지_동영상 = 1
-	버튼_설정("동영상")
+	채우기_페이지_버튼("동영상")
 	페이지_재구성("동영상")
 }
 
@@ -768,7 +768,7 @@ function 크기_조절(왼쪽, 그거)
 
 	구역_종류 = 조절_딸깍
 
-	const 이거 = document.querySelectorAll(".h1_크기 .문자열_클릭")
+	const 이거 = document.querySelectorAll(".머리말_크기 .문자열_클릭")
 	for (const 크기 of 이거)
 	{
 		크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
@@ -785,56 +785,55 @@ function 유효_재확인(종류)
 
 function 만들기_페이지_버튼()
 {
+	const 버튼_이전 = document.createElement("div")
+	버튼_이전.className = "버튼_이전"
+	버튼_이전.dataset.종류 = 분류.종류
+	머리말_페이지.appendChild(버튼_이전)
 
-		const 버튼_이전 = document.createElement("div")
-		버튼_이전.className = "버튼_이전"
-		버튼_이전.dataset.종류 = 분류.종류
-		h1_페이지.appendChild(버튼_이전)
+		const 버튼_이전_문자열 = document.createElement("button")
+		버튼_이전_문자열.className = "문자열_클릭"
+		버튼_이전.appendChild(버튼_이전_문자열)
+		버튼_이전_문자열.addEventListener("click", () =>
+		{
+			if (분류.종류 === "쇼츠")
+				페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
+			else
+				페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
+			채우기_페이지_버튼(분류.종류)
+			페이지_재구성(분류.종류)
+		})
 
-			const 버튼_이전_문자열 = document.createElement("span")
-			버튼_이전_문자열.className = "문자열_클릭"
-			버튼_이전.appendChild(버튼_이전_문자열)
-			버튼_이전_문자열.addEventListener("click", () =>
+	const 버튼_지금 = document.createElement("div")
+	버튼_지금.className = "버튼_지금"
+	버튼_지금.dataset.종류 = 분류.종류
+	머리말_페이지.appendChild(버튼_지금)
+
+	const 버튼_다음 = document.createElement("div")
+	버튼_다음.className = "버튼_다음"
+	버튼_다음.dataset.종류 = 분류.종류
+	머리말_페이지.appendChild(버튼_다음)
+
+		const 버튼_다음_문자열 = document.createElement("button")
+		버튼_다음_문자열.className = "문자열_클릭"
+		버튼_다음.appendChild(버튼_다음_문자열)
+		버튼_다음_문자열.addEventListener("click", () =>
+		{
+			const 페이지_마지막 = 페이지_최대(분류.종류)
+			const multiple = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+			if (multiple >= 페이지_마지막)
+				return
+
+			if (분류.종류 === "쇼츠")
 			{
-				if (분류.종류 === "쇼츠")
-					페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
-				else
-					페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
-				버튼_설정(분류.종류)
-				페이지_재구성(분류.종류)
-			})
-
-		const 버튼_지금 = document.createElement("div")
-		버튼_지금.className = "버튼_지금"
-		버튼_지금.dataset.종류 = 분류.종류
-		h1_페이지.appendChild(버튼_지금)
-
-		const 버튼_다음 = document.createElement("div")
-		버튼_다음.className = "버튼_다음"
-		버튼_다음.dataset.종류 = 분류.종류
-		h1_페이지.appendChild(버튼_다음)
-
-			const 버튼_다음_문자열 = document.createElement("span")
-			버튼_다음_문자열.className = "문자열_클릭"
-			버튼_다음.appendChild(버튼_다음_문자열)
-			버튼_다음_문자열.addEventListener("click", () =>
+				페이지_쇼츠 = 페이지_쇼츠 + 1
+			}
+			else
 			{
-				const 페이지_마지막 = 페이지_최대(분류.종류)
-				const multiple = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-				if (multiple >= 페이지_마지막)
-					return
-
-				if (분류.종류 === "쇼츠")
-				{
-					페이지_쇼츠 = 페이지_쇼츠 + 1
-				}
-				else
-				{
-					페이지_동영상 = 페이지_동영상 + 1
-				}
-				버튼_설정(분류.종류)
-				페이지_재구성(분류.종류)
-			})
+				페이지_동영상 = 페이지_동영상 + 1
+			}
+			채우기_페이지_버튼(분류.종류)
+			페이지_재구성(분류.종류)
+		})
 }
 
 
@@ -844,34 +843,34 @@ function 만들기_종류_구분(원곡, 커버)
 {
 	if (유효_재확인(원곡) && 유효_재확인(커버))
 	{
-		const h1_모두 = document.createElement("div")
-		h1_모두.className = "h1_모두"
-		h1_종류.appendChild(h1_모두)
+		const 종류_모두 = document.createElement("div")
+		종류_모두.className = "종류_모두"
+		머리말_종류.appendChild(종류_모두)
 
-			const 문자열_모두 = document.createElement("span")
+			const 문자열_모두 = document.createElement("button")
 			문자열_모두.className = "문자열_클릭"
 			문자열_모두.textContent = "모두"
-			h1_모두.appendChild(문자열_모두)
+			종류_모두.appendChild(문자열_모두)
 			문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
 
-		const h1_원곡 = document.createElement("div")
-		h1_원곡.className = "h1_원곡"
-		h1_종류.appendChild(h1_원곡)
+		const 종류_원곡 = document.createElement("div")
+		종류_원곡.className = "종류_원곡"
+		머리말_종류.appendChild(종류_원곡)
 
-			const 문자열_원곡 = document.createElement("span")
+			const 문자열_원곡 = document.createElement("button")
 			문자열_원곡.className = "문자열_클릭"
 			문자열_원곡.textContent = "원곡"
-			h1_원곡.appendChild(문자열_원곡)
+			종류_원곡.appendChild(문자열_원곡)
 			문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
 
-		const h1_커버 = document.createElement("div")
-		h1_커버.className = "h1_커버"
-		h1_종류.appendChild(h1_커버)
+		const 종류_커버 = document.createElement("div")
+		종류_커버.className = "종류_커버"
+		머리말_종류.appendChild(종류_커버)
 
-			const 문자열_커버 = document.createElement("span")
+			const 문자열_커버 = document.createElement("button")
 			문자열_커버.className = "문자열_클릭"
 			문자열_커버.textContent = "커버"
-			h1_커버.appendChild(문자열_커버)
+			종류_커버.appendChild(문자열_커버)
 			문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
 	}
 }
@@ -879,43 +878,42 @@ function 만들기_종류_구분(원곡, 커버)
 
 function 만들기_기초(왼쪽)
 {
-	const 구역 = document.createElement("div")
+	const 구역 = document.createElement("section")
 	구역.className = "구역"
 	구역.dataset.종류 = 분류.종류
 	왼쪽.appendChild(구역)
 
-	const h1 = document.createElement("header")
-	구역.appendChild(h1)
+	const 머리말 = document.createElement("header")
+	구역.appendChild(머리말)
 
-		const 구역_재생목록 = document.createElement("div")
-		구역_재생목록.className = "구역_재생목록"
-		구역_재생목록.textContent = 분류.종류 + " 재생 목록"
-		h1.appendChild(구역_재생목록)
+		const 머리말_재생목록 = document.createElement("span")
+		머리말_재생목록.className = "머리말_재생목록"
+		머리말_재생목록.textContent = 분류.종류 + " 재생 목록"
+		머리말.appendChild(머리말_재생목록)
 
-		const h1_종류 = document.createElement("div")
-		h1_종류.className = "h1_종류"
-		h1.appendChild(h1_종류)
+		const 머리말_종류 = document.createElement("menu")
+		머리말_종류.className = "머리말_종류"
+		머리말.appendChild(머리말_종류)
 
-		const h1_페이지 = document.createElement("div")
-		h1_페이지.className = "h1_페이지"
-		h1.appendChild(h1_페이지)
+		const 머리말_페이지 = document.createElement("menu")
+		머리말_페이지.className = "머리말_페이지"
+		머리말.appendChild(머리말_페이지)
 
-		const h1_크기 = document.createElement("div")
-		h1_크기.className = "h1_크기"
-		h1.appendChild(h1_크기)
+		const 머리말_크기 = document.createElement("menu")
+		머리말_크기.className = "머리말_크기"
+		머리말.appendChild(머리말_크기)
 
-			const 크기_조절_문자열 = document.createElement("span")
+			const 크기_조절_문자열 = document.createElement("button")
 			크기_조절_문자열.className = "문자열_클릭"
 			크기_조절_문자열.textContent = "크게"
 			크기_조절_문자열.dataset.종류 = 분류.종류
-			h1_크기.appendChild(크기_조절_문자열)
+			머리말_크기.appendChild(크기_조절_문자열)
 			크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 }
 
 
 function 만들기_목록()
 {
-
 	const 왼쪽 = document.getElementById("왼쪽")
 
 	const 원곡 = 임시_목록.원곡 ?? []
@@ -962,21 +960,20 @@ function 만들기_목록()
 		}
 
 		만들기_페이지_버튼()
-		버튼_설정(분류.종류)
+		채우기_페이지_버튼(분류.종류)
 
 		// 미리보기 들어갈 공간
-		const 목록 = document.createElement("div")
+		const 목록 = document.createElement("section")
 		목록.className = "목록 " + 분류.종류
 		구역.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
-		const 페이지 = document.createElement("div")
+		const 페이지 = document.createElement("section")
 		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
 
 		채우기_페이지(분류.종류)
 	}
-
 }
 
 
