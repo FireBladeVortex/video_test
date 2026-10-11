@@ -1097,7 +1097,6 @@ async function id_가공(재생목록)
 
 	for (const key of keys)
 	{
-		// 불필요한 호출 방지 및 대비
 		if (!Array.isArray(재생목록[key]))
 			continue
 
@@ -1127,8 +1126,6 @@ function 불러오기_재생목록(누구)
 {
 	const script = document.createElement("script")
 	script.src = "명단/" + 누구.이름 + ".js"
-
-
 
 	const api_준비 = 불러오기_api()
 	// 준비 되었을때 실행
@@ -1164,16 +1161,16 @@ function 가나다순_정렬(목록)
 	})
 
 	const map = new Map()
-	for (const 이거 of 정렬)
+	for (const 그거 of 정렬)
 	{
-		const 그거 = 이거.이름.trim()
-		if (map.has(그거))
+		const 이거 = 그거.이름.trim()
+		if (map.has(이거))
 		{
-			map.get(그거).중복 = true
+			map.get(이거).중복 = true
 		}
 		else
 		{
-			map.set(그거, { ...이거 })
+			map.set(이거, { ...그거 })
 		}
 	}
 
@@ -1189,11 +1186,11 @@ function 채우기_이름표들(왼쪽_이름)
 {
 	const 이름표들 = document.getElementById("이름표들")
 
-	const 이름 = 가나다순_정렬(이름_목록)
-	for (const 누구 of 이름)
+	const 이름들 = 가나다순_정렬(이름_목록)
+	for (const 누구 of 이름들)
 	{
-		const 이름표 = document.createElement("menu")
-		이름표.className = "이름표"
+		const 이름표 = document.createElement("button")
+		이름표.className = "이름표_" + 누구.이름
 
 		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
 		이름표들.appendChild(이름표)
@@ -1209,7 +1206,7 @@ function 채우기_이름표들(왼쪽_이름)
 
 
 
-function 채우기_가나다(왼쪽_이름)
+function 채우기_가나다()
 {
 	const 가나다 = document.getElementById("가나다")
 
@@ -1235,10 +1232,12 @@ function 채우기_가나다(왼쪽_이름)
 
 function render_switch()
 {
+	채우기_가나다()
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
-
-	채우기_가나다(왼쪽_이름)
 	채우기_이름표들(왼쪽_이름)
+
+	// 채우기_안내목록() 함수 제작 필요
+	// 채우기_안내문()
 }
 
 render_switch()
