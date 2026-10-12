@@ -17,7 +17,8 @@ http://developer.mozilla.org/
 	overflow : hidden;
 	cursor : default;
 	background : transparent;
-	color : var(--강조1)
+	color : var(--강조1);
+	font-size : 14px;
 }
 
 /* 변수 선언 */
@@ -389,16 +390,6 @@ body
 
 /* 오른쪽 본문 화면 */
 
-
-#오른쪽 h1
-{
-	position : absolute;
-	top : 0;
-	left : 3%;
-	display : flex;
-	gap : 30px;
-	font-size : 60px;
-}
 
 
 #오른쪽
