@@ -1222,12 +1222,12 @@ function 채우기_가나다()
 	for (const 순서대로 of 가나다순)
 	{
 		const 자음_상자 = document.createElement("button")
-		자음_상자.className = "자음_상자"
+		자음_상자.className = 순서대로
 		자음_상자.textContent = 순서대로
 		가나다.appendChild(자음_상자)
 
 		const 자음_번호 = document.createElement("button")
-		자음_번호.className = "자음_번호"
+		자음_번호.className = 순서대로 + "_자음_번호"
 		가나다.appendChild(자음_번호)
 	}
 }
@@ -1236,7 +1236,7 @@ function 채우기_가나다()
 function render_switch()
 {
 	채우기_가나다()
-	
+
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 	채우기_이름표들(왼쪽_이름)
 
