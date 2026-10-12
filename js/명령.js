@@ -968,7 +968,7 @@ function 만들기_목록()
 		구역.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
-		const 페이지 = document.createElement("section")
+		const 페이지 = document.createElement("div")
 		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
 
@@ -1119,10 +1119,10 @@ async function id_가공(재생목록)
 }
 
 
-function 불러오기_재생목록(누구)
+function 불러오기_재생목록(이름)
 {
 	const script = document.createElement("script")
-	script.src = "명단/" + 누구.이름 + ".js"
+	script.src = "명단/" + 이름 + ".js"
 
 	const api_준비 = 불러오기_api()
 	// 준비 되었을때 실행
@@ -1181,13 +1181,19 @@ function 가나다순_정렬(목록)
 
 function 채우기_이름표들(왼쪽_이름)
 {
-	const 이름표들 = document.getElementById("이름표들")
+	const 본문 = document.createElement("section")
+	본문.className = "본문"
+	왼쪽_이름.appendChild(본문)
+
+	const 이름표들 = document.createElement("menu")
+	이름표들.className = "이름표들"
+	본문.appendChild(이름표들)
 
 	const 이름들 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름들)
 	{
 		const 이름표 = document.createElement("button")
-		이름표.className = "이름표_" + 누구.이름
+		이름표.className = 누구.이름
 
 		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
 		이름표들.appendChild(이름표)
@@ -1196,7 +1202,7 @@ function 채우기_이름표들(왼쪽_이름)
 		{
 			왼쪽_이름.innerHTML = ""
 			왼쪽_이름.textContent = "불러오는 중"
-			불러오기_재생목록(누구)
+			불러오기_재생목록(누구.이름)
 		})
 	}
 }
