@@ -18,7 +18,7 @@ http://developer.mozilla.org/
 	cursor : default;
 	background : transparent;
 	color : var(--강조1);
-	font-size : 14px;
+	font-size : 22px;
 }
 
 /* 변수 선언 */
@@ -80,7 +80,6 @@ body
 .머리말
 {
 	width : 95%;
-	font-size : 14px;
 	color : var(--강조1);
 	border-bottom : 3px solid var(--강조2);
 	padding-bottom : 3px;
@@ -146,7 +145,6 @@ body
 .이름표
 {
 	color: var(--강조3);
-	font-size: 20px;
 	cursor: pointer;
 }
 
@@ -452,7 +450,6 @@ body
 #플레이어_메세지
 {
 	width : clamp(480px, 100%, 640px);
-	font-size : 14px;
 	color : var(--강조1);
 	text-align : center;
 }
