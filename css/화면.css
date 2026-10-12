@@ -56,7 +56,7 @@ body
 #화면 menu
 {
 	width : 100%;
-	height : 100%;
+	height : auto
 }
 
 #화면 img
@@ -70,7 +70,6 @@ body
 
 #화면 button
 {
-	height : auto;
 	cursor : pointer;
 }
 
