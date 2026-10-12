@@ -16,7 +16,8 @@ http://developer.mozilla.org/
 	border : 0;
 	overflow : hidden;
 	cursor : default;
-	background: transparent;
+	background : transparent;
+	color : var(--강조1)
 }
 
 /* 변수 선언 */
