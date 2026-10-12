@@ -1236,6 +1236,7 @@ function 채우기_가나다()
 function render_switch()
 {
 	채우기_가나다()
+	
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 	채우기_이름표들(왼쪽_이름)
 
