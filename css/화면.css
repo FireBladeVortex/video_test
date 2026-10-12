@@ -149,7 +149,6 @@ body
 .이름표
 {
 	color: var(--강조3);
-	cursor: pointer;
 }
 
 .이름표:hover

@@ -1193,7 +1193,7 @@ function 채우기_이름표들(왼쪽_이름)
 	for (const 누구 of 이름들)
 	{
 		const 이름표 = document.createElement("button")
-		이름표.className = 누구.이름
+		이름표.className = "이름표"
 
 		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
 		이름표들.appendChild(이름표)
