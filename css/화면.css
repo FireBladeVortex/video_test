@@ -15,7 +15,6 @@ http://developer.mozilla.org/
 	padding : 0;
 	border : 0;
 	overflow : hidden;
-	cursor : default;
 	background : transparent;
 	color : var(--강조1);
 	font-size : 22px;
@@ -42,6 +41,7 @@ body
 	height : 100vh;
 	height : 100dvh;
 	background : var(--오른쪽바탕색);
+	cursor : default;
 }
 
 #화면
@@ -68,6 +68,10 @@ body
 	object-fit : cover;
 }
 
+#화면 button
+{
+	cursor : pointer;
+}
 /* 기본 설정들 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 
@@ -133,7 +137,7 @@ body
 	justify-content : center;
 }
 
-#이름표들
+.이름표들
 {
 	display : grid;
 	grid-template-columns : repeat(5, 1fr);
