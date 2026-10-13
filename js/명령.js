@@ -612,13 +612,11 @@ let 페이지_쇼츠 = 1
 // youtube 정보 가져오기 cue 상태 되기전
 function ready_data(id, start = 0, end = 0)
 {
-	const get_id = id
-
-	if (arguments.length === 1)
-		return get_id
-
 	// 클릭 시 id 저장
 	set_id = id
+
+	if (arguments.length === 1)
+		return set_id
 
 	const 시작 = 시간_표기법(start)
 	시작_시간 = 시작[0]
@@ -632,7 +630,7 @@ function ready_data(id, start = 0, end = 0)
 	// 영상 불러오기
 	player.cueVideoById(
 	{
-		videoId : get_id,
+		videoId : set_id,
 		startSeconds : 시작_시간,
 		...(종료_시간 > 0 && {endSeconds : 종료_시간})
 	})
