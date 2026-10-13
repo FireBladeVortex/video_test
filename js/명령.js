@@ -1146,6 +1146,19 @@ function 불러오기_재생목록(이름)
 }
 
 
+function 불러오는중(본문)
+{
+	const 불러오는_중 = document.createElement("span")
+	불러오는_중.id = "불러오는중"
+	불러오는_중.textContent = "불러오는 중"
+	불러오는_중.style.flex = "1"
+	불러오는_중.style.display = "flex"
+	불러오는_중.style.alignItems = "center"
+	불러오는_중.style.justifyContent = "center"
+	불러오는_중.style.fontSize = "60px"
+	본문.appendChild(불러오는_중)
+}
+
 
 
 function 가나다순_정렬(목록)
@@ -1194,14 +1207,17 @@ function 채우기_이름표들(왼쪽_이름)
 	{
 		const 이름표 = document.createElement("button")
 		이름표.className = "이름표"
-
-		이름표.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
 		이름표들.appendChild(이름표)
 
-		이름표.addEventListener("click", () =>
+		const 이름 = document.createElement("span")
+		이름.className = 누구.이름
+		이름.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
+		이름표.appendChild(이름)
+
+		이름.addEventListener("click", () =>
 		{
-			왼쪽_이름.innerHTML = ""
-			왼쪽_이름.textContent = "불러오는 중"
+			본문.innerHTML = ""
+			불러오는중(본문)
 			불러오기_재생목록(누구.이름)
 		})
 	}
