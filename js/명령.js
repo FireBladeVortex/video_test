@@ -1253,7 +1253,7 @@ function 채우기_가나다()
 			const 몇개 = document.createElement("span")
 			몇개.className = 순서대로
 			몇개.textContent = 순서대로
-			자음_번호.appendChild(자음)
+			자음_번호.appendChild(몇개)
 
 	}
 }
