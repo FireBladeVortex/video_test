@@ -68,7 +68,7 @@ body
 	object-fit : cover;
 }
 
-#화면 button span
+#화면 button > span
 {
 	cursor : pointer;
 }
@@ -129,14 +129,15 @@ body
 	height : auto;
 	text-align : center;
 }
-/*
+
+
 .자음_상자,
 .자음_번호
 {
 	display : flex;
 	align-items : center;
 	justify-content : center;
-} */
+}
 
 .이름표들
 {

@@ -785,12 +785,12 @@ function 유효_재확인(종류)
 
 function 만들기_페이지_버튼()
 {
-	const 버튼_이전 = document.createElement("div")
+	const 버튼_이전 = document.createElement("button")
 	버튼_이전.className = "버튼_이전"
 	버튼_이전.dataset.종류 = 분류.종류
 	머리말_페이지.appendChild(버튼_이전)
 
-		const 버튼_이전_문자열 = document.createElement("button")
+		const 버튼_이전_문자열 = document.createElement("span")
 		버튼_이전_문자열.className = "문자열_클릭"
 		버튼_이전.appendChild(버튼_이전_문자열)
 		버튼_이전_문자열.addEventListener("click", () =>
@@ -803,17 +803,17 @@ function 만들기_페이지_버튼()
 			페이지_재구성(분류.종류)
 		})
 
-	const 버튼_지금 = document.createElement("div")
+	const 버튼_지금 = document.createElement("span")
 	버튼_지금.className = "버튼_지금"
 	버튼_지금.dataset.종류 = 분류.종류
 	머리말_페이지.appendChild(버튼_지금)
 
-	const 버튼_다음 = document.createElement("div")
+	const 버튼_다음 = document.createElement("button")
 	버튼_다음.className = "버튼_다음"
 	버튼_다음.dataset.종류 = 분류.종류
 	머리말_페이지.appendChild(버튼_다음)
 
-		const 버튼_다음_문자열 = document.createElement("button")
+		const 버튼_다음_문자열 = document.createElement("span")
 		버튼_다음_문자열.className = "문자열_클릭"
 		버튼_다음.appendChild(버튼_다음_문자열)
 		버튼_다음_문자열.addEventListener("click", () =>
@@ -843,31 +843,31 @@ function 만들기_종류_구분(원곡, 커버)
 {
 	if (유효_재확인(원곡) && 유효_재확인(커버))
 	{
-		const 종류_모두 = document.createElement("div")
+		const 종류_모두 = document.createElement("button")
 		종류_모두.className = "종류_모두"
 		머리말_종류.appendChild(종류_모두)
 
-			const 문자열_모두 = document.createElement("button")
+			const 문자열_모두 = document.createElement("span")
 			문자열_모두.className = "문자열_클릭"
 			문자열_모두.textContent = "모두"
 			종류_모두.appendChild(문자열_모두)
 			문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
 
-		const 종류_원곡 = document.createElement("div")
+		const 종류_원곡 = document.createElement("button")
 		종류_원곡.className = "종류_원곡"
 		머리말_종류.appendChild(종류_원곡)
 
-			const 문자열_원곡 = document.createElement("button")
+			const 문자열_원곡 = document.createElement("span")
 			문자열_원곡.className = "문자열_클릭"
 			문자열_원곡.textContent = "원곡"
 			종류_원곡.appendChild(문자열_원곡)
 			문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
 
-		const 종류_커버 = document.createElement("div")
+		const 종류_커버 = document.createElement("button")
 		종류_커버.className = "종류_커버"
 		머리말_종류.appendChild(종류_커버)
 
-			const 문자열_커버 = document.createElement("button")
+			const 문자열_커버 = document.createElement("span")
 			문자열_커버.className = "문자열_클릭"
 			문자열_커버.textContent = "커버"
 			종류_커버.appendChild(문자열_커버)
@@ -899,11 +899,11 @@ function 만들기_기초(왼쪽)
 		머리말_페이지.className = "머리말_페이지"
 		머리말.appendChild(머리말_페이지)
 
-		const 머리말_크기 = document.createElement("menu")
+		const 머리말_크기 = document.createElement("button")
 		머리말_크기.className = "머리말_크기"
 		머리말.appendChild(머리말_크기)
 
-			const 크기_조절_문자열 = document.createElement("button")
+			const 크기_조절_문자열 = document.createElement("span")
 			크기_조절_문자열.className = "문자열_클릭"
 			크기_조절_문자열.textContent = "크게"
 			크기_조절_문자열.dataset.종류 = 분류.종류
@@ -1238,13 +1238,23 @@ function 채우기_가나다()
 	for (const 순서대로 of 가나다순)
 	{
 		const 자음_상자 = document.createElement("button")
-		자음_상자.className = 순서대로
-		자음_상자.textContent = 순서대로
+		자음_상자.className = "자음_상자"
 		가나다.appendChild(자음_상자)
 
+			const 자음 = document.createElement("span")
+			자음.className = 순서대로
+			자음.textContent = 순서대로
+			자음_상자.appendChild(자음)
+
 		const 자음_번호 = document.createElement("button")
-		자음_번호.className = 순서대로 + "_자음_번호"
+		자음_번호.className = "자음_번호"
 		가나다.appendChild(자음_번호)
+
+			const 몇개 = document.createElement("span")
+			몇개.className = 순서대로
+			몇개.textContent = 순서대로
+			자음_번호.appendChild(자음)
+
 	}
 }
 
