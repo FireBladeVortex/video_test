@@ -141,11 +141,22 @@ body
 
 .이름표들
 {
-	display : grid ;
-	grid-template-columns : repeat(5, 1fr) ;
-	grid-auto-rows : auto ;
+	display : flex ;
+	flex-wrap : wrap ;
+	align-content : flex-start ;
 	padding-top: 10px ;
 }
+
+.이름표
+{
+	display : flex ;
+	align-items : center ;
+	justify-content : center ;
+	flex : 0 0 200px ;
+	width : 200px ;
+	height : 30px ;
+}
+
 
 .이름표 span
 {
