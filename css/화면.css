@@ -11,66 +11,66 @@ http://developer.mozilla.org/
 /* 기본 설정들 */
 *
 {
-	margin : 0;
-	padding : 0;
-	border : 0;
-	overflow : hidden;
-	background : transparent;
-	color : var(--강조1);
-	font-size : 22px;
-	cursor : default;
+	margin : 0 ;
+	padding : 0 ;
+	border : 0 ;
+	overflow : hidden ;
+	background : transparent ;
+	color : var(--강조1) ;
+	font-size : 22px ;
+	cursor : default ;
 }
 
 /* 변수 선언 */
 :root
 {
-	--오른쪽바탕색 : #021322;
-	--왼쪽바탕색 : #230213;
-	--강조1 : #FFD700;
-	--강조2 : #800020;
-	--강조3 : #ffffff;
-	--가로 : 160px;
-	--세로 : 90px;
+	--오른쪽바탕색 : #021322 ;
+	--왼쪽바탕색 : #230213 ;
+	--강조1 : #FFD700 ;
+	--강조2 : #800020 ;
+	--강조3 : #ffffff ;
+	--가로 : 160px ;
+	--세로 : 90px ;
 }
 
 body
 {
-	width : 100%;
-	width : 100vw;
-	width : 100dvw;
-	height : 100%;
-	height : 100vh;
-	height : 100dvh;
-	background : var(--오른쪽바탕색);
+	width : 100% ;
+	width : 100vw ;
+	width : 100dvw ;
+	height : 100% ;
+	height : 100vh ;
+	height : 100dvh ;
+	background : var(--오른쪽바탕색) ;
 }
 
 #화면
 {
-	display : grid;
-	grid-template-columns : minmax(0, 1fr) minmax(0, 1fr);
-	grid-template-rows : 100%;
-	width : 100%;
-	height : 100%;
+	display : grid ;
+	grid-template-columns : minmax(0, 1fr) minmax(0, 1fr) ;
+	grid-template-rows : 100% ;
+	width : 100% ;
+	height : 100% ;
 }
 
 #화면 menu
 {
-	/* width : 100%; */
+	/* width : 100% ; */
 	height : auto
 }
 
 #화면 img
 {
-	width : 100%;
-	height : 100%;
+	width : 100% ;
+	height : 100% ;
 	/* 이미지 비율 유지 + 가득 채움
 	contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
-	object-fit : cover;
+	object-fit : cover ;
 }
 
 #화면 button > span
 {
-	cursor : pointer;
+	cursor : pointer ;
 }
 
 /* 기본 설정들 */
@@ -84,18 +84,18 @@ body
 
 .머리말
 {
-	width : 95%;
+	width : 95% ;
 
-	border-bottom : 3px solid var(--강조2);
-	padding-bottom : 3px;
-	display : flex;
-	align-items : center;
+	border-bottom : 3px solid var(--강조2) ;
+	padding-bottom : 3px ;
+	display : flex ;
+	align-items : center ;
 }
 
 .본문
 {
-	width : 100%;
-	height : 100%;
+	width : 80% ;
+	height : 100% ;
 }
 
 
@@ -109,53 +109,54 @@ body
 
 #왼쪽_이름
 {
-	grid-column : 1;
-	grid-row : 1;
-	background : var(--왼쪽바탕색);
-	z-index : 50;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
+	grid-column : 1 ;
+	grid-row : 1 ;
+	background : var(--왼쪽바탕색) ;
+	z-index : 50 ;
+	display: flex ;
+	flex-direction: column ;
+	align-items: center ;
+	justify-content: flex-start ;
 }
 
 #가나다,
 #소속
 {
-	display : grid;
-	grid-template-columns : repeat(7, 2fr 1fr);
-	grid-auto-rows : auto;
-	width : 100%;
-	height : auto;
-	text-align : center;
+	display : grid ;
+	grid-template-columns : repeat(7, 2fr 1fr) ;
+	grid-auto-rows : auto ;
+	width : 100% ;
+	height : auto ;
+	text-align : center ;
 }
 
 
 .자음_상자,
 .자음_번호
 {
-	display : flex;
-	align-items : center;
-	justify-content : center;
+	display : flex ;
+	align-items : center ;
+	justify-content : center ;
 }
 
 .이름표들
 {
-	display : grid;
-	grid-template-columns : repeat(5, 1fr);
-	grid-auto-rows : auto;
-	width : 80%;
-	padding-top: 10px;
+	display : grid ;
+	grid-template-columns : repeat(5, 1fr) ;
+	grid-auto-rows : auto ;
+	width : 100% ;
+	height : 30px ;
+	padding-top: 10px ;
 }
 
 .이름표 span
 {
-	color: var(--강조3);
+	color: var(--강조3) ;
 }
 
 .이름표:hover
 {
-	color: var(--강조1);
+	color: var(--강조1) ;
 }
 
 /* 왼쪽 최초 화면 */
@@ -167,13 +168,13 @@ body
 
 #오른쪽_안내
 {
-	grid-column : 2;
-	grid-row : 1;
-	z-index : 50;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
+	grid-column : 2 ;
+	grid-row : 1 ;
+	z-index : 50 ;
+	display: flex ;
+	flex-direction: column ;
+	align-items: center ;
+	justify-content: flex-start ;
 }
 
 /* 오른쪽 최초 화면 */
@@ -186,13 +187,13 @@ body
 
 #왼쪽
 {
-	grid-column : 1;
-	grid-row : 1;
-	display : grid;
-	grid-template-rows : 2fr 2fr 1fr;
-	/* min-width : 0; */
-	background : var(--왼쪽바탕색);
-	height : 100%;
+	grid-column : 1 ;
+	grid-row : 1 ;
+	display : grid ;
+	grid-template-rows : 2fr 2fr 1fr ;
+	/* min-width : 0 ; */
+	background : var(--왼쪽바탕색) ;
+	height : 100% ;
 }
 
 
@@ -211,9 +212,9 @@ body
 .지금_숫자,
 .다음_숫자
 {
-	flex : 1;
-	display : flex;
-	justify-content : space-evenly;
+	flex : 1 ;
+	display : flex ;
+	justify-content : space-evenly ;
 }
 
 
@@ -222,33 +223,33 @@ body
 
 .구역
 {
-	display : flex;
-	flex-direction : column;
-	align-items : center;
-	width : 100%;
-	height : 100%;
-	/* min-width : 0;
-	min-height : 0; */
+	display : flex ;
+	flex-direction : column ;
+	align-items : center ;
+	width : 100% ;
+	height : 100% ;
+	/* min-width : 0 ;
+	min-height : 0 ; */
 }
 
 .구역[data-종류=동영상],
 .구역[data-종류=쇼츠]
 {
-	display : grid;
-	grid-template-rows : auto 1fr;
-	justify-items : center;
-	align-items : start;
-	/* align-content : start; */
+	display : grid ;
+	grid-template-rows : auto 1fr ;
+	justify-items : center ;
+	align-items : start ;
+	/* align-content : start ; */
 }
 
 
 .목록
 {
-	margin-top : 9px;
-	width : 100%;
-	height : 100%;
-	max-width : round(down, 95%, var(--가로));
-	max-height : round(down, 100%, var(--세로));
+	margin-top : 9px ;
+	width : 100% ;
+	height : 100% ;
+	max-width : round(down, 95%, var(--가로)) ;
+	max-height : round(down, 100%, var(--세로)) ;
 
 }
 
@@ -256,115 +257,115 @@ body
 
 .목록.쇼츠
 {
-	max-width : round(down, 90%, var(--세로));
-	max-height : round(down, 100%, var(--가로));
+	max-width : round(down, 90%, var(--세로)) ;
+	max-height : round(down, 100%, var(--가로)) ;
 }
 
 
 
 .페이지
 {
-	display : grid;
-	grid-template-columns : repeat(auto-fill, var(--가로));
+	display : grid ;
+	grid-template-columns : repeat(auto-fill, var(--가로)) ;
 }
 
 
 
 .페이지.쇼츠
 {
-	grid-template-columns : repeat(auto-fill, var(--세로));
+	grid-template-columns : repeat(auto-fill, var(--세로)) ;
 }
 
 
 
 .버튼
 {
-	display : flex;
-	align-items : center;
-	justify-content : center;
-	position : relative;
-	width : var(--가로);
-	height : var(--세로);
+	display : flex ;
+	align-items : center ;
+	justify-content : center ;
+	position : relative ;
+	width : var(--가로) ;
+	height : var(--세로) ;
 }
 
 .목록.쇼츠 .버튼
 {
-	width : var(--세로);
-	height : var(--가로);
+	width : var(--세로) ;
+	height : var(--가로) ;
 }
 
 .버튼:hover
 {
-	outline : 3px solid var(--강조1);
-	outline-offset : -3px;
+	outline : 3px solid var(--강조1) ;
+	outline-offset : -3px ;
 }
 
 .버튼.강조
 {
-	outline : 3px solid var(--강조1);
-	outline-offset : -3px;
+	outline : 3px solid var(--강조1) ;
+	outline-offset : -3px ;
 }
 
 .버튼.발기
 {
-	filter : brightness(25%);
+	filter : brightness(25%) ;
 }
 
 .버튼.발기:hover
 {
-	filter : brightness(100%);
+	filter : brightness(100%) ;
 }
 
 
 .선택지_공간
 {
-	display : flex;
-	width : 80%;
-	gap : 3px;
-	flex : 1;
+	display : flex ;
+	width : 80% ;
+	gap : 3px ;
+	flex : 1 ;
 }
 
 .선택지_공간 .선택지_노래
 {
-	flex : 5;
-	text-align : left;
+	flex : 5 ;
+	text-align : left ;
 }
 
 .선택지_공간 .선택지_재생
 {
-	display : flex;
-	/* width : 100%;
-	height : auto; */
-	flex : 1;
+	display : flex ;
+	/* width : 100% ;
+	height : auto ; */
+	flex : 1 ;
 }
 
 .재생_준비_버튼
 {
-	width : 100%;
-	height : 100%;
-	display : flex;
-	align-items : center;
-	justify-content : center;
-	/* cursor : pointer; */
+	width : 100% ;
+	height : 100% ;
+	display : flex ;
+	align-items : center ;
+	justify-content : center ;
+	/* cursor : pointer ; */
 }
 
 #화면 .재생_준비_버튼:disabled
 {
-	opacity : 0.5;
-	/* cursor : default; */
+	opacity : 0.5 ;
+	/* cursor : default ; */
 }
 
 /*
 .문자열_클릭
 {
-	cursor : pointer;
+	cursor : pointer ;
 } */
 
 /*
 .구역_재생목록,
 .버튼_지금
 {
-	cursor : default;
+	cursor : default ;
 } */
 
 /* 왼쪽 본문 화면 */
@@ -397,93 +398,93 @@ body
 
 #오른쪽
 {
-	grid-column : 2;
-	grid-row : 1;
-	position : relative;
-	display : flex;
-	flex-direction : column;
-	align-items : center;
-	justify-content : center;
-	gap : 3px;
-	/* cursor : default; */
+	grid-column : 2 ;
+	grid-row : 1 ;
+	position : relative ;
+	display : flex ;
+	flex-direction : column ;
+	align-items : center ;
+	justify-content : center ;
+	gap : 3px ;
+	/* cursor : default ; */
 }
 
 #player
 {
-	position : relative;
-	width : clamp(480px, 100%, 640px);
-	height : clamp(270px, 100%, 360px);
-	margin-bottom : 10px;
-	z-index : 3;
+	position : relative ;
+	width : clamp(480px, 100%, 640px) ;
+	height : clamp(270px, 100%, 360px) ;
+	margin-bottom : 10px ;
+	z-index : 3 ;
 }
 
 #player iframe, #YTP
 {
-	width : 100%;
-	height : 100%;
-	display : block;
+	width : 100% ;
+	height : 100% ;
+	display : block ;
 }
 
 #클릭_방지
 {
-	position : absolute;
-	inset : 0;
-	z-index : 10;
-	/* cursor : default; */
-	pointer-events : none;
+	position : absolute ;
+	inset : 0 ;
+	z-index : 10 ;
+	/* cursor : default ; */
+	pointer-events : none ;
 }
 
 #재생_시간_표시줄
 {
-	width : clamp(480px, 100%, 640px);
-	height : 9px;
-	background : #000000;
-	border-radius : var(--세로);
+	width : clamp(480px, 100%, 640px) ;
+	height : 9px ;
+	background : #000000 ;
+	border-radius : var(--세로) ;
 
-	margin-bottom : 10px;
+	margin-bottom : 10px ;
 }
 
 #재생_시간_지금
 {
-	height : 100%;
-	width : 0%;
-	background : var(--강조2);
-	border-radius : var(--세로);
+	height : 100% ;
+	width : 0% ;
+	background : var(--강조2) ;
+	border-radius : var(--세로) ;
 
 }
 
 #플레이어_메세지
 {
-	width : clamp(480px, 100%, 640px);
+	width : clamp(480px, 100%, 640px) ;
 
-	text-align : center;
+	text-align : center ;
 }
 
 #볼륨
 {
-	display : flex;
-	align-items : center;
-	width : clamp(480px, 100%, 640px);
-	height : 50px;
+	display : flex ;
+	align-items : center ;
+	width : clamp(480px, 100%, 640px) ;
+	height : 50px ;
 }
 
 #볼륨_조절
 {
-	flex : 1;
-	accent-color : var(--강조2);
-	height : 6px;
+	flex : 1 ;
+	accent-color : var(--강조2) ;
+	height : 6px ;
 }
 
 #볼륨_조절:hover
 {
-	cursor : grab;
-	accent-color : var(--강조2);
+	cursor : grab ;
+	accent-color : var(--강조2) ;
 }
 
 #볼륨_조절:active
 {
-	cursor : grabbing;
-	accent-color : var(--강조2);
+	cursor : grabbing ;
+	accent-color : var(--강조2) ;
 }
 
 
@@ -495,55 +496,55 @@ body
 /*
 #help_btn
 {
-	color : var(--강조3);
-	cursor : help;
+	color : var(--강조3) ;
+	cursor : help ;
 }
 
 #help_btn:hover
 {
-	color : #ff0000;
+	color : #ff0000 ;
 }
 
 #alert_btn
 {
-	color : var(--강조3);
-	cursor : progress;
+	color : var(--강조3) ;
+	cursor : progress ;
 }
 
 #alert_btn:hover
 {
-	color : var(--강조1);
+	color : var(--강조1) ;
 }
 
 #popup
 {
-	display : none;
-	position : fixed;
-	top : 50%;
-	left : 50%;
-	transform : translate(-50%, -50%);
-	width : 500px;
-	height : 500px;
-	align-items : center;
-	justify-content : center;
-	z-index : 100;
+	display : none ;
+	position : fixed ;
+	top : 50% ;
+	left : 50% ;
+	transform : translate(-50%, -50%) ;
+	width : 500px ;
+	height : 500px ;
+	align-items : center ;
+	justify-content : center ;
+	z-index : 100 ;
 }
 
 #popup.강조
 {
-	display : flex;
+	display : flex ;
 }
 
 #popup_close
 {
-	position : absolute;
-	top : 0;
-	right : 0;
-	font-size : 60px;
-	cursor : pointer;
+	position : absolute ;
+	top : 0 ;
+	right : 0 ;
+	font-size : 60px ;
+	cursor : pointer ;
 }
 #popup_txt
 {
-	white-space : pre-wrap;
-	tab-size : 4;
+	white-space : pre-wrap ;
+	tab-size : 4 ;
 } */
