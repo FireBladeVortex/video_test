@@ -453,9 +453,9 @@ function 페이지_재구성(이거)
 	if (!숫자)
 		return
 
-	const multiple = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-	const 숫자_최소 = (multiple - 1) * 숫자
-	const 숫자_최대 = (multiple * 숫자) - 1
+	const 페이지_지금 = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 숫자_최소 = (페이지_지금 - 1) * 숫자
+	const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
 	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 이거 + "]")
 	for (const 버튼 of 그거)
@@ -500,28 +500,28 @@ function 채우기_페이지_버튼(이거)
 		return
 	}
 
-	const multiple = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 
-	버튼_이전_문자열.textContent = multiple === 1 ? "" : "이전"
+	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
-	버튼_다음_문자열.textContent = multiple >= 페이지_수 ? "" : "다음"
+	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
 
 	const 이전_숫자 = document.createElement("div")
 	이전_숫자.className = "이전_숫자"
 	이전_숫자.dataset.종류 = 이거
-	이전_숫자.textContent = multiple === 1 ? "" : multiple - 1
+	이전_숫자.textContent = 페이지_지금 === 1 ? "" : 페이지_지금 - 1
 	버튼_지금.appendChild(이전_숫자)
 
 	const 지금_숫자 = document.createElement("div")
 	지금_숫자.className = "지금_숫자"
 	지금_숫자.dataset.종류 = 이거
-	지금_숫자.textContent = multiple
+	지금_숫자.textContent = 페이지_지금
 	버튼_지금.appendChild(지금_숫자)
 
 	const 다음_숫자 = document.createElement("div")
 	다음_숫자.className = "다음_숫자"
 	다음_숫자.dataset.종류 = 이거
-	다음_숫자.textContent = multiple + 1 > 페이지_수 ? "" : multiple + 1
+	다음_숫자.textContent = 페이지_지금 + 1 > 페이지_수 ? "" : 페이지_지금 + 1
 	버튼_지금.appendChild(다음_숫자)
 }
 
@@ -690,7 +690,7 @@ function 채우기_페이지(이거)
 		버튼.appendChild(img)
 		페이지.appendChild(버튼)
 
-		버튼.addEventListener("click", () =>
+		function 딸깍()
 		{
 			const 그거 = (이거 + (숫자 + "").padStart(3, "0"))
 			if (이미지_클릭 === 그거)
@@ -712,7 +712,8 @@ function 채우기_페이지(이거)
 				const 쇼츠 = 이거 === "쇼츠"
 				ready_data(ready.id, 쇼츠 ? 0 : ready.start, 쇼츠 ? 0 : ready.end)
 			}
-		})
+		}
+		버튼.addEventListener("click", 딸깍)
 	}
 }
 
@@ -772,6 +773,27 @@ function 유효_재확인(종류)
 
 function 만들기_페이지_버튼()
 {
+	function 팔락(한장)
+	{
+		const 페이지_마지막 = 페이지_최대(분류.종류)
+		const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+		const 넘기기 = 페이지_지금 + 한장
+
+		if (넘기기 < 1 || 넘기기 > 페이지_마지막)
+			return
+
+		if (분류.종류 === "쇼츠")
+		{
+			페이지_쇼츠 = 넘기기
+		}
+		else
+		{
+			페이지_동영상 = 넘기기
+		}
+		채우기_페이지_버튼(분류.종류)
+		페이지_재구성(분류.종류)
+	}
+
 	const 버튼_이전 = document.createElement("button")
 	버튼_이전.className = "버튼_이전"
 	버튼_이전.dataset.종류 = 분류.종류
@@ -780,19 +802,7 @@ function 만들기_페이지_버튼()
 		const 버튼_이전_문자열 = document.createElement("span")
 		버튼_이전_문자열.className = "문자열_클릭"
 		버튼_이전.appendChild(버튼_이전_문자열)
-		버튼_이전_문자열.addEventListener("click", () =>
-		{
-			if (분류.종류 === "쇼츠")
-			{
-				페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
-			}
-			else
-			{
-				페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
-			}
-			채우기_페이지_버튼(분류.종류)
-			페이지_재구성(분류.종류)
-		})
+		버튼_이전_문자열.addEventListener("click", () => 팔락(-1))
 
 	const 버튼_지금 = document.createElement("span")
 	버튼_지금.className = "버튼_지금"
@@ -807,24 +817,7 @@ function 만들기_페이지_버튼()
 		const 버튼_다음_문자열 = document.createElement("span")
 		버튼_다음_문자열.className = "문자열_클릭"
 		버튼_다음.appendChild(버튼_다음_문자열)
-		버튼_다음_문자열.addEventListener("click", () =>
-		{
-			const 페이지_마지막 = 페이지_최대(분류.종류)
-			const multiple = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-			if (multiple >= 페이지_마지막)
-				return
-
-			if (분류.종류 === "쇼츠")
-			{
-				페이지_쇼츠 = 페이지_쇼츠 + 1
-			}
-			else
-			{
-				페이지_동영상 = 페이지_동영상 + 1
-			}
-			채우기_페이지_버튼(분류.종류)
-			페이지_재구성(분류.종류)
-		})
+		버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
 }
 
 
