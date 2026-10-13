@@ -254,15 +254,8 @@ function 재생_일시중지_조작()
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
 
-
-
-// 소리 크기 조절 막대 값 반영 시키기
-볼륨_조절.addEventListener("input", () =>
-{
-	player.setVolume(+볼륨_조절.value)
-})
-
-
+const 조절_반영 = () => player.setVolume(+볼륨_조절.value)
+볼륨_조절.addEventListener("input", 조절_반영)
 
 const 방지 = 간섭 => 간섭.stopPropagation()
 볼륨.addEventListener("mousedown", 방지)
@@ -274,7 +267,7 @@ const 방지 = 간섭 => 간섭.stopPropagation()
 // 스페이스 바가 play_or_pause()를 실행
 // 숫자 패드 컨트롤 또는 쉬프트 +-로 재생 속도 조절 (보류)
 // 숫자 패드 +-로 소리 크기 조절
-document.addEventListener("keydown", 키 =>
+function 키_입력(키)
 {
 	const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
 	const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
@@ -352,19 +345,17 @@ document.addEventListener("keydown", 키 =>
 		// 	player.setPlaybackRate(1)
 		// }
 	}
-})
-
+}
+document.addEventListener("keydown", 키_입력)
 
 
 // 마우스 휠로 소리 크기 조절 및 오작동 방지
-document.addEventListener("wheel", 마우스휠 =>
+function 드르륵(마우스휠)
 {
 	마우스휠.preventDefault()
 	소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
-},
-{
-	passive: false
-})
+}
+document.addEventListener("wheel", 드르륵, { passive: false })
 
 
 
@@ -439,9 +430,9 @@ function 크기_계산(목록)
 }
 
 
-// 크기 계산
+
 const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
-const 재구성 = new ResizeObserver(구역 =>
+function 크기_감지(구역)
 {
 	for (const 목록 of 구역)
 	{
@@ -451,7 +442,9 @@ const 재구성 = new ResizeObserver(구역 =>
 		페이지_초기화(종류)
 		페이지_재구성(종류)
 	}
-})
+}
+const 재구성 = new ResizeObserver(크기_감지)
+
 
 // multiple 값에 맞는 범위만 썸네일 표시/숨김
 function 페이지_재구성(이거)
@@ -744,8 +737,7 @@ function 미리보기_교체(next_data)
 }
 
 
-let 구역_종류 = null // 현재 확대된 섹션 타입 저장
-// (수정) 재생 목록 칸 확대/축소 전환 (토글 방식)
+let 구역_종류 = null
 function 크기_조절(왼쪽, 그거)
 {
 	const 비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분: "1fr" }
@@ -791,9 +783,13 @@ function 만들기_페이지_버튼()
 		버튼_이전_문자열.addEventListener("click", () =>
 		{
 			if (분류.종류 === "쇼츠")
+			{
 				페이지_쇼츠 = Math.max(1, 페이지_쇼츠 - 1)
+			}
 			else
+			{
 				페이지_동영상 = Math.max(1, 페이지_동영상 - 1)
+			}
 			채우기_페이지_버튼(분류.종류)
 			페이지_재구성(분류.종류)
 		})
@@ -1144,7 +1140,7 @@ function 불러오기_재생목록(이름)
 
 function 불러오는중(본문)
 {
-	const 불러오는_중 = document.createElement("span")
+	const 불러오는_중 = document.createElement("div")
 	불러오는_중.id = "불러오는중"
 	불러오는_중.textContent = "불러오는 중"
 	불러오는_중.style.flex = "1"
@@ -1255,7 +1251,7 @@ function 채우기_가나다()
 }
 
 
-function render_switch()
+function 시작()
 {
 	채우기_가나다()
 
@@ -1266,4 +1262,4 @@ function render_switch()
 	// 채우기_안내문()
 }
 
-render_switch()
+시작()
