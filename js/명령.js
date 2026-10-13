@@ -4,14 +4,8 @@ const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
 // document.head.appendChild(api)
 
-let api_준비_끝 = null
-const api_준비 = new Promise(resolve => { api_준비_끝 = resolve })
-
-function 불러오기_api()
-{
-	document.head.appendChild(api)
-	return api_준비
-}
+let api_준비_상태 = null
+const api_준비 = new Promise(resolve => { api_준비_상태 = resolve })
 
 
 
@@ -52,7 +46,7 @@ function onYouTubeIframeAPIReady()
 			{
 				// 현재 value 적용
 				player.setVolume(+볼륨_조절.value)
-				api_준비_끝()
+				api_준비_상태()
 			},
 			onError : () =>
 			{
@@ -540,17 +534,6 @@ function 채우기_페이지_버튼(이거)
 
 
 
-// 시간 메세지 표기법 정리 24:00:00
-function 시분초_표준(시분초)
-{
-	const 시간_길이 = 시분초.findIndex(값 => 값 !== 0)
-	const 시간_길이_확인 = 시간_길이 === -1 ? 시분초.length - 1 : 시간_길이
-	const 시간_정리 = 시분초.slice(시간_길이_확인)
-	const 시간_변환 = 시간_정리.map((값, 순서) => 순서 === 0 ? (값 + "") : (값 + "").padStart(2,"0"))
-	const 결과 = 시간_변환.join(":")
-	return 결과
-}
-
 
 
 
@@ -559,6 +542,17 @@ function 시분초_표준(시분초)
 // 없는거 채워서 시간값 2개 전달하기
 function 시간_표기법(시간)
 {
+	// 시간 메세지 표기법 정리 24:00:00
+	function 시분초_표준(시분초)
+	{
+		const 시간_길이 = 시분초.findIndex(값 => 값 !== 0)
+		const 시간_길이_확인 = 시간_길이 === -1 ? 시분초.length - 1 : 시간_길이
+		const 시간_정리 = 시분초.slice(시간_길이_확인)
+		const 시간_변환 = 시간_정리.map((값, 순서) => 순서 === 0 ? (값 + "") : (값 + "").padStart(2,"0"))
+		const 결과 = 시간_변환.join(":")
+		return 결과
+	}
+
 	// 숫자 모양인 시간 값이 들어왔을 떄
 	if (typeof 시간 === "number" && 시간 > 0)
 	{
@@ -570,6 +564,7 @@ function 시간_표기법(시간)
 		const 시간_문자 = 시분초_표준([시, 분, 초])
 		return [ 시간_숫자, 시간_문자 ]
 	}
+
 	// 문자열 모양 시간 값이 들어왔을 때
 	else if (typeof 시간 === "string")
 	{
@@ -1124,11 +1119,12 @@ function 불러오기_재생목록(이름)
 	const script = document.createElement("script")
 	script.src = "명단/" + 이름 + ".js"
 
-	const api_준비 = 불러오기_api()
 	// 준비 되었을때 실행
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
 	script.addEventListener("load", async () =>
 	{
+		// api 실행
+		document.head.appendChild(api)
 		await api_준비
 		await id_가공(window.재생목록)
 
