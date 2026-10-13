@@ -1225,15 +1225,15 @@ function 채우기_이름표들(왼쪽_이름)
 
 
 
+const 가나다순 =
+[
+	"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
+	"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
+]
+
 function 채우기_가나다()
 {
 	const 가나다 = document.getElementById("가나다")
-
-	const 가나다순 =
-	[
-		"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
-		"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
-	]
 
 	for (const 순서대로 of 가나다순)
 	{
@@ -1252,7 +1252,7 @@ function 채우기_가나다()
 
 			const 몇개 = document.createElement("span")
 			몇개.className = 순서대로
-			몇개.textContent = 순서대로
+			// 몇개.textContent = 순서대로
 			자음_번호.appendChild(몇개)
 
 	}
