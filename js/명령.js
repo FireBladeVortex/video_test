@@ -40,7 +40,7 @@ function onYouTubeIframeAPIReady()
 			onReady: () =>
 			{
 				player.setVolume(+볼륨_조절.value)
-				api_준비_대기
+				api_준비_대기()
 			},
 			onError : () =>
 			{
@@ -607,6 +607,8 @@ function 시간_표기법(시간)
 			return [ 시간_숫자, 시간_문자 ]
 		}
 	}
+
+	return [ 0, 0 ]
 }
 
 
@@ -781,137 +783,6 @@ function 크기_조절(왼쪽, 그거)
 
 
 
-function 유효_재확인(종류)
-{
-	return Array.isArray(종류) && 종류.some(동영상 => 동영상.id)
-}
-
-
-
-function 만들기_페이지_버튼()
-{
-	function 팔락(한장)
-	{
-		const 페이지_마지막 = 페이지_최대(분류.종류)
-		const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-		const 넘기기 = 페이지_지금 + 한장
-
-		if (넘기기 < 1 || 넘기기 > 페이지_마지막)
-			return
-
-		if (분류.종류 === "쇼츠")
-		{
-			페이지_쇼츠 = 넘기기
-		}
-		else
-		{
-			페이지_동영상 = 넘기기
-		}
-		채우기_페이지_버튼(분류.종류)
-		페이지_재구성(분류.종류)
-	}
-
-	const 버튼_이전 = document.createElement("button")
-	버튼_이전.className = "버튼_이전"
-	버튼_이전.dataset.종류 = 분류.종류
-	머리말_페이지.appendChild(버튼_이전)
-
-		const 버튼_이전_문자열 = document.createElement("span")
-		버튼_이전_문자열.className = "문자열_클릭"
-		버튼_이전.appendChild(버튼_이전_문자열)
-		버튼_이전_문자열.addEventListener("click", () => 팔락(-1))
-
-	const 버튼_지금 = document.createElement("span")
-	버튼_지금.className = "버튼_지금"
-	버튼_지금.dataset.종류 = 분류.종류
-	머리말_페이지.appendChild(버튼_지금)
-
-	const 버튼_다음 = document.createElement("button")
-	버튼_다음.className = "버튼_다음"
-	버튼_다음.dataset.종류 = 분류.종류
-	머리말_페이지.appendChild(버튼_다음)
-
-		const 버튼_다음_문자열 = document.createElement("span")
-		버튼_다음_문자열.className = "문자열_클릭"
-		버튼_다음.appendChild(버튼_다음_문자열)
-		버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
-}
-
-
-
-function 만들기_종류_구분(원곡, 커버)
-{
-	if (유효_재확인(원곡) && 유효_재확인(커버))
-	{
-		const 종류_모두 = document.createElement("button")
-		종류_모두.className = "종류_모두"
-		머리말_종류.appendChild(종류_모두)
-
-			const 문자열_모두 = document.createElement("span")
-			문자열_모두.className = "문자열_클릭"
-			문자열_모두.textContent = "모두"
-			종류_모두.appendChild(문자열_모두)
-			문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
-
-		const 종류_원곡 = document.createElement("button")
-		종류_원곡.className = "종류_원곡"
-		머리말_종류.appendChild(종류_원곡)
-
-			const 문자열_원곡 = document.createElement("span")
-			문자열_원곡.className = "문자열_클릭"
-			문자열_원곡.textContent = "원곡"
-			종류_원곡.appendChild(문자열_원곡)
-			문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
-
-		const 종류_커버 = document.createElement("button")
-		종류_커버.className = "종류_커버"
-		머리말_종류.appendChild(종류_커버)
-
-			const 문자열_커버 = document.createElement("span")
-			문자열_커버.className = "문자열_클릭"
-			문자열_커버.textContent = "커버"
-			종류_커버.appendChild(문자열_커버)
-			문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
-	}
-}
-
-
-
-function 만들기_기초(왼쪽)
-{
-	const 구역 = document.createElement("section")
-	구역.className = "구역"
-	구역.dataset.종류 = 분류.종류
-	왼쪽.appendChild(구역)
-
-	const 머리말 = document.createElement("header")
-	구역.appendChild(머리말)
-
-		const 머리말_재생목록 = document.createElement("span")
-		머리말_재생목록.className = "머리말_재생목록"
-		머리말_재생목록.textContent = 분류.종류 + " 재생 목록"
-		머리말.appendChild(머리말_재생목록)
-
-		const 머리말_종류 = document.createElement("menu")
-		머리말_종류.className = "머리말_종류"
-		머리말.appendChild(머리말_종류)
-
-		const 머리말_페이지 = document.createElement("menu")
-		머리말_페이지.className = "머리말_페이지"
-		머리말.appendChild(머리말_페이지)
-
-		const 머리말_크기 = document.createElement("button")
-		머리말_크기.className = "머리말_크기"
-		머리말.appendChild(머리말_크기)
-
-			const 크기_조절_문자열 = document.createElement("span")
-			크기_조절_문자열.className = "문자열_클릭"
-			크기_조절_문자열.textContent = "크게"
-			크기_조절_문자열.dataset.종류 = 분류.종류
-			머리말_크기.appendChild(크기_조절_문자열)
-			크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
-}
-
 
 
 function 만들기_목록()
@@ -941,6 +812,11 @@ function 만들기_목록()
 		},
 	]
 
+	function 유효_재확인(종류)
+	{
+		return Array.isArray(종류) && 종류.some(동영상 => 동영상.id)
+	}
+
 	for (const 분류 of 종류_확인)
 	{
 		if (!유효_재확인(분류.자료))
@@ -948,7 +824,37 @@ function 만들기_목록()
 
 		사용할_동영상[분류.종류] = 분류.자료
 
-		만들기_기초(왼쪽)
+		const 구역 = document.createElement("section")
+		구역.className = "구역"
+		구역.dataset.종류 = 분류.종류
+		왼쪽.appendChild(구역)
+
+		const 머리말 = document.createElement("header")
+		구역.appendChild(머리말)
+
+			const 머리말_재생목록 = document.createElement("span")
+			머리말_재생목록.className = "머리말_재생목록"
+			머리말_재생목록.textContent = 분류.종류 + " 재생 목록"
+			머리말.appendChild(머리말_재생목록)
+
+			const 머리말_종류 = document.createElement("menu")
+			머리말_종류.className = "머리말_종류"
+			머리말.appendChild(머리말_종류)
+
+			const 머리말_페이지 = document.createElement("menu")
+			머리말_페이지.className = "머리말_페이지"
+			머리말.appendChild(머리말_페이지)
+
+			const 머리말_크기 = document.createElement("button")
+			머리말_크기.className = "머리말_크기"
+			머리말.appendChild(머리말_크기)
+
+				const 크기_조절_문자열 = document.createElement("span")
+				크기_조절_문자열.className = "문자열_클릭"
+				크기_조절_문자열.textContent = "크게"
+				크기_조절_문자열.dataset.종류 = 분류.종류
+				머리말_크기.appendChild(크기_조절_문자열)
+				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 
 		if (분류.종류 === "부분")
 		{
@@ -958,10 +864,88 @@ function 만들기_목록()
 
 		if (분류.종류 === "동영상")
 		{
-			만들기_종류_구분(원곡, 커버)
+			if (유효_재확인(원곡) && 유효_재확인(커버))
+			{
+				const 종류_모두 = document.createElement("button")
+				종류_모두.className = "종류_모두"
+				머리말_종류.appendChild(종류_모두)
+
+					const 문자열_모두 = document.createElement("span")
+					문자열_모두.className = "문자열_클릭"
+					문자열_모두.textContent = "모두"
+					종류_모두.appendChild(문자열_모두)
+					문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
+
+				const 종류_원곡 = document.createElement("button")
+				종류_원곡.className = "종류_원곡"
+				머리말_종류.appendChild(종류_원곡)
+
+					const 문자열_원곡 = document.createElement("span")
+					문자열_원곡.className = "문자열_클릭"
+					문자열_원곡.textContent = "원곡"
+					종류_원곡.appendChild(문자열_원곡)
+					문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
+
+				const 종류_커버 = document.createElement("button")
+				종류_커버.className = "종류_커버"
+				머리말_종류.appendChild(종류_커버)
+
+					const 문자열_커버 = document.createElement("span")
+					문자열_커버.className = "문자열_클릭"
+					문자열_커버.textContent = "커버"
+					종류_커버.appendChild(문자열_커버)
+					문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
+			}
 		}
 
-		만들기_페이지_버튼()
+		function 팔락(한장)
+		{
+			const 페이지_마지막 = 페이지_최대(분류.종류)
+			const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+			const 넘기기 = 페이지_지금 + 한장
+
+			if (넘기기 < 1 || 넘기기 > 페이지_마지막)
+				return
+
+			if (분류.종류 === "쇼츠")
+			{
+				페이지_쇼츠 = 넘기기
+			}
+			else
+			{
+				페이지_동영상 = 넘기기
+			}
+			채우기_페이지_버튼(분류.종류)
+			페이지_재구성(분류.종류)
+		}
+
+		const 버튼_이전 = document.createElement("button")
+		버튼_이전.className = "버튼_이전"
+		버튼_이전.dataset.종류 = 분류.종류
+		머리말_페이지.appendChild(버튼_이전)
+
+			const 버튼_이전_문자열 = document.createElement("span")
+			버튼_이전_문자열.className = "문자열_클릭"
+			버튼_이전.appendChild(버튼_이전_문자열)
+			버튼_이전_문자열.addEventListener("click", () => 팔락(-1))
+
+		const 버튼_지금 = document.createElement("span")
+		버튼_지금.className = "버튼_지금"
+		버튼_지금.dataset.종류 = 분류.종류
+		머리말_페이지.appendChild(버튼_지금)
+
+		const 버튼_다음 = document.createElement("button")
+		버튼_다음.className = "버튼_다음"
+		버튼_다음.dataset.종류 = 분류.종류
+		머리말_페이지.appendChild(버튼_다음)
+
+			const 버튼_다음_문자열 = document.createElement("span")
+			버튼_다음_문자열.className = "문자열_클릭"
+			버튼_다음.appendChild(버튼_다음_문자열)
+			버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
+
+
+
 		채우기_페이지_버튼(분류.종류)
 
 		// 미리보기 들어갈 공간
