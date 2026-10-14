@@ -40,7 +40,7 @@ function onYouTubeIframeAPIReady()
 			onReady: () =>
 			{
 				player.setVolume(+볼륨_조절.value)
-				api_준비
+				api_준비_대기
 			},
 			onError : () =>
 			{
