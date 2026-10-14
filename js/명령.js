@@ -7,13 +7,10 @@ api.src = "https://www.youtube.com/iframe_api"
 let api_준비_상태 = null
 const api_준비 = new Promise(resolve => { api_준비_상태 = resolve })
 
-
-
-// iframe 들어갈 변수 준비
 let player = null
 let 재생_대기 = null
 
-// iframe 호출한다면
+// iframe 호출할 때
 function onYouTubeIframeAPIReady()
 {
 	player = new YT.Player("YTP",
@@ -33,9 +30,9 @@ function onYouTubeIframeAPIReady()
 			disablekb: 1,
 			// 유튜브 일부 ui 숨김
 			// controls: 0,
-			// 자막 한글 pip 모드 제작 대비
+			// 자막 한글 + pip 모드 제작 대비
 			// cc_lang_pref: "ko",
-			// 자막 자동 실행 pip 모드 제작 대비
+			// 자막 자동 실행 + pip 모드 제작 대비
 			// cc_load_policy: 1,
 		},
 
@@ -44,7 +41,6 @@ function onYouTubeIframeAPIReady()
 		{
 			onReady: () =>
 			{
-				// 현재 value 적용
 				player.setVolume(+볼륨_조절.value)
 				api_준비_상태()
 			},
@@ -66,51 +62,48 @@ function onYouTubeIframeAPIReady()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// 재생 진행 비율 계산 및 시간 표시
-function ctrl_view()
+function 재생_표시줄()
 {
-	// 지금 재생 중인 동영상 시간 확인
-	const cur = player.getCurrentTime()
-	const ratio = (cur - 시작_시간) / (종료_시간 - 시작_시간)
-	document.getElementById("재생_시간_지금").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
+	const 지금_시간 = player.getCurrentTime()
+	const 비율 = (지금_시간 - 시작_시간) / (종료_시간 - 시작_시간)
+	document.getElementById("재생_시간_지금").style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
 
-	// const [, msg_cur] = 시간_표기법(cur)
+	// const [, 지금_문자열] = 시간_표기법(지금_시간)
 	// if (종료_문자열 && 시작_문자열)
 	// {
 	// 	if (시작_시간 === 0)
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = msg_cur + "<" + 종료_문자열
+	// 		document.getElementById("플레이어_메세지").textContent = 지금_문자열 + "<" + 종료_문자열
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = 시작_문자열 + "< + msg_cur + ">" + 종료_문자열
+	// 		document.getElementById("플레이어_메세지").textContent = 시작_문자열 + "< + 지금_문자열 + ">" + 종료_문자열
 	// 	}
 	// }
 }
 
 
-// 이름 제목
-async function 불러오기_제목(id) // 값 실적용 대신 뱉어내는 방식으로 변경
+async function 불러오기_제목(id)
 {
 	const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
 	const 주소_2 = id
 	const 주소_3 = "&format=json"
-	const url = 주소_1 + 주소_2 + 주소_3
+	const 주소 = 주소_1 + 주소_2 + 주소_3
 	try
 	{
-		const input = await fetch(url)
-		const data = await input.json()
+		const 호출 = await fetch(주소)
+		const 데이터 = await 호출.json()
 
-		set_name = data.author_name
-		set_ch = data.author_url
-		set_title = data.title
-		document.title = set_name
+		채널_이름 = 데이터.author_name
+		채널_주소 = 데이터.author_url
+		동영상_제목 = 데이터.title
+		// document.title = 채널_이름
 
 		if (arguments.length !== 1)
 			return
 
 		document.getElementById("플레이어_메세지").style.textAlign = "start"
-		document.getElementById("플레이어_메세지").textContent = set_title
+		document.getElementById("플레이어_메세지").textContent = 동영상_제목
 	}
 	catch
 	{
@@ -118,17 +111,38 @@ async function 불러오기_제목(id) // 값 실적용 대신 뱉어내는 방�
 }
 
 
-// 영상 상태 확인
-// YT.PlayerState.ENDED = 0
-// YT.PlayerState.PLAYING = 1
-// YT.PlayerState.PAUSED = 2
-// YT.PlayerState.BUFFERING = 3
-// YT.PlayerState.CUED = 5
 
-// 상태 변화 감지에서 사용할 재생 표시줄 변수
+// 재생 종료
+// YT.PlayerState.ENDED === 0
+// 재생 중
+// YT.PlayerState.PLAYING === 1
+// 재생 일시 중지
+// YT.PlayerState.PAUSED === 2
+// 재생 하기위한 준비 중
+// YT.PlayerState.BUFFERING === 3
+// 재생 하기위한 준비 완료
+// YT.PlayerState.CUED === 5
+
+const 재생 = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
+const 일시중지 = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
+// !재생중() === !재생() && !일시중지()
+const 재생중 = () => 재생() || 일시중지()
+
+function 재생_일시중지_조작()
+{
+	if (재생())
+	{
+		player.pauseVideo()
+	}
+	else if (일시중지())
+	{
+		player.playVideo()
+	}
+}
+
+// 동영상 상태 변화 감지에서 사용할 재생 표시줄 변수
 let 재생_시간_표시줄 = null
-
-// 동영상 상태가 변화하면 즉시 작동
+// 동영상 상태가 변하면 즉시 작동
 function onPlayerStateChange(event)
 {
 
@@ -139,7 +153,6 @@ function onPlayerStateChange(event)
 		return
 	}
 
-	// 영상 정보 불러온 상태(재생 시작 전)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
@@ -159,36 +172,36 @@ function onPlayerStateChange(event)
 		{
 			document.getElementById("플레이어_메세지").style.textAlign = "start"
 			document.getElementById("플레이어_메세지").textContent = title
-			불러오기_제목(set_id, title)
+			불러오기_제목(선택한_동영상_id, title)
 		}
 		else
 		{
-			불러오기_제목(set_id)
+			불러오기_제목(선택한_동영상_id)
 		}
 	}
-	// 재생 중일 때 100ms마다 진행바 갱신
+
 	if (event.data === 1)
 	{
 		if (player.getCurrentTime() < 시작_시간)
 		{
 			player.seekTo(시작_시간, true)
 		}
-		clearInterval(재생_시간_표시줄) // 인터벌 중복 호출 방지
-		재생_시간_표시줄 = setInterval(ctrl_view, 100)
+		clearInterval(재생_시간_표시줄)
+		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
 	}
 	else
 	{
 		clearInterval(재생_시간_표시줄)
 	}
-	// 영상 재시작
+
 	if (event.data === 0)
 	{
 		player.seekTo(시작_시간, true)
 		player.playVideo()
 	}
-	//
+
 	const 상태 = [1, 2, 3].includes(event.data)
-	// ("#오른쪽, #클릭_방지") // #클릭_방지 임시 중지 사용자 선택으로 버튼 만들기 전까지
+	// ("#오른쪽, #클릭_방지") // #클릭_방지 개선 방법 찾기전까지 막음
 	const 오른쪽 = document.querySelectorAll("#오른쪽")
 	for (const 화면 of 오른쪽)
 	{
@@ -203,6 +216,7 @@ function onPlayerStateChange(event)
 // 만들기 보류
 function 재생_속도_조절(키, 증감)
 {
+
 }
 
 
@@ -219,37 +233,6 @@ function 소리_크기_값_조절(증감)
 }
 
 
-// 재생 종료
-// YT.PlayerState.ENDED === 0
-// 재생 중
-// YT.PlayerState.PLAYING === 1
-// 재생 일시 중지
-// YT.PlayerState.PAUSED === 2
-// 재생 하기위한 준비 중
-// YT.PlayerState.BUFFERING === 3
-// 재생 하기위한 준비 완료
-// YT.PlayerState.CUED === 5
-
-const 재생 = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
-const 일시중지 = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
-// !재생중() === !재생() && !일시중지()
-const 재생중 = () => 재생() || 일시중지()
-
-
-
-function 재생_일시중지_조작()
-{
-	if (재생())
-	{
-		player.pauseVideo()
-	}
-	else if (일시중지())
-	{
-		player.playVideo()
-	}
-}
-
-
 
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
@@ -263,10 +246,6 @@ const 방지 = 간섭 => 간섭.stopPropagation()
 
 
 
-// 해당하는 키 입력 기본 작동을 무시
-// 스페이스 바가 play_or_pause()를 실행
-// 숫자 패드 컨트롤 또는 쉬프트 +-로 재생 속도 조절 (보류)
-// 숫자 패드 +-로 소리 크기 조절
 function 키_입력(키)
 {
 	const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
@@ -293,34 +272,27 @@ function 키_입력(키)
 	// 	키.preventDefault()
 	// }
 
-	// 준비안됐으면 작동 중지
 	if (!player || !재생중())
 		return
 
 	// 키 반복입력 방지
 	if (!키.repeat)
 	{
-		// 스페이스바 = 재생, 일시중지
 		if (키.code === "Space")
 		{
 			키.preventDefault()
 			재생_일시중지_조작()
 		}
-
-		// 방향키 왼쪽 = 5초 전으로
 		else if (키.code === "ArrowLeft")
 		{
 			키.preventDefault()
-			player.seekTo(Math.max(시작_시간, player.getCurrentTime() - 5), true) // 시작_시간 보다 작아질 수 없음
+			player.seekTo(Math.max(시작_시간, player.getCurrentTime() - 5), true)
 		}
-
-		// 방향키 오른쪽 = 5초 앞으로
 		else if (키.code === "ArrowRight")
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(종료_시간, player.getCurrentTime() + 5), true) // 종료_시간 보다 커질 수 없음
+			player.seekTo(Math.min(종료_시간, player.getCurrentTime() + 5), true)
 		}
-
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
 		{
@@ -330,7 +302,7 @@ function 키_입력(키)
 			player.seekTo(숫자키, true)
 		}
 
-		// 재생 속도 조절
+		// 재생 속도 조절 보류
 		// else if (컨트롤_쉬프트 && 증가 || 감소)
 		// {
 		// 	키.preventDefault()
@@ -349,6 +321,7 @@ function 키_입력(키)
 document.addEventListener("keydown", 키_입력)
 
 
+
 // 마우스 휠로 소리 크기 조절 및 오작동 방지
 function 드르륵(마우스휠)
 {
@@ -356,8 +329,6 @@ function 드르륵(마우스휠)
 	소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
 }
 document.addEventListener("wheel", 드르륵, { passive: false })
-
-
 
 
 
@@ -380,64 +351,132 @@ document.addEventListener("wheel", 드르륵, { passive: false })
 
 
 
-// 소개 데이터 재생 준비 (추가) - 재생목록이면 cuePlaylist(랜덤), 일반 동영상이면 cueVideoById
-function 불러오기_소개(소개)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const 이거_몇칸임 =
 {
-	if (!소개)
-		return
-
-	const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
-
-	player.cueVideoById(
-	{
-		videoId : 무작위.id,
-	})
+	동영상: 0,
+	쇼츠: 0
 
 }
 
 
-function 페이지_초기화(이거)
-{
-	if (이거 === "쇼츠")
-	{
-		페이지_쇼츠 = 1
-	}
-	else
-	{
-		페이지_동영상 = 1
-	}
 
-	채우기_페이지_버튼(이거)
-}
-
-
-// 미리보기 몇개 들어가는지 계산
-function 크기_계산(목록)
-{
-	const 설정 = getComputedStyle(document.documentElement)
-	const 가로값 = parseInt(설정.getPropertyValue("--가로"))
-	const 세로값 = parseInt(설정.getPropertyValue("--세로"))
-
-	const 쇼츠 = 목록.target.classList.contains("쇼츠")
-
-	const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
-	const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
-
-	const 너비 = 목록.contentBoxSize[0].inlineSize
-	const 높이 = 목록.contentBoxSize[0].blockSize
-
-	const 가로 = Math.floor(너비 / 쇼츠_가로)
-	const 세로 = Math.floor(높이 / 쇼츠_세로)
-	const 몇칸 = 가로 * 세로
-
-	return 몇칸
-}
-
-
-
-const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
 function 크기_감지(구역)
 {
+	function 페이지_초기화(종류)
+	{
+		if (종류 === "쇼츠")
+		{
+			페이지_쇼츠 = 1
+		}
+		else
+		{
+			페이지_동영상 = 1
+		}
+		채우기_페이지_버튼(종류)
+	}
+
+	function 크기_계산(목록)
+	{
+		const 설정 = getComputedStyle(document.documentElement)
+		const 가로값 = parseInt(설정.getPropertyValue("--가로"))
+		const 세로값 = parseInt(설정.getPropertyValue("--세로"))
+
+		const 쇼츠 = 목록.target.classList.contains("쇼츠")
+
+		const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
+		const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
+
+		const 너비 = 목록.contentBoxSize[0].inlineSize
+		const 높이 = 목록.contentBoxSize[0].blockSize
+
+		const 가로 = Math.floor(너비 / 쇼츠_가로)
+		const 세로 = Math.floor(높이 / 쇼츠_세로)
+		const 몇칸 = 가로 * 세로
+
+		return 몇칸
+	}
+
 	for (const 목록 of 구역)
 	{
 		const 종류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
@@ -450,18 +489,18 @@ function 크기_감지(구역)
 const 재구성 = new ResizeObserver(크기_감지)
 
 
-// multiple 값에 맞는 범위만 썸네일 표시/숨김
-function 페이지_재구성(이거)
+
+function 페이지_재구성(종류)
 {
-	const 숫자 = 이거_몇칸임[이거]
+	const 숫자 = 이거_몇칸임[종류]
 	if (!숫자)
 		return
 
-	const 페이지_지금 = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 	const 숫자_최소 = (페이지_지금 - 1) * 숫자
 	const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
-	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 이거 + "]")
+	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
 	for (const 버튼 of 그거)
 	{
 		const 번호 = +버튼.dataset.숫자
@@ -473,20 +512,20 @@ function 페이지_재구성(이거)
 
 
 
-// 마지막 페이지 번호 계산 공통 함수
-function 페이지_최대(이거)
+function 페이지_최대(종류)
 {
-	const 숫자 = 이거_몇칸임[이거]
-	const data = 사용할_동영상[이거] ?? 임시_목록[이거]
+	const 숫자 = 이거_몇칸임[종류]
+	const data = 사용할_동영상[종류] ?? 임시_목록[종류]
 	return Math.ceil(data.length / 숫자)
 }
 
-// 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
-function 채우기_페이지_버튼(이거)
+
+
+function 채우기_페이지_버튼(종류)
 {
-	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + 이거 + "]")
-	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + 이거 + "]")
-	const 버튼_다음 = document.querySelector(".버튼_다음[data-종류=" + 이거 + "]")
+	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + 종류 + "]")
+	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + 종류 + "]")
+	const 버튼_다음 = document.querySelector(".버튼_다음[data-종류=" + 종류 + "]")
 
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
 		return
@@ -494,7 +533,7 @@ function 채우기_페이지_버튼(이거)
 	const 버튼_이전_문자열 = 버튼_이전.querySelector(".문자열_클릭")
 	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
 
-	const 페이지_수 = 페이지_최대(이거)
+	const 페이지_수 = 페이지_최대(종류)
 
 	if (페이지_수 <= 1)
 	{
@@ -504,7 +543,7 @@ function 채우기_페이지_버튼(이거)
 		return
 	}
 
-	const 페이지_지금 = 이거 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 
 	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
@@ -512,25 +551,22 @@ function 채우기_페이지_버튼(이거)
 
 	const 이전_숫자 = document.createElement("div")
 	이전_숫자.className = "이전_숫자"
-	이전_숫자.dataset.종류 = 이거
+	이전_숫자.dataset.종류 = 종류
 	이전_숫자.textContent = 페이지_지금 === 1 ? "" : 페이지_지금 - 1
 	버튼_지금.appendChild(이전_숫자)
 
 	const 지금_숫자 = document.createElement("div")
 	지금_숫자.className = "지금_숫자"
-	지금_숫자.dataset.종류 = 이거
+	지금_숫자.dataset.종류 = 종류
 	지금_숫자.textContent = 페이지_지금
 	버튼_지금.appendChild(지금_숫자)
 
 	const 다음_숫자 = document.createElement("div")
 	다음_숫자.className = "다음_숫자"
-	다음_숫자.dataset.종류 = 이거
+	다음_숫자.dataset.종류 = 종류
 	다음_숫자.textContent = 페이지_지금 + 1 > 페이지_수 ? "" : 페이지_지금 + 1
 	버튼_지금.appendChild(다음_숫자)
 }
-
-
-
 
 
 
@@ -563,7 +599,7 @@ function 시간_표기법(시간)
 	}
 
 	// 문자열 모양 시간 값이 들어왔을 때
-	else if (typeof 시간 === "string")
+	if (typeof 시간 === "string")
 	{
 		const 오타확인 = 시간.replace(/;/g, ":")
 		const 재확인 = 오타확인.includes(":")
@@ -578,59 +614,48 @@ function 시간_표기법(시간)
 			return [ 시간_숫자, 시간_문자 ]
 		}
 	}
-	else
-	{
-		return [ 0, 0 ]
-	}
 }
 
 
 
-// 현재 표시중인 목록 데이터
-const 사용할_동영상 = { 동영상: null, 쇼츠: null }
+const 사용할_동영상 =
+{
+	동영상: null,
+	쇼츠: null
+}
 
-
-
-// 시간 관리
 let 시작_시간 = null
 let 종료_시간 = null
 
-// 시간 메세지
 let 시작_문자열 = null
 let 종료_문자열 = null
 
-// 정보 관리
-let set_id = null
-let set_name = null
-let set_title = null
-let set_ch = null
-
+let 선택한_동영상_id = null
+let 채널_이름 = null
+let 동영상_제목 = null
+let 채널_주소 = null
 
 let 페이지_동영상 = 1
 let 페이지_쇼츠 = 1
 
-// youtube 정보 가져오기 cue 상태 되기전
-function ready_data(id, start = 0, end = 0)
+function 선택한_동영상_준비(id, start = 0, end = 0)
 {
-	// 클릭 시 id 저장
-	set_id = id
+	선택한_동영상_id = id
 
 	if (arguments.length === 1)
-		return set_id
+		return 선택한_동영상_id
 
 	const 시작 = 시간_표기법(start)
 	시작_시간 = 시작[0]
 	시작_문자열 = 시작[1]
 
-	// 종료 시간 결정(getDuration() 아님)
 	const 종료 = 시간_표기법(end)
 	종료_시간 = 종료[0]
 	종료_문자열 = 종료[1]
 
-	// 영상 불러오기
 	player.cueVideoById(
 	{
-		videoId : set_id,
+		videoId : 선택한_동영상_id,
 		startSeconds : 시작_시간,
 		...(종료_시간 > 0 && {endSeconds : 종료_시간})
 	})
@@ -638,39 +663,38 @@ function ready_data(id, start = 0, end = 0)
 }
 
 
+
 let 이미지_클릭 = null
-function 이미지_클릭_강조(이거)
+function 이미지_클릭_강조(종류)
 {
-	// 활성화 버튼 강조 나머지 버튼 어둡게
 	const 딸깍 = document.querySelectorAll(".버튼")
 	for (const 버튼 of 딸깍)
 	{
 		const 그거 = (버튼.dataset.종류 + (버튼.dataset.숫자 + "").padStart(3, "0"))
-		const 클릭 = 그거 === 이거
+		const 클릭 = 그거 === 종류
 		버튼.classList.toggle("강조", 클릭)
 		버튼.classList.toggle("발기", !클릭)
 
 	}
-	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
-	이미지_클릭 = 이거
+	이미지_클릭 = 종류
 }
 
 
-// 이거_몇칸임 값에 맞춰 썸네일 버튼을 (재)생성하는 함수
-function 채우기_페이지(이거)
+
+function 채우기_페이지(종류)
 {
-	const 페이지 = document.querySelector(".페이지." + 이거)
+	const 페이지 = document.querySelector(".페이지." + 종류)
 	if (!페이지)
 		return
 
-	const data = 사용할_동영상[이거] ?? 임시_목록[이거]
+	const data = 사용할_동영상[종류] ?? 임시_목록[종류]
 	if (!data)
 		return
 
 	const crrt_data_count = 페이지.children.length
 	const nxxt_data_count = data.length
 
-	// const next_count = 이거_몇칸임[이거] 새로 계산된 필요 개수
+	// const next_count = 이거_몇칸임[종류] 새로 계산된 필요 개수
 	for (let 숫자 = 0 ; 숫자 < data.length ; 숫자++)
 	// for (let 숫자 = 0 ; data.length ; 숫자++)
 	{
@@ -681,7 +705,7 @@ function 채우기_페이지(이거)
 		const 버튼 = document.createElement("button")
 		버튼.className = "버튼"
 		버튼.dataset.숫자 = 숫자
-		버튼.dataset.종류 = 이거
+		버튼.dataset.종류 = 종류
 
 		const img = document.createElement("img")
 		const src_1 = "https://img.youtube.com/vi/"
@@ -694,7 +718,7 @@ function 채우기_페이지(이거)
 
 		function 딸깍()
 		{
-			const 그거 = (이거 + (숫자 + "").padStart(3, "0"))
+			const 그거 = (종류 + (숫자 + "").padStart(3, "0"))
 			if (이미지_클릭 === 그거)
 			{
 				// if (재생())
@@ -711,8 +735,8 @@ function 채우기_페이지(이거)
 			else
 			{
 				이미지_클릭_강조(그거)
-				const 쇼츠 = 이거 === "쇼츠"
-				ready_data(ready.id, 쇼츠 ? 0 : ready.start, 쇼츠 ? 0 : ready.end)
+				const 쇼츠 = 종류 === "쇼츠"
+				선택한_동영상_준비(ready.id, 쇼츠 ? 0 : ready.start, 쇼츠 ? 0 : ready.end)
 			}
 		}
 		버튼.addEventListener("click", 딸깍)
@@ -738,6 +762,7 @@ function 미리보기_교체(next_data)
 	채우기_페이지_버튼("동영상")
 	페이지_재구성("동영상")
 }
+
 
 
 let 구역_종류 = null
@@ -766,11 +791,12 @@ function 크기_조절(왼쪽, 그거)
 }
 
 
-// id 값이 실제로 채워진 배열인지 확인 (추가)
+
 function 유효_재확인(종류)
 {
 	return Array.isArray(종류) && 종류.some(동영상 => 동영상.id)
 }
+
 
 
 function 만들기_페이지_버튼()
@@ -824,7 +850,6 @@ function 만들기_페이지_버튼()
 
 
 
-
 function 만들기_종류_구분(원곡, 커버)
 {
 	if (유효_재확인(원곡) && 유효_재확인(커버))
@@ -862,6 +887,7 @@ function 만들기_종류_구분(원곡, 커버)
 }
 
 
+
 function 만들기_기초(왼쪽)
 {
 	const 구역 = document.createElement("section")
@@ -896,6 +922,7 @@ function 만들기_기초(왼쪽)
 			머리말_크기.appendChild(크기_조절_문자열)
 			크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 }
+
 
 
 function 만들기_목록()
@@ -964,13 +991,10 @@ function 만들기_목록()
 
 
 
-
-// 스위치 클릭 시 실제 초기화 실행 (추가)
 function 만들기_구역()
 {
 	만들기_목록()
 
-	// 크기 관찰 시작
 	const 목록 = document.querySelectorAll(".목록")
 	for (const 감지 of 목록)
 	{
@@ -980,9 +1004,6 @@ function 만들기_구역()
 
 
 
-
-
-// 색상 변경
 function 나만의_색깔(색깔)
 {
 	if (!색깔)
@@ -1001,6 +1022,7 @@ function 나만의_색깔(색깔)
 	if (색깔.강조3)
 		설정.setProperty("--강조3", 색깔.강조3)
 }
+
 
 
 let 재생목록_대기 = null
@@ -1025,57 +1047,55 @@ async function 재생목록_조사(id)
 
 
 
-function 재생목록인가(id)
-{
-	return id.startsWith("PL")
-}
-
-
-
-function id_찾기(주소)
-{
-	// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
-	try
-	{
-		// 유효한 링크인지 확인
-		const url = new URL(주소)
-
-		// 해당 링크가 재생목록인지 확인
-		const id_재생목록 = url.searchParams.get("list")
-		// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
-		if (id_재생목록 && 재생목록인가(id_재생목록))
-			// return id_재생목록
-			return
-
-		// 해당 링크가 동영상 링크인지 확인
-		// 링크 모양에 따라 경우의 수 대비
-		const v = url.searchParams.get("v")
-		const path = url.pathname.split("/").pop()
-		const id_동영상 = v ?? path
-
-		// 잘못된 링크인지 대비
-		const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
-		// 잘못됐다면 아무것도 안하고 즉시 null 전달
-		if (!정규표현식.test(id_동영상))
-			return null
-
-		// 동영상 시작시간을 포함하고있는지 확인
-		const t = parseInt(url.searchParams.get("t"))
-		// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
-		return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
-	}
-	// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
-	catch
-	{
-		return null
-	}
-}
-
-
-
 
 async function id_가공(재생목록)
 {
+	function 재생목록인가(id)
+	{
+		return id.startsWith("PL")
+	}
+
+	function id_찾기(주소)
+	{
+		// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
+		try
+		{
+			// 유효한 링크인지 확인
+			const url = new URL(주소)
+
+			// 해당 링크가 재생목록인지 확인
+			const id_재생목록 = url.searchParams.get("list")
+			// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
+			if (id_재생목록 && 재생목록인가(id_재생목록))
+				// return id_재생목록
+				return
+
+			// 해당 링크가 동영상 링크인지 확인
+			// 링크 모양에 따라 경우의 수 대비
+			const v = url.searchParams.get("v")
+			const path = url.pathname.split("/").pop()
+			const id_동영상 = v ?? path
+
+			// 잘못된 링크인지 대비
+			const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+			// 잘못됐다면 아무것도 안하고 즉시 null 전달
+			if (!정규표현식.test(id_동영상))
+				return null
+
+			// 동영상 시작시간을 포함하고있는지 확인
+			const t = parseInt(url.searchParams.get("t"))
+			// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
+			return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
+		}
+		// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
+		catch
+		{
+			return null
+		}
+	}
+
+
+
 	const keys = Object.keys(재생목록)
 
 	for (const key of keys)
@@ -1105,10 +1125,25 @@ async function id_가공(재생목록)
 }
 
 
+
 function 불러오기_재생목록(이름)
 {
 	const script = document.createElement("script")
 	script.src = "명단/" + 이름 + ".js"
+
+	function 불러오기_소개(소개)
+	{
+		if (!소개)
+			return
+
+		const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
+
+		player.cueVideoById(
+		{
+			videoId : 무작위.id,
+		})
+
+	}
 
 	// 준비 되었을때 실행
 	// https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
@@ -1131,6 +1166,7 @@ function 불러오기_재생목록(이름)
 
 	document.head.appendChild(script)
 }
+
 
 
 function 불러오는중(본문)
@@ -1175,7 +1211,6 @@ function 가나다순_정렬(목록)
 
 	return 결과
 }
-
 
 
 
@@ -1246,6 +1281,7 @@ function 채우기_가나다()
 }
 
 
+
 function 시작()
 {
 	채우기_가나다()
@@ -1256,5 +1292,4 @@ function 시작()
 	// 채우기_안내목록() 함수 제작 필요
 	// 채우기_안내문()
 }
-
 시작()
