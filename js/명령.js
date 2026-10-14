@@ -7,6 +7,15 @@ api.src = "https://www.youtube.com/iframe_api"
 let api_준비_상태 = null
 const api_준비 = new Promise(resolve => { api_준비_상태 = resolve })
 
+
+
+
+
+
+
+
+
+
 let player = null
 let 재생_대기 = null
 
@@ -1169,48 +1178,6 @@ function 불러오기_재생목록(이름)
 
 
 
-function 불러오는중(본문)
-{
-	const 불러오는_중 = document.createElement("div")
-	불러오는_중.id = "불러오는중"
-	불러오는_중.textContent = "불러오는 중"
-	불러오는_중.style.flex = "1"
-	불러오는_중.style.display = "flex"
-	불러오는_중.style.alignItems = "center"
-	불러오는_중.style.justifyContent = "center"
-	불러오는_중.style.fontSize = "60px"
-	본문.appendChild(불러오는_중)
-}
-
-
-
-function 가나다순_정렬(목록)
-{
-	const 규칙 = new Intl.Collator("ko")
-	const 정렬 = [...목록].sort((앞, 뒤) =>
-	{
-		const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
-		return 비교
-	})
-
-	const map = new Map()
-	for (const 그거 of 정렬)
-	{
-		const 이거 = 그거.이름.trim()
-		if (map.has(이거))
-		{
-			map.get(이거).중복 = true
-		}
-		else
-		{
-			map.set(이거, { ...그거 })
-		}
-	}
-
-	const 결과 = [...map.values()]
-
-	return 결과
-}
 
 
 
@@ -1224,6 +1191,34 @@ function 채우기_이름표들(왼쪽_이름)
 	이름표들.className = "이름표들"
 	본문.appendChild(이름표들)
 
+	function 가나다순_정렬(목록)
+	{
+		const 규칙 = new Intl.Collator("ko")
+		const 정렬 = [...목록].sort((앞, 뒤) =>
+		{
+			const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
+			return 비교
+		})
+
+		const map = new Map()
+		for (const 그거 of 정렬)
+		{
+			const 이거 = 그거.이름.trim()
+			if (map.has(이거))
+			{
+				map.get(이거).중복 = true
+			}
+			else
+			{
+				map.set(이거, { ...그거 })
+			}
+		}
+
+		const 결과 = [...map.values()]
+
+		return 결과
+	}
+
 	const 이름들 = 가나다순_정렬(이름_목록)
 	for (const 누구 of 이름들)
 	{
@@ -1235,6 +1230,19 @@ function 채우기_이름표들(왼쪽_이름)
 		이름.className = 누구.이름
 		이름.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
 		이름표.appendChild(이름)
+
+		function 불러오는중(본문)
+		{
+			const 불러오는_중 = document.createElement("div")
+			불러오는_중.id = "불러오는중"
+			불러오는_중.textContent = "불러오는 중"
+			불러오는_중.style.flex = "1"
+			불러오는_중.style.display = "flex"
+			불러오는_중.style.alignItems = "center"
+			불러오는_중.style.justifyContent = "center"
+			불러오는_중.style.fontSize = "60px"
+			본문.appendChild(불러오는_중)
+		}
 
 		이름.addEventListener("click", () =>
 		{
