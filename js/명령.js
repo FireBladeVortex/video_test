@@ -1067,10 +1067,7 @@ async function id_가공(재생목록)
 		}
 	}
 
-
-
 	const keys = Object.keys(재생목록)
-
 	for (const key of keys)
 	{
 		if (!Array.isArray(재생목록[key]))
@@ -1118,11 +1115,8 @@ function 불러오기_재생목록(이름)
 
 	}
 
-	// 준비 되었을때 실행
-	// https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
-	script.addEventListener("load", async () =>
+	async function 불러오기()
 	{
-		// api 실행
 		document.head.appendChild(api)
 		await api_준비
 		await id_가공(window.재생목록)
@@ -1135,7 +1129,8 @@ function 불러오기_재생목록(이름)
 
 		document.getElementById("왼쪽_이름").remove()
 		document.getElementById("오른쪽_안내").remove()
-	})
+	}
+	script.addEventListener("load", 불러오기)
 	document.head.appendChild(script)
 }
 
