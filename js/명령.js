@@ -430,12 +430,7 @@ document.addEventListener("wheel", 드르륵, { passive: false })
 
 
 
-const 이거_몇칸임 =
-{
-	동영상: 0,
-	쇼츠: 0
-
-}
+const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
 
 
 
@@ -616,11 +611,7 @@ function 시간_표기법(시간)
 
 
 
-const 사용할_동영상 =
-{
-	동영상: null,
-	쇼츠: null
-}
+const 사용할_동영상 = { 동영상: null, 쇼츠: null}
 
 let 시작_시간 = null
 let 종료_시간 = null
