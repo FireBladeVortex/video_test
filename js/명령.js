@@ -4,17 +4,13 @@ const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
 // document.head.appendChild(api)
 
-let api_준비_상태 = null
-const api_준비 = new Promise(resolve => { api_준비_상태 = resolve })
-
-
-
-
-
-
-
-
-
+let api_준비_중 = null
+let api_준비_끝 = null
+function api_준비()
+{
+	api_준비_중 ??= new Promise(resolve => { api_준비_끝 = resolve })
+	return api_준비_중
+}
 
 let player = null
 let 재생_대기 = null
@@ -51,7 +47,7 @@ function onYouTubeIframeAPIReady()
 			onReady: () =>
 			{
 				player.setVolume(+볼륨_조절.value)
-				api_준비_상태()
+				api_준비_끝?.()
 			},
 			onError : () =>
 			{
@@ -1160,7 +1156,7 @@ function 불러오기_재생목록(이름)
 	{
 		// api 실행
 		document.head.appendChild(api)
-		await api_준비
+		await api_준비()
 		await id_가공(window.재생목록)
 
 		나만의_색깔(window.재생목록.색깔)
@@ -1172,7 +1168,6 @@ function 불러오기_재생목록(이름)
 		document.getElementById("왼쪽_이름").remove()
 		document.getElementById("오른쪽_안내").remove()
 	})
-
 	document.head.appendChild(script)
 }
 
