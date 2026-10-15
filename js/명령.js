@@ -655,19 +655,19 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 
 
 
-let 이미지_클릭 = null
+let 이미지_클릭함 = null
 function 이미지_클릭_강조(이거)
 {
-	const 딸깍 = document.querySelectorAll(".버튼")
-	for (const 버튼 of 딸깍)
+	const 버튼 = document.querySelectorAll(".버튼")
+	for (const 딸깍 of 버튼)
 	{
-		const 그거 = 버튼.dataset.종류 + 버튼.dataset.숫자
+		const 그거 = 딸깍.dataset.종류 + 딸깍.dataset.숫자
 		const 클릭 = 그거 === 이거
-		버튼.classList.toggle("강조", 클릭)
-		버튼.classList.toggle("발기", !클릭)
+		딸깍.classList.toggle("강조", 클릭)
+		딸깍.classList.toggle("발기", !클릭)
 
 	}
-	이미지_클릭 = 이거
+	이미지_클릭함 = 이거
 }
 
 
@@ -710,7 +710,7 @@ function 채우기_페이지(종류)
 		function 딸깍()
 		{
 			const 그거 = 종류 + 몇번
-			if (이미지_클릭 === 그거)
+			if (그거 === 이미지_클릭함)
 			{
 				// if (재생())
 				// {
