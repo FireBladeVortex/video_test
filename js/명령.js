@@ -656,18 +656,18 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 
 
 let 이미지_클릭 = null
-function 이미지_클릭_강조(종류)
+function 이미지_클릭_강조(이거)
 {
 	const 딸깍 = document.querySelectorAll(".버튼")
 	for (const 버튼 of 딸깍)
 	{
 		const 그거 = 버튼.dataset.종류 + 버튼.dataset.숫자
-		const 클릭 = 그거 === 종류
+		const 클릭 = 그거 === 이거
 		버튼.classList.toggle("강조", 클릭)
 		버튼.classList.toggle("발기", !클릭)
 
 	}
-	이미지_클릭 = 종류
+	이미지_클릭 = 이거
 }
 
 
@@ -678,19 +678,18 @@ function 채우기_페이지(종류)
 	if (!페이지)
 		return
 
-	const data = 사용할_동영상[종류] ?? 임시_목록[종류]
-	if (!data)
+	const 동영상들 = 사용할_동영상[종류] ?? 임시_목록[종류]
+	if (!동영상들)
 		return
 
-	const crrt_data_count = 페이지.children.length
-	const nxxt_data_count = data.length
+	// const crrt_data_count = 페이지.children.length
+	// const nxxt_data_count = 동영상들.length
 
 	// const next_count = 이거_몇칸임[종류] 새로 계산된 필요 개수
-	for (let 숫자 = 0 ; 숫자 < data.length ; 숫자++)
-	// for (let 숫자 = 0 ; data.length ; 숫자++)
+	for (let 숫자 = 0 ; 숫자 < 동영상들.length ; 숫자++)
 	{
-		const ready = data[숫자]
-		if (!ready)
+		const 동영상 = 동영상들[숫자]
+		if (!동영상)
 			continue
 
 		const 버튼 = document.createElement("button")
@@ -701,7 +700,7 @@ function 채우기_페이지(종류)
 
 		const img = document.createElement("img")
 		const src_1 = "https://img.youtube.com/vi/"
-		const src_2 = ready.id
+		const src_2 = 동영상.id
 		const src_3 = "/mqdefault.jpg"
 		img.src = src_1 + src_2 + src_3
 
@@ -728,7 +727,7 @@ function 채우기_페이지(종류)
 			{
 				이미지_클릭_강조(그거)
 				const 쇼츠 = 종류 === "쇼츠"
-				선택한_동영상_준비(ready.id, 쇼츠 ? 0 : ready.start, 쇼츠 ? 0 : ready.end)
+				선택한_동영상_준비(동영상.id, 쇼츠 ? 0 : 동영상.시작, 쇼츠 ? 0 : 동영상.종료)
 			}
 		}
 		버튼.addEventListener("click", 딸깍)
@@ -737,10 +736,9 @@ function 채우기_페이지(종류)
 
 
 
-// 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
-function 미리보기_교체(next_data)
+function 미리보기_교체(종류)
 {
-	사용할_동영상.동영상 = next_data // 현재 데이터 갱신
+	사용할_동영상.동영상 = 종류
 
 	const 페이지 = document.querySelector(".페이지.동영상")
 	if (페이지)

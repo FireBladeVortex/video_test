@@ -92,6 +92,10 @@ body
 	align-items : center ;
 }
 
+.안내
+{
+	width : 95%;
+}
 .본문
 {
 	width : 90% ;
