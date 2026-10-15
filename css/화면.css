@@ -351,7 +351,7 @@ body
 	flex : 1 ;
 }
 
-.재생_준비_버튼
+.재생_시작_버튼
 {
 	width : 100% ;
 	height : 100% ;
@@ -361,7 +361,7 @@ body
 	/* cursor : pointer ; */
 }
 
-#화면 .재생_준비_버튼:disabled
+#화면 .재생_시작_버튼:disabled
 {
 	opacity : 0.5 ;
 	/* cursor : default ; */

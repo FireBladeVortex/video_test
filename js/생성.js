@@ -1,5 +1,24 @@
 
 
+function 안내_표시줄_부분용()
+{
+	const 동영상 = document.querySelector(".구역[data-종류=동영상]")
+	const 쇼츠 = document.querySelector(".구역[data-종류=쇼츠]")
+	const 부분 = document.querySelector(".구역[data-종류=부분]")
+	const 부분만 = !동영상 && !쇼츠 && 부분
+
+	if (부분만)
+
+
+}
+
+
+
+
+
+
+
+
 
 function 불러오기_노래들(그거)
 {
@@ -39,17 +58,58 @@ function 만들기_부분()
 	if (!임시_목록.부분)
 		return
 
+	const 동영상 = document.querySelector(".구역[data-종류=동영상]")
+	const 쇼츠 = document.querySelector(".구역[data-종류=쇼츠]")
 	const 구역 = document.querySelector(".구역[data-종류=부분]")
 	if (!구역)
 		return
+
+	const 부분만 = !동영상 && !쇼츠 && 부분
+	if (부분만)
+	{
+		const 안내표시줄 = document.createElement("div")
+		안내표시줄.className = "안내표시줄"
+		구역.appendChild(안내표시줄)
+
+		const 안내 = document.createElement("span")
+		안내.className = "안내"
+		안내.textContent = "크게 보면 편해요"
+		안내표시줄.appendChild(안내)
+	}
+
+	const 본문 = document.createElement("section")
+	본문.className = "본문"
+	구역.appendChild(본문)
 
 	const 선택지_공간 = document.createElement("div")
 	선택지_공간.className = "선택지_공간"
 	구역.appendChild(선택지_공간)
 
 
+/////////
+
+// 이 공간에 드롭다운 생성 함수, 노래 목록 생성 함수를 추가하세요
+/////////
+
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 작게 화면에 나올 드롭다운
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 크게 화면에서 나올 목록
 // (수정) "시작"
-// select 대신 div 안에 버튼과 ul을 만듭니다 (27번 예제 구조)
 		const 선택지_노래 = document.createElement("div")
 		선택지_노래.className = "선택지_노래"
 		선택지_공간.appendChild(선택지_노래)
@@ -65,7 +125,7 @@ function 만들기_부분()
 				선택지_버튼.appendChild(선택지_안내)
 
 			// 펼쳐지는 목록
-			const 선택지_목록 = document.createElement("ul")
+			const 선택지_목록 = document.createElement("menu")
 			선택지_목록.className = "선택지_목록"
 			선택지_노래.appendChild(선택지_목록)
 // (수정) "종료"
@@ -87,11 +147,11 @@ function 만들기_부분()
 		선택지_재생.className = "선택지_재생"
 		선택지_공간.appendChild(선택지_재생)
 
-			const 재생_준비_버튼 = document.createElement("button")
-			재생_준비_버튼.className = "재생_준비_버튼"
-			재생_준비_버튼.textContent = "재생 준비"
-			선택지_재생.appendChild(재생_준비_버튼)
-			재생_준비_버튼.disabled = true
+			const 재생_시작_버튼 = document.createElement("button")
+			재생_시작_버튼.className = "재생_시작_버튼"
+			재생_시작_버튼.textContent = "재생 시작"
+			선택지_재생.appendChild(재생_시작_버튼)
+			재생_시작_버튼.disabled = true
 
 
 // (수정) "시작"
@@ -114,7 +174,7 @@ function 만들기_부분()
 				선택지_버튼.replaceChildren(선택지_줄_만들기(노래))
 				선택지_노래.classList.remove("열림")
 				선택된_노래 = 노래
-				재생_준비_버튼.disabled = false
+				재생_시작_버튼.disabled = false
 			})
 
 			선택지_목록.appendChild(항목)
@@ -163,7 +223,7 @@ function 만들기_부분()
 	// // lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
 	// function update_title()
 	// {
-	// 	재생_준비_버튼.disabled = true
+	// 	재생_시작_버튼.disabled = true
 	// 	const lang_value = 선택지_언어.value
 	// 	const name_value = 선택지_이름.value
 
@@ -207,12 +267,12 @@ function 만들기_부분()
 
 	// 선택지_제목.addEventListener("change", () =>
 	// {
-	// 	재생_준비_버튼.disabled = !선택지_제목.value
+	// 	재생_시작_버튼.disabled = !선택지_제목.value
 	// })
 
-	// 재생_준비_버튼.addEventListener("click", () =>
+	// 재생_시작_버튼.addEventListener("click", () =>
 	// {
-	// 	const target = "재생_준비_버튼"
+	// 	const target = "재생_시작_버튼"
 	// 	{
 	// 		이미지_클릭_강조(target)
 	// 		const lang_value = 선택지_언어.value
@@ -247,12 +307,12 @@ function 만들기_부분()
 
 	// (추가) "시작"
 // 선택한 노래가 있으면 해당 구간을 재생 준비합니다
-	재생_준비_버튼.addEventListener("click", () =>
+	재생_시작_버튼.addEventListener("click", () =>
 	{
 		if (!선택된_노래)
 			return
 
-		이미지_클릭_강조("재생_준비_버튼")
+		이미지_클릭_강조("재생_시작_버튼")
 		// 명령.js의 함수를 사용합니다 (옛 ready_data 대체)
 		선택한_동영상_준비(선택된_노래.id, 선택된_노래.시작, 선택된_노래.종료)
 	})
@@ -340,7 +400,7 @@ function 만들기_부분()
 // // 삭제
 // ```
 
-// `선택지_재생`과 `재생_준비_버튼`을 만드는 코드는 그대로 둡니다.
+// `선택지_재생`과 `재생_시작_버튼`을 만드는 코드는 그대로 둡니다.
 
 // ## 2. 요청: 한 줄(이름 칸 + 제목 칸) 만드는 함수
 
@@ -399,7 +459,7 @@ function 만들기_부분()
 // 				선택지_버튼.replaceChildren(선택지_줄_만들기(노래))
 // 				선택지_노래.classList.remove("열림")
 // 				선택된_노래 = 노래
-// 				재생_준비_버튼.disabled = false
+// 				재생_시작_버튼.disabled = false
 // 			})
 
 // 			선택지_목록.appendChild(항목)
@@ -450,7 +510,7 @@ function 만들기_부분()
 // 	// lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
 // 	function update_title()
 // 	{
-// 		재생_준비_버튼.disabled = true
+// 		재생_시작_버튼.disabled = true
 // 		const lang_value = 선택지_언어.value
 // 		const name_value = 선택지_이름.value
 
@@ -494,12 +554,12 @@ function 만들기_부분()
 
 // 	선택지_제목.addEventListener("change", () =>
 // 	{
-// 		재생_준비_버튼.disabled = !선택지_제목.value
+// 		재생_시작_버튼.disabled = !선택지_제목.value
 // 	})
 
-// 	재생_준비_버튼.addEventListener("click", () =>
+// 	재생_시작_버튼.addEventListener("click", () =>
 // 	{
-// 		const target = "재생_준비_버튼"
+// 		const target = "재생_시작_버튼"
 // 		{
 // 			이미지_클릭_강조(target)
 // 			const lang_value = 선택지_언어.value
@@ -542,12 +602,12 @@ function 만들기_부분()
 // ```js
 // // (추가) "시작"
 // // 선택한 노래가 있으면 해당 구간을 재생 준비합니다
-// 	재생_준비_버튼.addEventListener("click", () =>
+// 	재생_시작_버튼.addEventListener("click", () =>
 // 	{
 // 		if (!선택된_노래)
 // 			return
 
-// 		이미지_클릭_강조("재생_준비_버튼")
+// 		이미지_클릭_강조("재생_시작_버튼")
 // 		// 명령.js의 함수를 사용합니다 (옛 ready_data 대체)
 // 		선택한_동영상_준비(선택된_노래.id, 선택된_노래.시작, 선택된_노래.종료)
 // 	})
