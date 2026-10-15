@@ -661,7 +661,7 @@ function 이미지_클릭_강조(종류)
 	const 딸깍 = document.querySelectorAll(".버튼")
 	for (const 버튼 of 딸깍)
 	{
-		const 그거 = (버튼.dataset.종류 + (버튼.dataset.숫자 + "").padStart(3, "0"))
+		const 그거 = 버튼.dataset.종류 + 버튼.dataset.숫자
 		const 클릭 = 그거 === 종류
 		버튼.classList.toggle("강조", 클릭)
 		버튼.classList.toggle("발기", !클릭)
@@ -695,8 +695,9 @@ function 채우기_페이지(종류)
 
 		const 버튼 = document.createElement("button")
 		버튼.className = "버튼"
-		버튼.dataset.숫자 = 숫자
 		버튼.dataset.종류 = 종류
+		const 몇번 = (숫자 + "").padStart(3, "0")
+		버튼.dataset.숫자 = 몇번
 
 		const img = document.createElement("img")
 		const src_1 = "https://img.youtube.com/vi/"
@@ -709,7 +710,7 @@ function 채우기_페이지(종류)
 
 		function 딸깍()
 		{
-			const 그거 = (종류 + (숫자 + "").padStart(3, "0"))
+			const 그거 = 종류 + 몇번
 			if (이미지_클릭 === 그거)
 			{
 				// if (재생())
@@ -830,6 +831,7 @@ function 만들기_목록()
 		왼쪽.appendChild(구역)
 
 		const 머리말 = document.createElement("header")
+		머리말.className = "머리말"
 		구역.appendChild(머리말)
 
 			const 머리말_재생목록 = document.createElement("span")
@@ -948,10 +950,15 @@ function 만들기_목록()
 
 		채우기_페이지_버튼(분류.종류)
 
+
+		const 본문 = document.createElement("section")
+		본문.className = "본문"
+		구역.appendChild(본문)
+
 		// 미리보기 들어갈 공간
 		const 목록 = document.createElement("section")
 		목록.className = "목록 " + 분류.종류
-		구역.appendChild(목록)
+		본문.appendChild(목록)
 
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const 페이지 = document.createElement("div")

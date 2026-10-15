@@ -259,7 +259,6 @@ body
 	height : 100% ;
 	max-width : round(down, 95%, var(--가로)) ;
 	max-height : round(down, 100%, var(--세로)) ;
-
 }
 
 
