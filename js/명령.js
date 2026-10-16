@@ -430,51 +430,57 @@ document.addEventListener("wheel", 드르륵, { passive: false })
 
 
 
-const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0 }
-
-
+const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0, 부분: 0 }
+let 총몇칸 = null
 
 function 크기_감지(구역)
 {
 	function 페이지_초기화(종류)
 	{
-		if (종류 === "쇼츠")
-		{
-			페이지_쇼츠 = 1
-		}
-		else
-		{
-			페이지_동영상 = 1
-		}
+		페이지_쓰기(종류, 1)
+		// if (종류 === "쇼츠")
+		// {
+		// 	페이지_쇼츠 = 1
+		// }
+		// else
+		// {
+		// 	페이지_동영상 = 1
+		// }
 		채우기_페이지_버튼(종류)
-	}
-
-	function 크기_계산(목록)
-	{
-		const 설정 = getComputedStyle(document.documentElement)
-		const 가로값 = parseInt(설정.getPropertyValue("--가로"))
-		const 세로값 = parseInt(설정.getPropertyValue("--세로"))
-
-		const 쇼츠 = 목록.target.classList.contains("쇼츠")
-
-		const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
-		const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
-
-		const 너비 = 목록.contentBoxSize[0].inlineSize
-		const 높이 = 목록.contentBoxSize[0].blockSize
-
-		const 가로 = Math.floor(너비 / 쇼츠_가로)
-		const 세로 = Math.floor(높이 / 쇼츠_세로)
-		const 몇칸 = 가로 * 세로
-
-		return 몇칸
 	}
 
 	for (const 목록 of 구역)
 	{
-		const 종류 = 목록.target.classList.contains("쇼츠") ? "쇼츠" : "동영상"
-		이거_몇칸임[종류] = 크기_계산(목록)
+		const 쇼츠 = 목록.target.classList.contains("쇼츠")
+		const 부분 = 목록.target.classList.contains("부분")
+		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
 
+		if (쇼츠)
+		{
+			const 설정 = getComputedStyle(document.documentElement)
+			const 가로값 = parseInt(설정.getPropertyValue("--가로"))
+			const 세로값 = parseInt(설정.getPropertyValue("--세로"))
+
+			const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
+			const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
+
+			const 너비 = 목록.contentBoxSize[0].inlineSize
+			const 높이 = 목록.contentBoxSize[0].blockSize
+
+			const 가로 = Math.floor(너비 / 쇼츠_가로)
+			const 세로 = Math.floor(높이 / 쇼츠_세로)
+			const 몇칸 = 가로 * 세로
+
+			총몇칸 = 몇칸
+		}
+
+		if (부분)
+		{
+			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
+			총몇칸 = 세로_몇칸
+		}
+
+		이거_몇칸임[종류] = 총몇칸
 		페이지_초기화(종류)
 		페이지_재구성(종류)
 	}
@@ -489,11 +495,13 @@ function 페이지_재구성(종류)
 	if (!숫자)
 		return
 
-	const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 페이지_읽기(종류)
+	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 	const 숫자_최소 = (페이지_지금 - 1) * 숫자
 	const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
-	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
+	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]")
+	// const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
 	for (const 버튼 of 그거)
 	{
 		const 번호 = +버튼.dataset.숫자
@@ -508,8 +516,14 @@ function 페이지_재구성(종류)
 function 페이지_최대(종류)
 {
 	const 숫자 = 이거_몇칸임[종류]
-	const data = 사용할_동영상[종류] ?? 임시_목록[종류]
-	return Math.ceil(data.length / 숫자)
+	if (!숫자)
+		return 1
+
+
+	const 개수 = 종류 === "부분" ? document.querySelectorAll(".노래_항목").length : (사용할_동영상[종류] ?? 임시_목록[종류]).length
+	return Math.ceil(개수 / 숫자)
+	// const data = 사용할_동영상[종류] ?? 임시_목록[종류]
+	// return Math.ceil(data.length / 숫자)
 }
 
 
@@ -536,7 +550,8 @@ function 채우기_페이지_버튼(종류)
 		return
 	}
 
-	const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 페이지_읽기(종류)
+	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 
 	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
@@ -628,6 +643,26 @@ let 채널_주소 = null
 
 let 페이지_동영상 = 1
 let 페이지_쇼츠 = 1
+let 페이지_부분 = 1
+
+function 페이지_읽기(종류)
+{
+	if (종류 === "쇼츠")
+		return 페이지_쇼츠
+	if (종류 === "부분")
+		return 페이지_부분
+	return 페이지_동영상
+}
+
+function 페이지_쓰기(종류, 값)
+{
+	if (종류 === "쇼츠")
+		페이지_쇼츠 = 값
+	else if (종류 === "부분")
+		페이지_부분 = 값
+	else
+		페이지_동영상 = 값
+}
 
 function 선택한_동영상_준비(id, start = 0, end = 0)
 {
@@ -778,6 +813,21 @@ function 크기_조절(왼쪽, 그거)
 	{
 		크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
 	}
+
+	const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
+	if (부분_구역 && 부분_구역.dataset.단독 === "거짓")
+	{
+		const 크게 = 구역_종류 === "부분"
+		부분_구역.dataset.크게 = 크게 ? "참" : "거짓"
+
+		const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
+		if (드롭다운_칸)
+			드롭다운_칸.inert = 크게
+
+		const 노래_목록 = 부분_구역.querySelector(".목록.부분")
+		if (노래_목록)
+			노래_목록.inert = !크게
+	}
 }
 
 
@@ -856,11 +906,6 @@ function 만들기_목록()
 				머리말_크기.appendChild(크기_조절_문자열)
 				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 
-		if (분류.종류 === "부분")
-		{
-			// 만들기_부분()
-			continue
-		}
 
 		if (분류.종류 === "동영상")
 		{
@@ -901,20 +946,23 @@ function 만들기_목록()
 		function 팔락(한장)
 		{
 			const 페이지_마지막 = 페이지_최대(분류.종류)
-			const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+
+			const 페이지_지금 = 페이지_읽기(분류.종류)
+			// const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 			const 넘기기 = 페이지_지금 + 한장
 
 			if (넘기기 < 1 || 넘기기 > 페이지_마지막)
 				return
 
-			if (분류.종류 === "쇼츠")
-			{
-				페이지_쇼츠 = 넘기기
-			}
-			else
-			{
-				페이지_동영상 = 넘기기
-			}
+			페이지_쓰기(분류.종류, 넘기기)
+			// if (분류.종류 === "쇼츠")
+			// {
+			// 	페이지_쇼츠 = 넘기기
+			// }
+			// else
+			// {
+			// 	페이지_동영상 = 넘기기
+			// }
 			채우기_페이지_버튼(분류.종류)
 			페이지_재구성(분류.종류)
 		}
@@ -944,6 +992,11 @@ function 만들기_목록()
 			버튼_다음.appendChild(버튼_다음_문자열)
 			버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
 
+		if (분류.종류 === "부분")
+		{
+			// 만들기_부분()
+			continue
+		}
 
 
 		채우기_페이지_버튼(분류.종류)

@@ -560,3 +560,137 @@ body
 	white-space : pre-wrap ;
 	tab-size : 4 ;
 } */
+
+
+/* (추가) "시작" */
+/* 부분 구역이 단독이면 왼쪽 전체 높이를 사용 */
+#왼쪽:has(.구역[data-단독=참])
+{
+	grid-template-rows : 1fr ;
+}
+
+/* 작게: 노래 목록 숨김 / 크게: 드롭다운 숨김 */
+.구역[data-종류=부분][data-크게=거짓] .본문
+{
+	display : none ;
+}
+
+.구역[data-종류=부분][data-크게=참] .선택지_공간
+{
+	display : none ;
+}
+
+.구역[data-종류=부분] .본문
+{
+	flex : 1 ;
+	min-height : 0 ;
+	height : auto ;
+}
+
+/* 드롭다운 (글자 22px, 높이 30px) */
+.선택지_공간
+{
+	flex : 0 0 30px ;
+	height : 30px ;
+	overflow : visible ;
+}
+
+.드롭다운_칸
+{
+	display : flex ;
+	width : 100% ;
+	height : 30px ;
+	gap : 3px ;
+	overflow : visible ;
+}
+
+.드롭다운_선택
+{
+	flex : 1 ;
+	min-width : 0 ;
+	height : 30px ;
+	font-size : 22px ;
+	text-align : left ;
+	background : var(--왼쪽바탕색) ;
+	border : 1px solid var(--강조2) ;
+	cursor : pointer ;
+	white-space : pre ;
+	tab-size : 200px ;
+}
+
+.드롭다운_선택 option
+{
+	font-size : 22px ;
+	background : var(--왼쪽바탕색) ;
+	white-space : pre ;
+	tab-size : 200px ;
+}
+
+/* 재생 시작 버튼 (공통) */
+.드롭다운_칸 .재생_시작_버튼,
+.노래_재생 .재생_시작_버튼
+{
+	flex : 0 0 100px ;
+	width : 100px ;
+	height : 30px ;
+	background : var(--강조2) ;
+	cursor : pointer ;
+}
+
+/* 노래 목록 (크게 화면) */
+.목록.부분
+{
+	max-width : none ;
+	max-height : none ;
+	height : calc(100% - 9px) ;
+}
+
+.페이지.부분
+{
+	display : flex ;
+	flex-direction : column ;
+	gap : 3px ;
+}
+
+.노래_항목
+{
+	display : grid ;
+	grid-template-columns : 200px 1fr 100px ;
+	flex : 0 0 30px ;
+	width : 100% ;
+	height : 30px ;
+}
+
+.노래_항목:hover
+{
+	background : rgba(255, 255, 255, 0.15) ;
+}
+
+.노래_칸
+{
+	position : relative ;
+	display : flex ;
+	align-items : center ;
+	height : 30px ;
+	min-width : 0 ;
+	white-space : nowrap ;
+}
+
+.노래_이름
+{
+	justify-content : center ;
+	text-align : center ;
+}
+
+/* 세로 구분선 (높이의 80%) */
+.노래_칸 + .노래_칸::before
+{
+	content : "" ;
+	position : absolute ;
+	left : 0 ;
+	top : 10% ;
+	height : 80% ;
+	width : 1px ;
+	background : var(--강조2) ;
+}
+/* (추가) "종료" */
