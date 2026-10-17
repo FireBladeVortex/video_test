@@ -334,250 +334,6 @@ document.addEventListener("wheel", 드르륵, { passive: false })
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0, 부분: 0 }
-let 총몇칸 = null
-
-function 크기_감지(구역)
-{
-	function 페이지_초기화(종류)
-	{
-		페이지_쓰기(종류, 1)
-		// if (종류 === "쇼츠")
-		// {
-		// 	페이지_쇼츠 = 1
-		// }
-		// else
-		// {
-		// 	페이지_동영상 = 1
-		// }
-		채우기_페이지_버튼(종류)
-	}
-
-	for (const 목록 of 구역)
-	{
-		const 쇼츠 = 목록.target.classList.contains("쇼츠")
-		const 부분 = 목록.target.classList.contains("부분")
-		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
-
-		if (쇼츠)
-		{
-			const 설정 = getComputedStyle(document.documentElement)
-			const 가로값 = parseInt(설정.getPropertyValue("--가로"))
-			const 세로값 = parseInt(설정.getPropertyValue("--세로"))
-
-			const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
-			const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
-
-			const 너비 = 목록.contentBoxSize[0].inlineSize
-			const 높이 = 목록.contentBoxSize[0].blockSize
-
-			const 가로 = Math.floor(너비 / 쇼츠_가로)
-			const 세로 = Math.floor(높이 / 쇼츠_세로)
-			const 몇칸 = 가로 * 세로
-
-			총몇칸 = 몇칸
-		}
-
-		if (부분)
-		{
-			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
-			총몇칸 = 세로_몇칸
-		}
-
-		이거_몇칸임[종류] = 총몇칸
-		페이지_초기화(종류)
-		페이지_재구성(종류)
-	}
-}
-const 재구성 = new ResizeObserver(크기_감지)
-
-
-
-function 페이지_재구성(종류)
-{
-	const 숫자 = 이거_몇칸임[종류]
-	if (!숫자)
-		return
-
-	const 페이지_지금 = 페이지_읽기(종류)
-	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-	const 숫자_최소 = (페이지_지금 - 1) * 숫자
-	const 숫자_최대 = (페이지_지금 * 숫자) - 1
-
-	const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]")
-	// const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
-	for (const 버튼 of 그거)
-	{
-		const 번호 = +버튼.dataset.숫자
-		const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
-		버튼.style.display = 몇번 ? "" : "none"
-
-	}
-}
-
-
-
-function 페이지_최대(종류)
-{
-	const 숫자 = 이거_몇칸임[종류]
-	if (!숫자)
-		return 1
-
-
-	const 개수 = 종류 === "부분" ? document.querySelectorAll(".노래_항목").length : (사용할_동영상[종류] ?? 임시_목록[종류]).length
-	return Math.ceil(개수 / 숫자)
-	// const data = 사용할_동영상[종류] ?? 임시_목록[종류]
-	// return Math.ceil(data.length / 숫자)
-}
-
-
-
-function 채우기_페이지_버튼(종류)
-{
-	const 버튼_이전 = document.querySelector(".버튼_이전[data-종류=" + 종류 + "]")
-	const 버튼_지금 = document.querySelector(".버튼_지금[data-종류=" + 종류 + "]")
-	const 버튼_다음 = document.querySelector(".버튼_다음[data-종류=" + 종류 + "]")
-
-	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
-		return
-
-	const 버튼_이전_문자열 = 버튼_이전.querySelector(".문자열_클릭")
-	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
-
-	const 페이지_수 = 페이지_최대(종류)
-
-	if (페이지_수 <= 1)
-	{
-		버튼_이전_문자열.textContent = ""
-		버튼_지금.textContent = ""
-		버튼_다음_문자열.textContent = ""
-		return
-	}
-
-	const 페이지_지금 = 페이지_읽기(종류)
-	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
-
-	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
-	버튼_지금.textContent = ""
-	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
-
-	const 이전_숫자 = document.createElement("div")
-	이전_숫자.className = "이전_숫자"
-	이전_숫자.dataset.종류 = 종류
-	이전_숫자.textContent = 페이지_지금 === 1 ? "" : 페이지_지금 - 1
-	버튼_지금.appendChild(이전_숫자)
-
-	const 지금_숫자 = document.createElement("div")
-	지금_숫자.className = "지금_숫자"
-	지금_숫자.dataset.종류 = 종류
-	지금_숫자.textContent = 페이지_지금
-	버튼_지금.appendChild(지금_숫자)
-
-	const 다음_숫자 = document.createElement("div")
-	다음_숫자.className = "다음_숫자"
-	다음_숫자.dataset.종류 = 종류
-	다음_숫자.textContent = 페이지_지금 + 1 > 페이지_수 ? "" : 페이지_지금 + 1
-	버튼_지금.appendChild(다음_숫자)
-}
-
-
-
 // 시간 표시 변환
 // 100000초 또는 12:34:56 같은 모양으로
 // 없는거 채워서 시간값 2개 전달하기
@@ -627,8 +383,442 @@ function 시간_표기법(시간)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-const 사용할_동영상 = { 동영상: null, 쇼츠: null}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function 만들기_부분()
+{
+	if (!임시_목록.부분)
+		return
+
+	function 구역_찾기(종류)
+	{
+		return document.querySelector(".구역[data-종류=" + 종류 + "]")
+	}
+	const 동영상 = 구역_찾기("동영상")
+	const 쇼츠 = 구역_찾기("쇼츠")
+	const 구역 = 구역_찾기("부분")
+	if (!구역)
+		return
+
+	const 부분만 = !동영상 && !쇼츠 && 부분
+	if (!부분만)
+	{
+		const 안내표시줄 = document.createElement("div")
+		안내표시줄.className = "안내표시줄"
+		구역.appendChild(안내표시줄)
+
+		const 안내 = document.createElement("span")
+		안내.className = "안내"
+		안내.textContent = "추천 🔼⬆⏫"
+		안내표시줄.appendChild(안내)
+	}
+
+	const 본문 = document.createElement("section")
+	본문.className = "본문"
+	구역.appendChild(본문)
+
+	const 선택지_공간 = document.createElement("div")
+	선택지_공간.className = "선택지_공간"
+	구역.appendChild(선택지_공간)
+
+	function 불러오기_노래들(그거)
+	{
+		const 필터_1차 = 그거.노래 ?? []
+
+		const 필터_2차 = 필터_1차
+			.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
+			.map(노래 => ({ id: 그거.id, ...노래 }))
+		return 필터_2차
+	}
+
+	function 드롭다운()
+	{
+		if (!동영상 && !쇼츠)
+			return
+
+		const 드롭다운_칸 = document.createElement("div")
+		드롭다운_칸.className = "드롭다운_칸"
+		선택지_공간.appendChild(드롭다운_칸)
+
+		const 선택지 = document.createElement("select")
+		선택지.className = "드롭다운_선택"
+		드롭다운_칸.appendChild(선택지)
+
+		// "노래 골라" 안내 (열면 사라지고, 선택 없이 닫으면 다시 보임)
+		const 안내 = document.createElement("option")
+		안내.value = ""
+		안내.textContent = "노래 골라"
+		안내.selected = true
+		안내.disabled = true
+		안내.hidden = true
+		선택지.appendChild(안내)
+
+		// option의 value에는 노래_자료의 번호를 넣음
+		const 노래_자료 = []
+		for (const 그거 of 임시_목록.부분)
+		{
+			for (const 노래 of 불러오기_노래들(그거))
+			{
+				const 항목 = document.createElement("option")
+				항목.value = 노래_자료.length + ""
+				항목.textContent = 노래.이름 + "\t" + 노래.제목
+				선택지.appendChild(항목)
+				노래_자료.push(노래)
+			}
+		}
+
+		const 재생 = document.createElement("button")
+		재생.className = "재생_시작_버튼"
+		재생.textContent = "재생 시작"
+		재생.disabled = true
+		드롭다운_칸.appendChild(재생)
+
+		// 선택지를 고르면 재생 버튼 활성화
+		선택지.addEventListener("change", () =>
+		{
+			재생.disabled = 선택지.value === ""
+		})
+
+		// 선택한 노래의 id, 시작, 종료로 cueVideoById 실행
+		재생.addEventListener("click", () =>
+		{
+			const 노래 = 노래_자료[+선택지.value]
+			if (!노래)
+				return
+
+			이미지_클릭_강조("드롭다운")
+			선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+		})
+	}
+
+	// 노래를 페이지 형태로 모두 보여주는 목록 (한 줄 = 이름 200px | 제목 | 재생 시작 100px)
+	function 만들기_노래_목록()
+	{
+		// 크기 감지(ResizeObserver)가 .목록 을 감시하므로 클래스를 "목록 부분"으로 지정
+		const 목록 = document.createElement("section")
+		목록.className = "목록 부분"
+		// 작게 화면에서는 시작부터 disable (inert = 클릭, 포커스 모두 차단)
+		목록.inert = 구역.dataset.크게 !== "참"
+		본문.appendChild(목록)
+
+		const 페이지 = document.createElement("div")
+		페이지.className = "페이지 부분"
+		목록.appendChild(페이지)
+
+		let 번호 = 0
+		for (const 그거 of 임시_목록.부분)
+		{
+			for (const 노래 of 불러오기_노래들(그거))
+			{
+				const 몇번 = (번호 + "").padStart(3, "0")
+				번호++
+
+				// 페이지_재구성이 data-종류, data-숫자로 보임/숨김을 결정함
+				const 항목 = document.createElement("div")
+				항목.className = "노래_항목"
+				항목.dataset.종류 = "부분"
+				항목.dataset.숫자 = 몇번
+				페이지.appendChild(항목)
+
+				const 칸_이름 = document.createElement("span")
+				칸_이름.className = "노래_칸 노래_이름"
+				칸_이름.textContent = 노래.이름
+				항목.appendChild(칸_이름)
+
+				const 칸_제목 = document.createElement("span")
+				칸_제목.className = "노래_칸 노래_제목"
+				칸_제목.textContent = 노래.제목
+				항목.appendChild(칸_제목)
+
+				const 칸_재생 = document.createElement("span")
+				칸_재생.className = "노래_칸 노래_재생"
+				항목.appendChild(칸_재생)
+
+				const 재생 = document.createElement("button")
+				재생.className = "재생_시작_버튼"
+				재생.textContent = "재생 시작"
+				칸_재생.appendChild(재생)
+
+				재생.addEventListener("click", () =>
+				{
+					이미지_클릭_강조("부분" + 몇번)
+					선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+				})
+			}
+		}
+	}
+
+	// 단독 = 부분 구역만 있는지, 크게 = 지금 큰 화면인지 (CSS와 크기_조절이 이 값을 사용함)
+	구역.dataset.단독 = (!동영상 && !쇼츠) ? "참" : "거짓"
+	구역.dataset.크게 = 구역.dataset.단독
+	드롭다운()
+	만들기_노래_목록()
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0, 부분: 0 }
+let 총몇칸 = null
+
+function 크기_감지(구역)
+{
+	for (const 목록 of 구역)
+	{
+		const 쇼츠 = 목록.target.classList.contains("쇼츠")
+		const 부분 = 목록.target.classList.contains("부분")
+		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
+
+		if (쇼츠)
+		{
+			const 설정 = getComputedStyle(document.documentElement)
+			const 가로값 = parseInt(설정.getPropertyValue("--가로"))
+			const 세로값 = parseInt(설정.getPropertyValue("--세로"))
+
+			const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
+			const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
+
+			const 너비 = 목록.contentBoxSize[0].inlineSize
+			const 높이 = 목록.contentBoxSize[0].blockSize
+
+			const 가로 = Math.floor(너비 / 쇼츠_가로)
+			const 세로 = Math.floor(높이 / 쇼츠_세로)
+			const 몇칸 = 가로 * 세로
+
+			총몇칸 = 몇칸
+		}
+
+		if (부분)
+		{
+			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
+			총몇칸 = 세로_몇칸
+		}
+
+		이거_몇칸임[종류] = 총몇칸
+		페이지_쓰기(종류, 1)
+		페이지_갱신(종류)
+		// 채우기_페이지_버튼(종류)
+		// 페이지_재구성(종류)
+	}
+}
+const 재구성 = new ResizeObserver(크기_감지)
+
+
+
+function 페이지_재구성(종류)
+{
+	const 숫자 = 이거_몇칸임[종류]
+	if (!숫자)
+		return
+
+	const 페이지_지금 = 페이지_읽기(종류)
+	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 숫자_최소 = (페이지_지금 - 1) * 숫자
+	const 숫자_최대 = (페이지_지금 * 숫자) - 1
+
+	const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
+	const 그거 = document.querySelectorAll(불러올거)
+	// const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
+	for (const 버튼 of 그거)
+	{
+		const 번호 = +버튼.dataset.숫자
+		const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
+		버튼.style.display = 몇번 ? "" : "none"
+	}
+}
+
+
+
+function 페이지_최대(종류)
+{
+	const 숫자 = 이거_몇칸임[종류]
+	if (!숫자)
+		return 1
+
+	const 개수 = 종류 === "부분"
+		? document.querySelectorAll(".노래_항목").length
+		: (사용할_동영상들[종류] ?? 임시_목록[종류]).length
+	return Math.ceil(개수 / 숫자)
+	// const data = 사용할_동영상들[종류] ?? 임시_목록[종류]
+	// return Math.ceil(data.length / 숫자)
+}
+
+
+
+function 채우기_페이지_버튼(종류)
+{
+
+	function 페이지_버튼_찾기(종류, 위치)
+	{
+		return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
+	}
+	const 버튼_이전 = 페이지_버튼_찾기(종류, "이전")
+	const 버튼_지금 = 페이지_버튼_찾기(종류, "지금")
+	const 버튼_다음 = 페이지_버튼_찾기(종류, "다음")
+
+	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
+		return
+
+	const 버튼_이전_문자열 = 버튼_이전.querySelector(".문자열_클릭")
+	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
+
+	const 페이지_수 = 페이지_최대(종류)
+
+	if (페이지_수 <= 1)
+	{
+		버튼_이전_문자열.textContent = ""
+		버튼_지금.textContent = ""
+		버튼_다음_문자열.textContent = ""
+		return
+	}
+
+	const 페이지_지금 = 페이지_읽기(종류)
+	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+
+	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
+	버튼_지금.textContent = ""
+	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
+
+
+
+
+	const 페이지_앞_지금_뒤 = ["이전_숫자", "지금_숫자", "다음_숫자"]
+	for (let 한장_차이 = -1 ; 한장_차이 <= +1 ; 한장_차이++)
+	{
+		const 페이지_숫자 = 페이지_지금 + 한장_차이
+
+		const 숫자 = document.createElement("span")
+		숫자.className = 페이지_앞_지금_뒤[한장_차이 + 1]
+		숫자.dataset.종류 = 종류
+		숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
+		버튼_지금.appendChild(숫자)
+	}
+
+
+
+
+
+
+
+
+	// const 이전_숫자 = document.createElement("div")
+	// 이전_숫자.className = "이전_숫자"
+	// 이전_숫자.dataset.종류 = 종류
+	// 이전_숫자.textContent = 페이지_지금 === 1 ? "" : 페이지_지금 - 1
+	// 버튼_지금.appendChild(이전_숫자)
+
+	// const 지금_숫자 = document.createElement("div")
+	// 지금_숫자.className = "지금_숫자"
+	// 지금_숫자.dataset.종류 = 종류
+	// 지금_숫자.textContent = 페이지_지금
+	// 버튼_지금.appendChild(지금_숫자)
+
+	// const 다음_숫자 = document.createElement("div")
+	// 다음_숫자.className = "다음_숫자"
+	// 다음_숫자.dataset.종류 = 종류
+	// 다음_숫자.textContent = 페이지_지금 + 1 > 페이지_수 ? "" : 페이지_지금 + 1
+	// 버튼_지금.appendChild(다음_숫자)
+}
+
+
+
+
+
+const 사용할_동영상들 = { 동영상: null, 쇼츠: null }
 
 let 시작_시간 = null
 let 종료_시간 = null
@@ -663,6 +853,13 @@ function 페이지_쓰기(종류, 값)
 	else
 		페이지_동영상 = 값
 }
+
+function 페이지_갱신(종류)
+{
+	채우기_페이지_버튼(종류)
+	페이지_재구성(종류)
+}
+
 
 function 선택한_동영상_준비(id, start = 0, end = 0)
 {
@@ -713,7 +910,7 @@ function 채우기_페이지(종류)
 	if (!페이지)
 		return
 
-	const 동영상들 = 사용할_동영상[종류] ?? 임시_목록[종류]
+	const 동영상들 = 사용할_동영상들[종류] ?? 임시_목록[종류]
 	if (!동영상들)
 		return
 
@@ -773,7 +970,7 @@ function 채우기_페이지(종류)
 
 function 미리보기_교체(종류)
 {
-	사용할_동영상.동영상 = 종류
+	사용할_동영상들.동영상 = 종류
 
 	const 페이지 = document.querySelector(".페이지.동영상")
 	if (페이지)
@@ -783,9 +980,11 @@ function 미리보기_교체(종류)
 
 	채우기_페이지("동영상")
 
-	페이지_동영상 = 1
-	채우기_페이지_버튼("동영상")
-	페이지_재구성("동영상")
+	페이지_쓰기("동영상", 1)
+	// 페이지_동영상 = 1
+	페이지_갱신("동영상")
+	// 채우기_페이지_버튼("동영상")
+	// 페이지_재구성("동영상")
 }
 
 
@@ -871,7 +1070,7 @@ function 만들기_목록()
 		if (!유효_재확인(분류.자료))
 			continue
 
-		사용할_동영상[분류.종류] = 분류.자료
+		사용할_동영상들[분류.종류] = 분류.자료
 
 		const 구역 = document.createElement("section")
 		구역.className = "구역"
@@ -955,16 +1154,7 @@ function 만들기_목록()
 				return
 
 			페이지_쓰기(분류.종류, 넘기기)
-			// if (분류.종류 === "쇼츠")
-			// {
-			// 	페이지_쇼츠 = 넘기기
-			// }
-			// else
-			// {
-			// 	페이지_동영상 = 넘기기
-			// }
-			채우기_페이지_버튼(분류.종류)
-			페이지_재구성(분류.종류)
+			페이지_갱신(분류.종류)
 		}
 
 		const 버튼_이전 = document.createElement("button")
@@ -1075,7 +1265,6 @@ async function 재생목록_조사(id)
 	const 결과 = 재생목록.map(id => ({ id }))
 	return 결과
 }
-
 
 
 
@@ -1194,9 +1383,6 @@ function 불러오기_재생목록(이름)
 
 
 
-
-
-
 function 채우기_이름표들(왼쪽_이름)
 {
 	const 본문 = document.createElement("section")
@@ -1277,6 +1463,12 @@ const 가나다순 =
 	"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
 ]
 
+const AtoZ =
+[
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+]
+
 function 채우기_가나다()
 {
 	const 가나다 = document.getElementById("가나다")
@@ -1313,7 +1505,8 @@ function 시작()
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 	채우기_이름표들(왼쪽_이름)
 
-	// 채우기_안내목록() 함수 제작 필요
+	const 오른쪽_안내 = document.getElementById("오른쪽_안내")
+	// 채우기_안내목록() 추가 함수 필요
 	// 채우기_안내문()
 }
 시작()
