@@ -63,19 +63,19 @@ function onYouTubeIframeAPIReady()
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
-	const 비율 = (지금_시간 - 시작_시간) / (종료_시간 - 시작_시간)
+	const 비율 = (지금_시간 - 시간_관리.시작) / (시간_관리.종료 - 시간_관리.시작)
 	document.getElementById("재생_시간_지금").style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
 
 	// const [, 지금_문자열] = 시간_표기법(지금_시간)
-	// if (종료_문자열 && 시작_문자열)
+	// if (문자열_관리.종료 && 문자열_관리.시작)
 	// {
-	// 	if (시작_시간 === 0)
+	// 	if (시간_관리.시작 === 0)
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = 지금_문자열 + "<" + 종료_문자열
+	// 		document.getElementById("플레이어_메세지").textContent = 지금_문자열 + "<" + 문자열_관리.종료
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = 시작_문자열 + "< + 지금_문자열 + ">" + 종료_문자열
+	// 		document.getElementById("플레이어_메세지").textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
 	// 	}
 	// }
 }
@@ -92,16 +92,16 @@ async function 불러오기_제목(id)
 		const 호출 = await fetch(주소)
 		const 데이터 = await 호출.json()
 
-		채널_이름 = 데이터.author_name
-		채널_주소 = 데이터.author_url
-		동영상_제목 = 데이터.title
-		// document.title = 채널_이름
+		선택한_채널.이름 = 데이터.author_name
+		선택한_채널.주소 = 데이터.author_url
+		선택한_동영상.제목 = 데이터.title
+		// document.title = 선택한_채널.이름
 
 		if (arguments.length !== 1)
 			return
 
 		document.getElementById("플레이어_메세지").style.textAlign = "start"
-		document.getElementById("플레이어_메세지").textContent = 동영상_제목
+		document.getElementById("플레이어_메세지").textContent = 선택한_동영상.제목
 	}
 	catch
 	{
@@ -153,9 +153,9 @@ function onPlayerStateChange(event)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
-		if (종료_시간 === 0)
+		if (시간_관리.종료 === 0)
 		{
-			[종료_시간, 종료_문자열] = 시간_표기법(player.getDuration())
+			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
 		}
 		let title = null
 		try
@@ -169,19 +169,19 @@ function onPlayerStateChange(event)
 		{
 			document.getElementById("플레이어_메세지").style.textAlign = "start"
 			document.getElementById("플레이어_메세지").textContent = title
-			불러오기_제목(선택한_동영상_id, title)
+			불러오기_제목(선택한_동영상.id, title)
 		}
 		else
 		{
-			불러오기_제목(선택한_동영상_id)
+			불러오기_제목(선택한_동영상.id)
 		}
 	}
 
 	if (event.data === 1)
 	{
-		if (player.getCurrentTime() < 시작_시간)
+		if (player.getCurrentTime() < 시간_관리.시작)
 		{
-			player.seekTo(시작_시간, true)
+			player.seekTo(시간_관리.시작, true)
 		}
 		clearInterval(재생_시간_표시줄)
 		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
@@ -193,7 +193,7 @@ function onPlayerStateChange(event)
 
 	if (event.data === 0)
 	{
-		player.seekTo(시작_시간, true)
+		player.seekTo(시간_관리.시작, true)
 		player.playVideo()
 	}
 
@@ -281,19 +281,19 @@ function 키_입력(키)
 		else if (키.code === "ArrowLeft")
 		{
 			키.preventDefault()
-			player.seekTo(Math.max(시작_시간, player.getCurrentTime() - 5), true)
+			player.seekTo(Math.max(시간_관리.시작, player.getCurrentTime() - 5), true)
 		}
 		else if (키.code === "ArrowRight")
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(종료_시간, player.getCurrentTime() + 5), true)
+			player.seekTo(Math.min(시간_관리.종료, player.getCurrentTime() + 5), true)
 		}
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
 		{
 			키.preventDefault()
 			const 비율 = +(키.code.slice(-1)) / 10
-			const 숫자키 = 시작_시간 + Math.floor((종료_시간 - 시작_시간) * 비율)
+			const 숫자키 = 시간_관리.시작 + Math.floor((시간_관리.종료 - 시간_관리.시작) * 비율)
 			player.seekTo(숫자키, true)
 		}
 
@@ -533,19 +533,6 @@ function 만들기_부분()
 		안내.hidden = true
 		선택지.appendChild(안내)
 
-		// option의 value에는 노래_자료의 번호를 넣음
-		// const 노래_자료 = []
-		// for (const 그거 of 임시_목록.부분)
-		// {
-		// 	for (const 노래 of 불러오기_노래들(그거))
-		// 	{
-		// 		const 항목 = document.createElement("option")
-		// 		항목.value = 노래_자료.length + ""
-		// 		항목.textContent = 노래.이름 + "\t" + 노래.제목
-		// 		선택지.appendChild(항목)
-		// 		노래_자료.push(노래)
-		// 	}
-		// }
 		for (let 순서 = 0 ; 순서 < 부분재생_노래들.length ; 순서++)
 		{
 			const 노래 = 부분재생_노래들[순서]
@@ -656,7 +643,6 @@ function 만들기_부분()
 
 const 이거_몇칸임 = { 동영상 : 0, 쇼츠 : 0, 부분 : 0 }
 let 총몇칸 = null
-
 function 크기_감지(구역)
 {
 	for (const 목록 of 구역)
@@ -664,25 +650,6 @@ function 크기_감지(구역)
 		const 쇼츠 = 목록.target.classList.contains("쇼츠")
 		const 부분 = 목록.target.classList.contains("부분")
 		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
-
-		// if (쇼츠)
-		// {
-		// 	const 설정 = getComputedStyle(document.documentElement)
-		// 	const 가로값 = parseInt(설정.getPropertyValue("--가로"))
-		// 	const 세로값 = parseInt(설정.getPropertyValue("--세로"))
-
-		// 	const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
-		// 	const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
-
-		// 	const 너비 = 목록.contentBoxSize[0].inlineSize
-		// 	const 높이 = 목록.contentBoxSize[0].blockSize
-
-		// 	const 가로 = Math.floor(너비 / 쇼츠_가로)
-		// 	const 세로 = Math.floor(높이 / 쇼츠_세로)
-		// 	const 몇칸 = 가로 * 세로
-
-		// 	총몇칸 = 몇칸
-		// }
 
 		if (부분)
 		{
@@ -709,10 +676,8 @@ function 크기_감지(구역)
 		}
 
 		이거_몇칸임[종류] = 총몇칸
-		페이지_쓰기(종류, 1)
+		페이지_관리[종류] = 1
 		페이지_갱신(종류)
-		// 채우기_페이지_버튼(종류)
-		// 페이지_재구성(종류)
 	}
 }
 const 재구성 = new ResizeObserver(크기_감지)
@@ -725,14 +690,12 @@ function 페이지_재구성(종류)
 	if (!숫자)
 		return
 
-	const 페이지_지금 = 페이지_읽기(종류)
-	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 페이지_관리[종류]
 	const 숫자_최소 = (페이지_지금 - 1) * 숫자
 	const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
 	const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
 	const 그거 = document.querySelectorAll(불러올거)
-	// const 그거 = document.querySelectorAll(".버튼[data-종류=" + 종류 + "]")
 	for (const 버튼 of 그거)
 	{
 		const 번호 = +버튼.dataset.숫자
@@ -749,19 +712,16 @@ function 페이지_최대(종류)
 	if (!숫자)
 		return 1
 
-	const 개수 = 종류 === "부분"
+	const 몇개 = 종류 === "부분"
 		? document.querySelectorAll(".노래_항목").length
 		: (사용할_동영상들[종류] ?? 임시_목록[종류]).length
-	return Math.ceil(개수 / 숫자)
-	// const data = 사용할_동영상들[종류] ?? 임시_목록[종류]
-	// return Math.ceil(data.length / 숫자)
+	return Math.ceil(몇개 / 숫자)
 }
 
 
 
 function 채우기_페이지_버튼(종류)
 {
-
 	function 페이지_버튼_찾기(종류, 위치)
 	{
 		return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
@@ -786,15 +746,11 @@ function 채우기_페이지_버튼(종류)
 		return
 	}
 
-	const 페이지_지금 = 페이지_읽기(종류)
-	// const 페이지_지금 = 종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
+	const 페이지_지금 = 페이지_관리[종류]
 
 	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
 	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
-
-
-
 
 	const 페이지_앞_지금_뒤 = ["이전_숫자", "지금_숫자", "다음_숫자"]
 	for (let 한장_차이 = -1 ; 한장_차이 <= +1 ; 한장_차이++)
@@ -807,31 +763,6 @@ function 채우기_페이지_버튼(종류)
 		숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
 		버튼_지금.appendChild(숫자)
 	}
-
-
-
-
-
-
-
-
-	// const 이전_숫자 = document.createElement("div")
-	// 이전_숫자.className = "이전_숫자"
-	// 이전_숫자.dataset.종류 = 종류
-	// 이전_숫자.textContent = 페이지_지금 === 1 ? "" : 페이지_지금 - 1
-	// 버튼_지금.appendChild(이전_숫자)
-
-	// const 지금_숫자 = document.createElement("div")
-	// 지금_숫자.className = "지금_숫자"
-	// 지금_숫자.dataset.종류 = 종류
-	// 지금_숫자.textContent = 페이지_지금
-	// 버튼_지금.appendChild(지금_숫자)
-
-	// const 다음_숫자 = document.createElement("div")
-	// 다음_숫자.className = "다음_숫자"
-	// 다음_숫자.dataset.종류 = 종류
-	// 다음_숫자.textContent = 페이지_지금 + 1 > 페이지_수 ? "" : 페이지_지금 + 1
-	// 버튼_지금.appendChild(다음_숫자)
 }
 
 
@@ -840,39 +771,15 @@ function 채우기_페이지_버튼(종류)
 
 const 사용할_동영상들 = { 동영상 : null, 쇼츠 : null }
 
-let 시작_시간 = null
-let 종료_시간 = null
+const 선택한_동영상 = { id : null, 제목 : null }
+const 선택한_채널 = { 이름 : null, 주소 : null }
 
-let 시작_문자열 = null
-let 종료_문자열 = null
+const 시간_관리 = { 시작 : null, 종료 : null }
+const 문자열_관리 = { 시작 : null, 종료 : null }
 
-let 선택한_동영상_id = null
-let 채널_이름 = null
-let 동영상_제목 = null
-let 채널_주소 = null
+const 페이지_관리 = { 동영상 : 1, 쇼츠 : 1, 부분 : 1 }
 
-let 페이지_동영상 = 1
-let 페이지_쇼츠 = 1
-let 페이지_부분 = 1
 
-function 페이지_읽기(종류)
-{
-	if (종류 === "쇼츠")
-		return 페이지_쇼츠
-	if (종류 === "부분")
-		return 페이지_부분
-	return 페이지_동영상
-}
-
-function 페이지_쓰기(종류, 값)
-{
-	if (종류 === "쇼츠")
-		페이지_쇼츠 = 값
-	else if (종류 === "부분")
-		페이지_부분 = 값
-	else
-		페이지_동영상 = 값
-}
 
 function 페이지_갱신(종류)
 {
@@ -881,28 +788,28 @@ function 페이지_갱신(종류)
 }
 
 
+
 function 선택한_동영상_준비(id, start = 0, end = 0)
 {
-	선택한_동영상_id = id
+	선택한_동영상.id = id
 
 	if (arguments.length === 1)
-		return 선택한_동영상_id
+		return 선택한_동영상.id
 
 	const 시작 = 시간_표기법(start)
-	시작_시간 = 시작[0]
-	시작_문자열 = 시작[1]
+	시간_관리.시작 = 시작[0]
+	문자열_관리.시작 = 시작[1]
 
 	const 종료 = 시간_표기법(end)
-	종료_시간 = 종료[0]
-	종료_문자열 = 종료[1]
+	시간_관리.종료 = 종료[0]
+	문자열_관리.종료 = 종료[1]
 
 	player.cueVideoById(
 	{
-		videoId : 선택한_동영상_id,
-		startSeconds : 시작_시간,
-		...(종료_시간 > 0 && {endSeconds : 종료_시간})
+		videoId : 선택한_동영상.id,
+		startSeconds : 시간_관리.시작,
+		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
 	})
-
 }
 
 
@@ -917,7 +824,6 @@ function 이미지_클릭_강조(이거)
 		const 클릭 = 그거 === 이거
 		딸깍.classList.toggle("강조", 클릭)
 		딸깍.classList.toggle("발기", !클릭)
-
 	}
 	이미지_클릭함 = 이거
 }
@@ -934,10 +840,6 @@ function 채우기_페이지(종류)
 	if (!동영상들)
 		return
 
-	// const crrt_data_count = 페이지.children.length
-	// const nxxt_data_count = 동영상들.length
-
-	// const next_count = 이거_몇칸임[종류] 새로 계산된 필요 개수
 	for (let 숫자 = 0 ; 숫자 < 동영상들.length ; 숫자++)
 	{
 		const 동영상 = 동영상들[숫자]
@@ -1000,11 +902,8 @@ function 미리보기_교체(종류)
 
 	채우기_페이지("동영상")
 
-	페이지_쓰기("동영상", 1)
-	// 페이지_동영상 = 1
+	페이지_관리.동영상 = 1
 	페이지_갱신("동영상")
-	// 채우기_페이지_버튼("동영상")
-	// 페이지_재구성("동영상")
 }
 
 
@@ -1053,54 +952,7 @@ function 크기_조절(왼쪽, 그거)
 		if (노래_목록)
 			노래_목록.inert = !크게
 	}
-
-// (수정) "종료"
-
-
-
-	// const 비율 = { 동영상 : "2fr", 쇼츠 : "2fr", 부분 : "1fr" }
-
-	// const 조절_딸깍 = 구역_종류 === 그거 ? null : 그거
-
-	// if (조절_딸깍)
-	// {
-	// 	// const 종류_목록 = ["동영상", "쇼츠", "부분"]
-	// 	// for (const 종류 of 종류_목록)
-	// 	// {
-	// 	// 	비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
-	// 	// }
-	// 	비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
-	// 	비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
-	// 	비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
-	// }
-
-	// 왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
-
-	// 구역_종류 = 조절_딸깍
-
-	// const 이거 = document.querySelectorAll(".머리말_크기 .문자열_클릭")
-	// for (const 크기 of 이거)
-	// {
-	// 	크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
-	// }
-
-	// const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
-	// if (부분_구역 && 부분_구역.dataset.단독 === "거짓")
-	// {
-	// 	const 크게 = 구역_종류 === "부분"
-	// 	부분_구역.dataset.크게 = 크게 ? "참" : "거짓"
-
-	// 	const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
-	// 	if (드롭다운_칸)
-	// 		드롭다운_칸.inert = 크게
-
-	// 	const 노래_목록 = 부분_구역.querySelector(".목록.부분")
-	// 	if (노래_목록)
-	// 		노래_목록.inert = !크게
-	// }
 }
-
-
 
 
 
@@ -1117,18 +969,9 @@ function 만들기_목록()
 
 	const 종류_확인 =
 	[
-		{
-			종류 : "동영상",
-			자료 : 동영상
-		},
-		{
-			종류 : "쇼츠",
-			자료 : 쇼츠
-		},
-		{
-			종류 : "부분",
-			자료 : 부분
-		},
+		{ 종류 : "동영상", 자료 : 동영상 },
+		{ 종류 : "쇼츠", 자료 : 쇼츠 },
+		{ 종류 : "부분", 자료 : 부분 },
 	]
 
 	function 유효_재확인(종류)
@@ -1217,14 +1060,14 @@ function 만들기_목록()
 		{
 			const 페이지_마지막 = 페이지_최대(분류.종류)
 
-			const 페이지_지금 = 페이지_읽기(분류.종류)
+			const 페이지_지금 = 페이지_관리[분류.종류]
 			// const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 			const 넘기기 = 페이지_지금 + 한장
 
 			if (넘기기 < 1 || 넘기기 > 페이지_마지막)
 				return
 
-			페이지_쓰기(분류.종류, 넘기기)
+			페이지_관리[분류.종류] = 넘기기
 			페이지_갱신(분류.종류)
 		}
 
