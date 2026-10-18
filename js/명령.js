@@ -13,31 +13,31 @@ function onYouTubeIframeAPIReady()
 {
 	player = new YT.Player("YTP",
 	{
-		width: "100%",
-		height: "100%",
-		videoId: "",
-		playerVars:
+		width : "100%",
+		height : "100%",
+		videoId : "",
+		playerVars :
 		{
 			// 다음 자동재생 방지
-			autoplay: 0,
+			autoplay : 0,
 			// 영상 종료 때 추천 방지
-			rel: 0,
+			rel : 0,
 			// 풀 스크린 버튼 숨김
-			// fs: 0,
+			// fs : 0,
 			// 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
-			disablekb: 1,
+			disablekb : 1,
 			// 유튜브 일부 ui 숨김
-			// controls: 0,
+			// controls : 0,
 			// 자막 한글 + pip 모드 제작 대비
-			// cc_lang_pref: "ko",
+			// cc_lang_pref : "ko",
 			// 자막 자동 실행 + pip 모드 제작 대비
-			// cc_load_policy: 1,
+			// cc_load_policy : 1,
 		},
 
 		// 현재 상태 불러오기
-		events:
+		events :
 		{
-			onReady: () =>
+			onReady : () =>
 			{
 				player.setVolume(+볼륨_조절.value)
 				api_준비_대기()
@@ -143,7 +143,6 @@ let 재생_시간_표시줄 = null
 // 동영상 상태가 변하면 즉시 작동
 function onPlayerStateChange(event)
 {
-
 	if (event.data === 5 && 재생목록_대기)
 	{
 		재생목록_대기()
@@ -252,13 +251,11 @@ function 키_입력(키)
 
 	// if (!컨트롤_쉬프트)
 	// {
-		// + 키를 누르면 소리 크게
 		if (증가)
 		{
 			키.preventDefault()
 			소리_크기_값_조절(+5)
 		}
-		// - 키를 누르면 소리 작게
 		else if (감소)
 		{
 			키.preventDefault()
@@ -326,7 +323,7 @@ function 드르륵(마우스휠)
 	마우스휠.preventDefault()
 	소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
 }
-document.addEventListener("wheel", 드르륵, { passive: false })
+document.addEventListener("wheel", 드르륵, { passive : false })
 
 
 
@@ -383,6 +380,7 @@ function 시간_표기법(시간)
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -459,15 +457,23 @@ function 시간_표기법(시간)
 
 
 
+let 부분재생_노래들 = []
+function 부분재생_필터링()
+{
+	const 결과 = []
+	for (const 그거 of 임시_목록.부분 ?? [])
+	{
+		for (const 노래 of 그거.노래 ?? [])
+		{
+			if (!노래.이름 || !노래.제목 || !노래.시작 || !노래.종료)
+				continue
 
-
-
-
-
-
-
-
-
+			결과.push({ id : 그거.id, ...노래 })
+		}
+	}
+	return 결과
+}
+부분재생_노래들 = 부분재생_필터링()
 
 
 
@@ -480,13 +486,13 @@ function 만들기_부분()
 	{
 		return document.querySelector(".구역[data-종류=" + 종류 + "]")
 	}
-	const 동영상 = 구역_찾기("동영상")
-	const 쇼츠 = 구역_찾기("쇼츠")
+	const 구역_동영상 = 구역_찾기("동영상")
+	const 구역_쇼츠 = 구역_찾기("쇼츠")
 	const 구역 = 구역_찾기("부분")
 	if (!구역)
 		return
 
-	const 부분만 = !동영상 && !쇼츠 && 부분
+	const 부분만 = !구역_동영상 && !구역_쇼츠 && 구역
 	if (!부분만)
 	{
 		const 안내표시줄 = document.createElement("div")
@@ -503,19 +509,11 @@ function 만들기_부분()
 	본문.className = "본문"
 	구역.appendChild(본문)
 
-	const 선택지_공간 = document.createElement("div")
+	const 선택지_공간 = document.createElement("menu")
 	선택지_공간.className = "선택지_공간"
-	구역.appendChild(선택지_공간)
+	본문.appendChild(선택지_공간)
 
-	function 불러오기_노래들(그거)
-	{
-		const 필터_1차 = 그거.노래 ?? []
 
-		const 필터_2차 = 필터_1차
-			.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
-			.map(노래 => ({ id: 그거.id, ...노래 }))
-		return 필터_2차
-	}
 
 	function 드롭다운()
 	{
@@ -540,17 +538,25 @@ function 만들기_부분()
 		선택지.appendChild(안내)
 
 		// option의 value에는 노래_자료의 번호를 넣음
-		const 노래_자료 = []
-		for (const 그거 of 임시_목록.부분)
+		// const 노래_자료 = []
+		// for (const 그거 of 임시_목록.부분)
+		// {
+		// 	for (const 노래 of 불러오기_노래들(그거))
+		// 	{
+		// 		const 항목 = document.createElement("option")
+		// 		항목.value = 노래_자료.length + ""
+		// 		항목.textContent = 노래.이름 + "\t" + 노래.제목
+		// 		선택지.appendChild(항목)
+		// 		노래_자료.push(노래)
+		// 	}
+		// }
+		for (let 순서 = 0 ; 순서 < 부분재생_노래들.length ; 순서++)
 		{
-			for (const 노래 of 불러오기_노래들(그거))
-			{
-				const 항목 = document.createElement("option")
-				항목.value = 노래_자료.length + ""
-				항목.textContent = 노래.이름 + "\t" + 노래.제목
-				선택지.appendChild(항목)
-				노래_자료.push(노래)
-			}
+			const 노래 = 부분재생_노래들[순서]
+			const 항목 = document.createElement("option")
+			항목.value = 순서 + ""
+			항목.textContent = 노래.이름 + "\t" + 노래.제목
+			선택지.appendChild(항목)
 		}
 
 		const 재생 = document.createElement("button")
@@ -568,7 +574,7 @@ function 만들기_부분()
 		// 선택한 노래의 id, 시작, 종료로 cueVideoById 실행
 		재생.addEventListener("click", () =>
 		{
-			const 노래 = 노래_자료[+선택지.value]
+			const 노래 = 부분재생_노래들[+선택지.value]
 			if (!노래)
 				return
 
@@ -591,46 +597,42 @@ function 만들기_부분()
 		페이지.className = "페이지 부분"
 		목록.appendChild(페이지)
 
-		let 번호 = 0
-		for (const 그거 of 임시_목록.부분)
+		for (let 번호 = 0 ; 번호 < 부분재생_노래들.length ; 번호++)
 		{
-			for (const 노래 of 불러오기_노래들(그거))
+			const 노래 = 부분재생_노래들[번호]
+			const 몇번 = (번호 + "").padStart(3, "0")
+
+			// 페이지_재구성이 data-종류, data-숫자로 보임/숨김을 결정함
+			const 항목 = document.createElement("div")
+			항목.className = "노래_항목"
+			항목.dataset.종류 = "부분"
+			항목.dataset.숫자 = 몇번
+			페이지.appendChild(항목)
+
+			const 칸_이름 = document.createElement("span")
+			칸_이름.className = "노래_칸 노래_이름"
+			칸_이름.textContent = 노래.이름
+			항목.appendChild(칸_이름)
+
+			const 칸_제목 = document.createElement("span")
+			칸_제목.className = "노래_칸 노래_제목"
+			칸_제목.textContent = 노래.제목
+			항목.appendChild(칸_제목)
+
+			const 칸_재생 = document.createElement("span")
+			칸_재생.className = "노래_칸 노래_재생"
+			항목.appendChild(칸_재생)
+
+			const 재생 = document.createElement("button")
+			재생.className = "재생_시작_버튼"
+			재생.textContent = "재생 시작"
+			칸_재생.appendChild(재생)
+
+			재생.addEventListener("click", () =>
 			{
-				const 몇번 = (번호 + "").padStart(3, "0")
-				번호++
-
-				// 페이지_재구성이 data-종류, data-숫자로 보임/숨김을 결정함
-				const 항목 = document.createElement("div")
-				항목.className = "노래_항목"
-				항목.dataset.종류 = "부분"
-				항목.dataset.숫자 = 몇번
-				페이지.appendChild(항목)
-
-				const 칸_이름 = document.createElement("span")
-				칸_이름.className = "노래_칸 노래_이름"
-				칸_이름.textContent = 노래.이름
-				항목.appendChild(칸_이름)
-
-				const 칸_제목 = document.createElement("span")
-				칸_제목.className = "노래_칸 노래_제목"
-				칸_제목.textContent = 노래.제목
-				항목.appendChild(칸_제목)
-
-				const 칸_재생 = document.createElement("span")
-				칸_재생.className = "노래_칸 노래_재생"
-				항목.appendChild(칸_재생)
-
-				const 재생 = document.createElement("button")
-				재생.className = "재생_시작_버튼"
-				재생.textContent = "재생 시작"
-				칸_재생.appendChild(재생)
-
-				재생.addEventListener("click", () =>
-				{
-					이미지_클릭_강조("부분" + 몇번)
-					선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
-				})
-			}
+				이미지_클릭_강조("부분" + 몇번)
+				선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+			})
 		}
 	}
 
@@ -652,7 +654,7 @@ function 만들기_부분()
 
 
 
-const 이거_몇칸임 = { 동영상: 0, 쇼츠: 0, 부분: 0 }
+const 이거_몇칸임 = { 동영상 : 0, 쇼츠 : 0, 부분 : 0 }
 let 총몇칸 = null
 
 function 크기_감지(구역)
@@ -818,7 +820,7 @@ function 채우기_페이지_버튼(종류)
 
 
 
-const 사용할_동영상들 = { 동영상: null, 쇼츠: null }
+const 사용할_동영상들 = { 동영상 : null, 쇼츠 : null }
 
 let 시작_시간 = null
 let 종료_시간 = null
@@ -992,15 +994,20 @@ function 미리보기_교체(종류)
 let 구역_종류 = null
 function 크기_조절(왼쪽, 그거)
 {
-	const 비율 = { 동영상: "2fr", 쇼츠: "2fr", 부분: "1fr" }
+	const 비율 = { 동영상 : "2fr", 쇼츠 : "2fr", 부분 : "1fr" }
 
 	const 조절_딸깍 = 구역_종류 === 그거 ? null : 그거
 
 	if (조절_딸깍)
 	{
-		비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
-		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
-		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
+		const 종류_목록 = ["동영상", "쇼츠", "부분"]
+		for (const 종류 of 종류_목록)
+		{
+			비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
+		}
+		// 비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
+		// 비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
+		// 비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
 	}
 
 	왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
@@ -1232,16 +1239,32 @@ function 나만의_색깔(색깔)
 
 	const 설정 = document.documentElement.style
 
-	if (색깔.오른쪽바탕색)
-		설정.setProperty("--오른쪽바탕색", 색깔.오른쪽바탕색)
-	if (색깔.왼쪽바탕색)
-		설정.setProperty("--왼쪽바탕색", 색깔.왼쪽바탕색)
-	if (색깔.강조1)
-		설정.setProperty("--강조1", 색깔.강조1)
-	if (색깔.강조2)
-		설정.setProperty("--강조2", 색깔.강조2)
-	if (색깔.강조3)
-		설정.setProperty("--강조3", 색깔.강조3)
+	const 색깔_종류 =
+	[
+		"오른쪽바탕색",
+		"왼쪽바탕색",
+		"강조1",
+		"강조2",
+		"강조3"
+	]
+	for (const 이거 of 색깔_종류)
+	{
+		if (색깔[이거])
+		{
+			설정.setProperty("--" + 이거, 색깔[이거])
+		}
+	}
+
+	// if (색깔.오른쪽바탕색)
+	// 	설정.setProperty("--오른쪽바탕색", 색깔.오른쪽바탕색)
+	// if (색깔.왼쪽바탕색)
+	// 	설정.setProperty("--왼쪽바탕색", 색깔.왼쪽바탕색)
+	// if (색깔.강조1)
+	// 	설정.setProperty("--강조1", 색깔.강조1)
+	// if (색깔.강조2)
+	// 	설정.setProperty("--강조2", 색깔.강조2)
+	// if (색깔.강조3)
+	// 	설정.setProperty("--강조3", 색깔.강조3)
 }
 
 
@@ -1254,8 +1277,8 @@ async function 재생목록_조사(id)
 
 	player.cuePlaylist(
 	{
-		listType: "playlist",
-		list: id
+		listType : "playlist",
+		list : id
 	})
 
 	await Promise.race([대기, 시간초과])
@@ -1334,7 +1357,7 @@ async function id_가공(재생목록)
 				else
 				{
 					const { id, ...rest } = 동영상
-					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id: 값, ...rest }])
+					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id : 값, ...rest }])
 				}
 			}
 		}

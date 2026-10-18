@@ -17,7 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		id : "https://youtu.be/jxbb54OGJNg?si=_TMCwznbu4M1LSn-"
+		id : "https://youtu.be/jxbb54OGJNg",
 	},
 ]
 
@@ -26,7 +26,10 @@ window.재생목록 ??= {}
 재생목록.원곡 =
 [
 	{
-		id : "",
+		id : "https://youtu.be/RXNwZg_WzT8",
+	},
+	{
+		id : "https://youtu.be/O1t3_CPP14E",
 	},
 ]
 
@@ -35,19 +38,16 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
-		id : "https://youtu.be/RXNwZg_WzT8?si=GUnMyp7-9hsmXHFx",
+		id : "https://youtu.be/Y7Lkht4k8nk",
 	},
 	{
-		id : "https://youtu.be/Y7Lkht4k8nk?si=C0-Z2jxBxrUHYYdo",
+		id : "https://youtu.be/1V4F0_KhQls",
 	},
 	{
-		id : "https://youtu.be/1V4F0_KhQls?si=W-wDuCf9jBXIkewe",
+		id : "https://youtu.be/EXQmcZCoa5E",
 	},
 	{
-		id : "https://youtu.be/EXQmcZCoa5E?si=g5Ij781IWPv8O6rT",
-	},
-	{
-		id : "https://youtu.be/nnYc3quJCTo?si=0RY0Yhmp3BoWWHMj",
+		id : "https://youtu.be/nnYc3quJCTo",
 	},
 ]
 
