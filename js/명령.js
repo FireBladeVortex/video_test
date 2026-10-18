@@ -1283,6 +1283,9 @@ function 만들기_목록()
 	{
 		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
 	}
+	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
+	.map(구역 => 구역_비율[구역.dataset.종류] + "fr")
+	.join(" ")
 }
 
 
