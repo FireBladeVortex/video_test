@@ -458,24 +458,6 @@ function 시간_표기법(시간)
 
 
 let 부분재생_노래들 = []
-function 부분재생_필터링()
-{
-	const 결과 = []
-	for (const 그거 of 임시_목록.부분 ?? [])
-	{
-		for (const 노래 of 그거.노래 ?? [])
-		{
-			if (!노래.이름 || !노래.제목 || !노래.시작 || !노래.종료)
-				continue
-
-			결과.push({ id : 그거.id, ...노래 })
-		}
-	}
-	return 결과
-}
-
-
-
 function 만들기_부분()
 {
 	if (!임시_목록.부분)
@@ -491,6 +473,21 @@ function 만들기_부분()
 	if (!구역)
 		return
 
+	function 부분재생_필터링()
+	{
+		const 결과 = []
+		for (const 그거 of 임시_목록.부분 ?? [])
+		{
+			for (const 노래 of 그거.노래 ?? [])
+			{
+				if (!노래.이름 || !노래.제목 || !노래.시작 || !노래.종료)
+					continue
+
+				결과.push({ id : 그거.id, ...노래 })
+			}
+		}
+		return 결과
+	}
 	부분재생_노래들 = 부분재생_필터링()
 
 	const 부분만 = !구역_동영상 && !구역_쇼츠 && 구역
@@ -510,16 +507,14 @@ function 만들기_부분()
 	본문.className = "본문"
 	구역.appendChild(본문)
 
-	const 선택지_공간 = document.createElement("menu")
-	선택지_공간.className = "선택지_공간"
-	본문.appendChild(선택지_공간)
-
-
-
 	function 드롭다운()
 	{
 		if (!구역_동영상 && !구역_쇼츠)
 			return
+
+		const 드롭다운_공간 = document.createElement("section")
+		드롭다운_공간.className = "드롭다운_공간"
+		본문.appendChild(드롭다운_공간)
 
 		const 드롭다운_칸 = document.createElement("div")
 		드롭다운_칸.className = "드롭다운_칸"
@@ -587,12 +582,16 @@ function 만들기_부분()
 	// 노래를 페이지 형태로 모두 보여주는 목록 (한 줄 = 이름 200px | 제목 | 재생 시작 100px)
 	function 만들기_노래_목록()
 	{
+		const 노래들_공간 = document.createElement("section")
+		노래들_공간.className = "노래들_공간"
+		본문.appendChild(노래들_공간)
+
 		// 크기 감지(ResizeObserver)가 .목록 을 감시하므로 클래스를 "목록 부분"으로 지정
 		const 목록 = document.createElement("section")
 		목록.className = "목록 부분"
 		// 작게 화면에서는 시작부터 disable (inert = 클릭, 포커스 모두 차단)
 		목록.inert = 구역.dataset.크게 !== "참"
-		본문.appendChild(목록)
+		노래들_공간.appendChild(목록)
 
 		const 페이지 = document.createElement("div")
 		페이지.className = "페이지 부분"
