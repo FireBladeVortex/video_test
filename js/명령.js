@@ -518,7 +518,7 @@ function 만들기_부분()
 
 		const 드롭다운_칸 = document.createElement("div")
 		드롭다운_칸.className = "드롭다운_칸"
-		선택지_공간.appendChild(드롭다운_칸)
+		드롭다운_공간.appendChild(드롭다운_칸)
 
 		const 선택지 = document.createElement("select")
 		선택지.className = "드롭다운_선택"
