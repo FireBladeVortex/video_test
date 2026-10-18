@@ -457,7 +457,6 @@ function 시간_표기법(시간)
 
 
 
-let 부분재생_노래들 = []
 function 만들기_부분()
 {
 	if (!임시_목록.부분)
@@ -472,23 +471,6 @@ function 만들기_부분()
 	const 구역 = 구역_찾기("부분")
 	if (!구역)
 		return
-
-	function 부분재생_필터링()
-	{
-		const 결과 = []
-		for (const 그거 of 임시_목록.부분 ?? [])
-		{
-			for (const 노래 of 그거.노래 ?? [])
-			{
-				if (!노래.이름 || !노래.제목 || !노래.시작 || !노래.종료)
-					continue
-
-				결과.push({ id : 그거.id, ...노래 })
-			}
-		}
-		return 결과
-	}
-	부분재생_노래들 = 부분재생_필터링()
 
 	const 부분만 = !구역_동영상 && !구역_쇼츠 && 구역
 	if (!부분만)
@@ -533,9 +515,9 @@ function 만들기_부분()
 		안내.hidden = true
 		선택지.appendChild(안내)
 
-		for (let 순서 = 0 ; 순서 < 부분재생_노래들.length ; 순서++)
+		for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
 		{
-			const 노래 = 부분재생_노래들[순서]
+			const 노래 = 임시_목록.부분[순서]
 			const 항목 = document.createElement("option")
 			항목.value = 순서 + ""
 			항목.textContent = 노래.이름 + "\t" + 노래.제목
@@ -557,7 +539,7 @@ function 만들기_부분()
 		// 선택한 노래의 id, 시작, 종료로 cueVideoById 실행
 		재생.addEventListener("click", () =>
 		{
-			const 노래 = 부분재생_노래들[+선택지.value]
+			const 노래 = 임시_목록.부분[+선택지.value]
 			if (!노래)
 				return
 
@@ -584,9 +566,9 @@ function 만들기_부분()
 		페이지.className = "페이지 부분"
 		목록.appendChild(페이지)
 
-		for (let 번호 = 0 ; 번호 < 부분재생_노래들.length ; 번호++)
+		for (let 번호 = 0 ; 번호 < 임시_목록.부분.length ; 번호++)
 		{
-			const 노래 = 부분재생_노래들[번호]
+			const 노래 = 임시_목록.부분[번호]
 			const 몇번 = (번호 + "").padStart(3, "0")
 
 			// 페이지_재구성이 data-종류, data-숫자로 보임/숨김을 결정함
@@ -1159,7 +1141,7 @@ function 나만의_색깔(색깔)
 		"왼쪽바탕색",
 		"강조1",
 		"강조2",
-		"강조3"
+		"강조3",
 	]
 	for (const 이거 of 색깔_종류)
 	{
@@ -1168,17 +1150,6 @@ function 나만의_색깔(색깔)
 			설정.setProperty("--" + 이거, 색깔[이거])
 		}
 	}
-
-	// if (색깔.오른쪽바탕색)
-	// 	설정.setProperty("--오른쪽바탕색", 색깔.오른쪽바탕색)
-	// if (색깔.왼쪽바탕색)
-	// 	설정.setProperty("--왼쪽바탕색", 색깔.왼쪽바탕색)
-	// if (색깔.강조1)
-	// 	설정.setProperty("--강조1", 색깔.강조1)
-	// if (색깔.강조2)
-	// 	설정.setProperty("--강조2", 색깔.강조2)
-	// if (색깔.강조3)
-	// 	설정.setProperty("--강조3", 색깔.강조3)
 }
 
 
@@ -1270,6 +1241,14 @@ async function id_가공(재생목록)
 				}
 				else
 				{
+					if (key === "부분")
+					{
+						const 펼침 = (동영상.노래 ?? [])
+							.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
+							.map(노래 => ({ id : 값, ...노래 }))
+						임시_목록[key] = (임시_목록[key] ?? []).concat(펼침)
+						continue
+					}
 					const { id, ...rest } = 동영상
 					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id : 값, ...rest }])
 				}
@@ -1405,6 +1384,8 @@ const AtoZ =
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 ]
+
+const 소속사 = []
 
 function 채우기_가나다()
 {
