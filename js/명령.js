@@ -473,7 +473,6 @@ function 부분재생_필터링()
 	}
 	return 결과
 }
-부분재생_노래들 = 부분재생_필터링()
 
 
 
@@ -491,6 +490,8 @@ function 만들기_부분()
 	const 구역 = 구역_찾기("부분")
 	if (!구역)
 		return
+
+	부분재생_노래들 = 부분재생_필터링()
 
 	const 부분만 = !구역_동영상 && !구역_쇼츠 && 구역
 	if (!부분만)
@@ -665,7 +666,31 @@ function 크기_감지(구역)
 		const 부분 = 목록.target.classList.contains("부분")
 		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
 
-		if (쇼츠)
+		// if (쇼츠)
+		// {
+		// 	const 설정 = getComputedStyle(document.documentElement)
+		// 	const 가로값 = parseInt(설정.getPropertyValue("--가로"))
+		// 	const 세로값 = parseInt(설정.getPropertyValue("--세로"))
+
+		// 	const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
+		// 	const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
+
+		// 	const 너비 = 목록.contentBoxSize[0].inlineSize
+		// 	const 높이 = 목록.contentBoxSize[0].blockSize
+
+		// 	const 가로 = Math.floor(너비 / 쇼츠_가로)
+		// 	const 세로 = Math.floor(높이 / 쇼츠_세로)
+		// 	const 몇칸 = 가로 * 세로
+
+		// 	총몇칸 = 몇칸
+		// }
+
+		if (부분)
+		{
+			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
+			총몇칸 = 세로_몇칸
+		}
+		else
 		{
 			const 설정 = getComputedStyle(document.documentElement)
 			const 가로값 = parseInt(설정.getPropertyValue("--가로"))
@@ -682,12 +707,6 @@ function 크기_감지(구역)
 			const 몇칸 = 가로 * 세로
 
 			총몇칸 = 몇칸
-		}
-
-		if (부분)
-		{
-			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
-			총몇칸 = 세로_몇칸
 		}
 
 		이거_몇칸임[종류] = 총몇칸
@@ -1000,14 +1019,14 @@ function 크기_조절(왼쪽, 그거)
 
 	if (조절_딸깍)
 	{
-		const 종류_목록 = ["동영상", "쇼츠", "부분"]
-		for (const 종류 of 종류_목록)
-		{
-			비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
-		}
-		// 비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
-		// 비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
-		// 비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
+		// const 종류_목록 = ["동영상", "쇼츠", "부분"]
+		// for (const 종류 of 종류_목록)
+		// {
+		// 	비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
+		// }
+		비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
+		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
+		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
 	}
 
 	왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
@@ -1214,6 +1233,10 @@ function 만들기_목록()
 		목록.appendChild(페이지)
 
 		채우기_페이지(분류.종류)
+	}
+	if (왼쪽.querySelectorAll(".구역").length === 1)
+	{
+		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
 	}
 }
 
