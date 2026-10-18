@@ -1009,39 +1009,40 @@ function 미리보기_교체(종류)
 
 
 
-let 구역_종류 = null
+let 구역_커짐 = null
+const 구역_비율 = { 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
 function 크기_조절(왼쪽, 그거)
 {
-	const 비율 = { 동영상 : "2fr", 쇼츠 : "2fr", 부분 : "1fr" }
+	const 생성된_구역_확인 = [...왼쪽.querySelectorAll(".구역")]
+	const 확인된_구역_종류들 = 생성된_구역_확인.map(구역 => 구역.dataset.종류)
 
-	const 조절_딸깍 = 구역_종류 === 그거 ? null : 그거
+	const 조절_딸깍 = 구역_커짐 === 그거 ? null : 그거
 
-	if (조절_딸깍)
+	const 비율들 = 확인된_구역_종류들.map(종류 =>
 	{
-		// const 종류_목록 = ["동영상", "쇼츠", "부분"]
-		// for (const 종류 of 종류_목록)
-		// {
-		// 	비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
-		// }
-		비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
-		비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
-		비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
-	}
+		if (확인된_구역_종류들.length === 1)
+			return "1fr"
 
-	왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
+		if (조절_딸깍)
+			return 종류 === 조절_딸깍 ? "1fr" : "0fr"
 
-	구역_종류 = 조절_딸깍
+		return 구역_비율[종류] + "fr"
+	})
+
+	왼쪽.style.gridTemplateRows = 비율들.join(" ")
+
+	구역_커짐 = 조절_딸깍
 
 	const 이거 = document.querySelectorAll(".머리말_크기 .문자열_클릭")
 	for (const 크기 of 이거)
 	{
-		크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
+		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
 	}
 
 	const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
 	if (부분_구역 && 부분_구역.dataset.단독 === "거짓")
 	{
-		const 크게 = 구역_종류 === "부분"
+		const 크게 = 구역_커짐 === "부분"
 		부분_구역.dataset.크게 = 크게 ? "참" : "거짓"
 
 		const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
@@ -1052,6 +1053,51 @@ function 크기_조절(왼쪽, 그거)
 		if (노래_목록)
 			노래_목록.inert = !크게
 	}
+
+// (수정) "종료"
+
+
+
+	// const 비율 = { 동영상 : "2fr", 쇼츠 : "2fr", 부분 : "1fr" }
+
+	// const 조절_딸깍 = 구역_종류 === 그거 ? null : 그거
+
+	// if (조절_딸깍)
+	// {
+	// 	// const 종류_목록 = ["동영상", "쇼츠", "부분"]
+	// 	// for (const 종류 of 종류_목록)
+	// 	// {
+	// 	// 	비율[종류] = 종류 === 그거 ? "1fr" : "0fr"
+	// 	// }
+	// 	비율.동영상 = 그거 === "동영상" ? "1fr" : "0fr"
+	// 	비율.쇼츠 = 그거 === "쇼츠" ? "1fr" : "0fr"
+	// 	비율.부분 = 그거 === "부분" ? "1fr" : "0fr"
+	// }
+
+	// 왼쪽.style.gridTemplateRows = [비율.동영상, 비율.쇼츠, 비율.부분].join(" ")
+
+	// 구역_종류 = 조절_딸깍
+
+	// const 이거 = document.querySelectorAll(".머리말_크기 .문자열_클릭")
+	// for (const 크기 of 이거)
+	// {
+	// 	크기.textContent = 크기.dataset.종류 === 구역_종류 ? "작게" : "크게"
+	// }
+
+	// const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
+	// if (부분_구역 && 부분_구역.dataset.단독 === "거짓")
+	// {
+	// 	const 크게 = 구역_종류 === "부분"
+	// 	부분_구역.dataset.크게 = 크게 ? "참" : "거짓"
+
+	// 	const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
+	// 	if (드롭다운_칸)
+	// 		드롭다운_칸.inert = 크게
+
+	// 	const 노래_목록 = 부분_구역.querySelector(".목록.부분")
+	// 	if (노래_목록)
+	// 		노래_목록.inert = !크게
+	// }
 }
 
 
