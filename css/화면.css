@@ -96,10 +96,11 @@ body
 	align-items : center ;
 }
 
-.안내
+.안내표시줄
 {
 	width : 95%;
 }
+
 .본문
 {
 	width : 90% ;

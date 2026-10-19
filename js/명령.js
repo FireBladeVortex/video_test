@@ -482,10 +482,10 @@ function 만들기_부분(본문, 크기, 페이지)
 		안내표시줄.className = "안내표시줄"
 		구역.appendChild(안내표시줄)
 
-		const 안내 = document.createElement("span")
-		안내.className = "안내"
-		안내.textContent = "추천 🔼⬆⏫"
-		안내표시줄.appendChild(안내)
+		const 안내_문자열 = document.createElement("span")
+		안내_문자열.className = "안내"
+		안내_문자열.textContent = "추천 🔼⬆⏫"
+		안내표시줄.appendChild(안내_문자열)
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
@@ -499,14 +499,14 @@ function 만들기_부분(본문, 크기, 페이지)
 			선택지.className = "드롭다운_선택"
 			드롭다운_칸.appendChild(선택지)
 
-			// "노래 골라" 안내 (열면 사라지고, 선택 없이 닫으면 다시 보임)
-			const 안내 = document.createElement("option")
-			안내.value = ""
-			안내.textContent = "노래 골라"
-			안내.selected = true
-			안내.disabled = true
-			안내.hidden = true
-			선택지.appendChild(안내)
+			// "노래 골라" 선택지_가짜 (열면 사라지고, 선택 없이 닫으면 다시 보임)
+			const 선택지_가짜 = document.createElement("option")
+			선택지_가짜.value = ""
+			선택지_가짜.textContent = "노래 골라"
+			선택지_가짜.selected = true
+			선택지_가짜.disabled = true
+			선택지_가짜.hidden = true
+			선택지.appendChild(선택지_가짜)
 
 			for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
 			{
