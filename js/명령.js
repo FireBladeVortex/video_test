@@ -486,9 +486,9 @@ function 만들기_부분(본문, 크기, 페이지)
 		안내표시줄.appendChild(안내)
 	}
 
-	// const 본문 = document.createElement("section")
-	// 본문.className = "본문"
-	// 구역.appendChild(본문)
+	const 본문 = document.createElement("section")
+	본문.className = "본문"
+	구역.appendChild(본문)
 
 	function 드롭다운()
 	{
@@ -1080,11 +1080,12 @@ function 만들기_목록()
 		본문.className = "본문"
 		구역.appendChild(본문)
 
-		// 썸네일이 들어갈 크기 계산만 하는 공간
-		const 목록 = document.createElement("section")
+		// 몇개 들어가는지 크기 계산만 하는 공간
+		const 목록 = document.createElement("div")
 		목록.className = "목록 " + 분류.종류
 		본문.appendChild(목록)
 
+		// 실질적으로 보여주는 공간
 		const 페이지 = document.createElement("div")
 		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
