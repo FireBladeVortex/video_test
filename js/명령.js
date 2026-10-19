@@ -457,7 +457,7 @@ function 시간_표기법(시간)
 
 
 
-function 만들기_부분()
+function 만들기_부분(본문, 크기, 페이지)
 {
 	if (!임시_목록.부분)
 		return
@@ -466,6 +466,7 @@ function 만들기_부분()
 	{
 		return document.querySelector(".구역[data-종류=" + 종류 + "]")
 	}
+
 	const 구역_동영상 = 구역_찾기("동영상")
 	const 구역_쇼츠 = 구역_찾기("쇼츠")
 	const 구역 = 구역_찾기("부분")
@@ -485,9 +486,9 @@ function 만들기_부분()
 		안내표시줄.appendChild(안내)
 	}
 
-	const 본문 = document.createElement("section")
-	본문.className = "본문"
-	구역.appendChild(본문)
+	// const 본문 = document.createElement("section")
+	// 본문.className = "본문"
+	// 구역.appendChild(본문)
 
 	function 드롭다운()
 	{
@@ -872,23 +873,6 @@ function 채우기_페이지(종류)
 
 
 
-function 미리보기_교체(종류)
-{
-	사용할_동영상들.동영상 = 종류
-
-	const 페이지 = document.querySelector(".페이지.동영상")
-	if (페이지)
-	{
-		페이지.innerHTML = ""
-	}
-
-	채우기_페이지("동영상")
-
-	페이지_관리.동영상 = 1
-	페이지_갱신("동영상")
-}
-
-
 
 let 구역_커짐 = null
 const 구역_비율 = { 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
@@ -1006,6 +990,22 @@ function 만들기_목록()
 		{
 			if (유효_재확인(원곡) && 유효_재확인(커버))
 			{
+				function 미리보기_교체(종류)
+				{
+					사용할_동영상들.동영상 = 종류
+
+					const 페이지 = document.querySelector(".페이지.동영상")
+					if (페이지)
+					{
+						페이지.innerHTML = ""
+					}
+
+					채우기_페이지("동영상")
+
+					페이지_관리.동영상 = 1
+					페이지_갱신("동영상")
+				}
+
 				const 종류_모두 = document.createElement("button")
 				종류_모두.className = "종류_모두"
 				머리말_종류.appendChild(종류_모두)
@@ -1041,9 +1041,7 @@ function 만들기_목록()
 		function 팔락(한장)
 		{
 			const 페이지_마지막 = 페이지_최대(분류.종류)
-
 			const 페이지_지금 = 페이지_관리[분류.종류]
-			// const 페이지_지금 = 분류.종류 === "쇼츠" ? 페이지_쇼츠 : 페이지_동영상
 			const 넘기기 = 페이지_지금 + 한장
 
 			if (넘기기 < 1 || 넘기기 > 페이지_마지막)
@@ -1078,36 +1076,34 @@ function 만들기_목록()
 			버튼_다음.appendChild(버튼_다음_문자열)
 			버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
 
-		if (분류.종류 === "부분")
-		{
-			만들기_부분()
-			continue
-		}
-
-
-		채우기_페이지_버튼(분류.종류)
-
-
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
 		구역.appendChild(본문)
 
-		// 미리보기 들어갈 공간
+		// 썸네일이 들어갈 크기 계산만 하는 공간
 		const 목록 = document.createElement("section")
 		목록.className = "목록 " + 분류.종류
 		본문.appendChild(목록)
 
-		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const 페이지 = document.createElement("div")
 		페이지.className = "페이지 " + 분류.종류
 		목록.appendChild(페이지)
 
+		if (분류.종류 === "부분")
+		{
+			만들기_부분(본문, 목록, 페이지)
+			continue
+		}
+
+		채우기_페이지_버튼(분류.종류)
 		채우기_페이지(분류.종류)
 	}
+
 	if (왼쪽.querySelectorAll(".구역").length === 1)
 	{
 		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
 	}
+
 	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
 	.map(구역 => 구역_비율[구역.dataset.종류] + "fr")
 	.join(" ")
@@ -1119,8 +1115,8 @@ function 만들기_구역()
 {
 	만들기_목록()
 
-	const 목록 = document.querySelectorAll(".목록")
-	for (const 감지 of 목록)
+	const 목록들 = document.querySelectorAll(".목록")
+	for (const 감지 of 목록들)
 	{
 		재구성.observe(감지)
 	}
@@ -1128,137 +1124,7 @@ function 만들기_구역()
 
 
 
-function 나만의_색깔(색깔)
-{
-	if (!색깔)
-		return
-
-	const 설정 = document.documentElement.style
-
-	const 색깔_종류 =
-	[
-		"오른쪽바탕색",
-		"왼쪽바탕색",
-		"강조1",
-		"강조2",
-		"강조3",
-	]
-	for (const 이거 of 색깔_종류)
-	{
-		if (색깔[이거])
-		{
-			설정.setProperty("--" + 이거, 색깔[이거])
-		}
-	}
-}
-
-
-
 let 재생목록_대기 = null
-async function 재생목록_조사(id)
-{
-	const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
-	const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
-
-	player.cuePlaylist(
-	{
-		listType : "playlist",
-		list : id
-	})
-
-	await Promise.race([대기, 시간초과])
-	재생목록_대기 = null
-
-	const 재생목록 = player.getPlaylist() ?? []
-	const 결과 = 재생목록.map(id => ({ id }))
-	return 결과
-}
-
-
-
-async function id_가공(재생목록)
-{
-	function 재생목록인가(id)
-	{
-		return id.startsWith("PL")
-	}
-
-	function id_찾기(주소)
-	{
-		// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
-		try
-		{
-			// 유효한 링크인지 확인
-			const url = new URL(주소)
-
-			// 해당 링크가 재생목록인지 확인
-			const id_재생목록 = url.searchParams.get("list")
-			// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
-			if (id_재생목록 && 재생목록인가(id_재생목록))
-				// return id_재생목록
-				return
-
-			// 해당 링크가 동영상 링크인지 확인
-			// 링크 모양에 따라 경우의 수 대비
-			const v = url.searchParams.get("v")
-			const path = url.pathname.split("/").pop()
-			const id_동영상 = v ?? path
-
-			// 잘못된 링크인지 대비
-			const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
-			// 잘못됐다면 아무것도 안하고 즉시 null 전달
-			if (!정규표현식.test(id_동영상))
-				return null
-
-			// 동영상 시작시간을 포함하고있는지 확인
-			const t = parseInt(url.searchParams.get("t"))
-			// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
-			return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
-		}
-		// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
-		catch
-		{
-			return null
-		}
-	}
-
-	const keys = Object.keys(재생목록)
-	for (const key of keys)
-	{
-		if (!Array.isArray(재생목록[key]))
-			continue
-
-		for (const 동영상 of 재생목록[key])
-		{
-			const id = id_찾기(동영상.id)
-			const 값 = Array.isArray(id) ? id[0] : id
-			if (값)
-			{
-				if (재생목록인가(값))
-				{
-					const 결과 = await 재생목록_조사(값)
-					임시_목록[key] = (임시_목록[key] ?? []).concat(결과)
-				}
-				else
-				{
-					if (key === "부분")
-					{
-						const 펼침 = (동영상.노래 ?? [])
-							.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
-							.map(노래 => ({ id : 값, ...노래 }))
-						임시_목록[key] = (임시_목록[key] ?? []).concat(펼침)
-						continue
-					}
-					const { id, ...rest } = 동영상
-					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id : 값, ...rest }])
-				}
-			}
-		}
-	}
-}
-
-
-
 function 불러오기_재생목록(이름)
 {
 	const script = document.createElement("script")
@@ -1278,18 +1144,138 @@ function 불러오기_재생목록(이름)
 
 	}
 
+	async function id_가공(재생목록)
+	{
+		async function 재생목록_조사(id)
+		{
+			const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
+			const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
+
+			player.cuePlaylist(
+			{
+				listType : "playlist",
+				list : id
+			})
+
+			await Promise.race([대기, 시간초과])
+			재생목록_대기 = null
+
+			const 재생목록 = player.getPlaylist() ?? []
+			const 결과 = 재생목록.map(id => ({ id }))
+			return 결과
+		}
+
+		function 재생목록인가(id)
+		{
+			return id.startsWith("PL")
+		}
+
+		function id_찾기(주소)
+		{
+			// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
+			try
+			{
+				// 유효한 링크인지 확인
+				const url = new URL(주소)
+
+				// 해당 링크가 재생목록인지 확인
+				const id_재생목록 = url.searchParams.get("list")
+				// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
+				if (id_재생목록 && 재생목록인가(id_재생목록))
+					// return id_재생목록
+					return
+
+				// 해당 링크가 동영상 링크인지 확인
+				// 링크 모양에 따라 경우의 수 대비
+				const v = url.searchParams.get("v")
+				const path = url.pathname.split("/").pop()
+				const id_동영상 = v ?? path
+
+				// 잘못된 링크인지 대비
+				const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+				// 잘못됐다면 아무것도 안하고 즉시 null 전달
+				if (!정규표현식.test(id_동영상))
+					return null
+
+				// 동영상 시작시간을 포함하고있는지 확인
+				const t = parseInt(url.searchParams.get("t"))
+				// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
+				return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
+			}
+			// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
+			catch
+			{
+				return null
+			}
+		}
+
+		const keys = Object.keys(재생목록)
+		for (const key of keys)
+		{
+			if (!Array.isArray(재생목록[key]))
+				continue
+
+			for (const 동영상 of 재생목록[key])
+			{
+				const id = id_찾기(동영상.id)
+				const 값 = Array.isArray(id) ? id[0] : id
+				if (값)
+				{
+					if (재생목록인가(값))
+					{
+						const 결과 = await 재생목록_조사(값)
+						임시_목록[key] = (임시_목록[key] ?? []).concat(결과)
+					}
+					else
+					{
+						if (key === "부분")
+						{
+							const 펼침 = (동영상.노래 ?? [])
+								.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
+								.map(노래 => ({ id : 값, ...노래 }))
+							임시_목록[key] = (임시_목록[key] ?? []).concat(펼침)
+							continue
+						}
+						const { id, ...rest } = 동영상
+						임시_목록[key] = (임시_목록[key] ?? []).concat([{ id : 값, ...rest }])
+					}
+				}
+			}
+		}
+	}
+
+	function 나만의_색깔(색깔)
+	{
+		if (!색깔)
+			return
+
+		const 설정 = document.documentElement.style
+
+		const 색깔_종류 =
+		[
+			"오른쪽바탕색",
+			"왼쪽바탕색",
+			"강조1",
+			"강조2",
+			"강조3",
+		]
+		for (const 이거 of 색깔_종류)
+		{
+			if (색깔[이거])
+			{
+				설정.setProperty("--" + 이거, 색깔[이거])
+			}
+		}
+	}
+
 	async function 불러오기()
 	{
 		document.head.appendChild(api)
+		나만의_색깔(window.재생목록.색깔)
 		await api_준비
 		await id_가공(window.재생목록)
-
-		나만의_색깔(window.재생목록.색깔)
-
-		만들기_구역()
-
 		await 불러오기_소개(임시_목록.소개)
-
+		만들기_구역()
 		document.getElementById("왼쪽_이름").remove()
 		document.getElementById("오른쪽_안내").remove()
 	}
@@ -1299,125 +1285,118 @@ function 불러오기_재생목록(이름)
 
 
 
-function 채우기_이름표들(왼쪽_이름)
-{
-	const 본문 = document.createElement("section")
-	본문.className = "본문"
-	왼쪽_이름.appendChild(본문)
-
-	const 이름표들 = document.createElement("menu")
-	이름표들.className = "이름표들"
-	본문.appendChild(이름표들)
-
-	function 가나다순_정렬(목록)
-	{
-		const 규칙 = new Intl.Collator("ko")
-		const 정렬 = [...목록].sort((앞, 뒤) =>
-		{
-			const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
-			return 비교
-		})
-
-		const map = new Map()
-		for (const 그거 of 정렬)
-		{
-			const 이거 = 그거.이름.trim()
-			if (map.has(이거))
-			{
-				map.get(이거).중복 = true
-			}
-			else
-			{
-				map.set(이거, { ...그거 })
-			}
-		}
-
-		const 결과 = [...map.values()]
-
-		return 결과
-	}
-
-	const 이름들 = 가나다순_정렬(이름_목록)
-	for (const 누구 of 이름들)
-	{
-		const 이름표 = document.createElement("button")
-		이름표.className = "이름표"
-		이름표들.appendChild(이름표)
-
-		const 이름 = document.createElement("span")
-		이름.className = 누구.이름
-		이름.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
-		이름표.appendChild(이름)
-
-		function 불러오는중(본문)
-		{
-			const 불러오는_중 = document.createElement("div")
-			불러오는_중.id = "불러오는중"
-			불러오는_중.textContent = "불러오는 중"
-			불러오는_중.style.flex = "1"
-			불러오는_중.style.display = "flex"
-			불러오는_중.style.alignItems = "center"
-			불러오는_중.style.justifyContent = "center"
-			불러오는_중.style.fontSize = "60px"
-			본문.appendChild(불러오는_중)
-		}
-
-		이름.addEventListener("click", () =>
-		{
-			본문.innerHTML = ""
-			불러오는중(본문)
-			불러오기_재생목록(누구.이름)
-		})
-	}
-}
-
-
-
 const 가나다순 =
 [
 	"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
 	"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
 ]
-
 const AtoZ =
 [
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 ]
-
 const 소속사 = []
-
-function 채우기_가나다()
-{
-	const 가나다 = document.getElementById("가나다")
-
-	for (const 순서대로 of 가나다순)
-	{
-		const 자음_상자 = document.createElement("button")
-		자음_상자.className = "자음_상자"
-		가나다.appendChild(자음_상자)
-
-			const 자음 = document.createElement("span")
-			자음.className = 순서대로
-			자음.textContent = 순서대로
-			자음_상자.appendChild(자음)
-
-		const 자음_번호 = document.createElement("button")
-		자음_번호.className = "자음_번호"
-		가나다.appendChild(자음_번호)
-
-			const 몇개 = document.createElement("span")
-			몇개.className = 순서대로
-			// 몇개.textContent = 순서대로
-			자음_번호.appendChild(몇개)
-
-	}
-}
-
-
-
 function 시작()
 {
+	function 채우기_이름표들(왼쪽_이름)
+	{
+		const 본문 = document.createElement("section")
+		본문.className = "본문"
+		왼쪽_이름.appendChild(본문)
+
+		const 이름표들 = document.createElement("menu")
+		이름표들.className = "이름표들"
+		본문.appendChild(이름표들)
+
+		function 가나다순_정렬(목록)
+		{
+			const 규칙 = new Intl.Collator("ko")
+			const 정렬 = [...목록].sort((앞, 뒤) =>
+			{
+				const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
+				return 비교
+			})
+
+			const map = new Map()
+			for (const 그거 of 정렬)
+			{
+				const 이거 = 그거.이름.trim()
+				if (map.has(이거))
+				{
+					map.get(이거).중복 = true
+				}
+				else
+				{
+					map.set(이거, { ...그거 })
+				}
+			}
+
+			const 결과 = [...map.values()]
+
+			return 결과
+		}
+
+		const 이름들 = 가나다순_정렬(이름_목록)
+		for (const 누구 of 이름들)
+		{
+			const 이름표 = document.createElement("button")
+			이름표.className = "이름표"
+			이름표들.appendChild(이름표)
+
+			const 이름 = document.createElement("span")
+			이름.className = 누구.이름
+			이름.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
+			이름표.appendChild(이름)
+
+			function 불러오는중(본문)
+			{
+				const 불러오는_중 = document.createElement("div")
+				불러오는_중.id = "불러오는중"
+				불러오는_중.textContent = "불러오는 중"
+				불러오는_중.style.flex = "1"
+				불러오는_중.style.display = "flex"
+				불러오는_중.style.alignItems = "center"
+				불러오는_중.style.justifyContent = "center"
+				불러오는_중.style.fontSize = "60px"
+				본문.appendChild(불러오는_중)
+			}
+
+			이름.addEventListener("click", () =>
+			{
+				본문.innerHTML = ""
+				불러오는중(본문)
+				불러오기_재생목록(누구.이름)
+			})
+		}
+	}
+
+	function 채우기_가나다()
+	{
+		const 가나다 = document.getElementById("가나다")
+
+		for (const 순서대로 of 가나다순)
+		{
+			const 자음_상자 = document.createElement("button")
+			자음_상자.className = "자음_상자"
+			가나다.appendChild(자음_상자)
+
+				const 자음 = document.createElement("span")
+				자음.className = 순서대로
+				자음.textContent = 순서대로
+				자음_상자.appendChild(자음)
+
+			const 자음_번호 = document.createElement("button")
+			자음_번호.className = "자음_번호"
+			가나다.appendChild(자음_번호)
+
+				const 몇개 = document.createElement("span")
+				몇개.className = 순서대로
+				// 몇개.textContent = 순서대로
+				자음_번호.appendChild(몇개)
+
+		}
+	}
+
 	채우기_가나다()
 
 	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
