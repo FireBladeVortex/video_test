@@ -560,7 +560,7 @@ body
 }
 
 /* 노래 목록 (크게 화면) */
-.크기_계산용.부분
+.크기_계산.부분
 {
 	max-width : none ;
 	max-height : none ;
