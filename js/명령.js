@@ -473,10 +473,12 @@ function 만들기_부분(본문, 크기, 페이지)
 	if (!구역)
 		return
 
-	const 부분만 = !구역_동영상 && !구역_쇼츠 && 구역
-	if (!부분만)
+	function 드롭다운()
 	{
-		const 안내표시줄 = document.createElement("div")
+		if (!구역_동영상 && !구역_쇼츠)
+			return
+
+		const 안내표시줄 = document.createElement("section")
 		안내표시줄.className = "안내표시줄"
 		구역.appendChild(안내표시줄)
 
@@ -484,52 +486,42 @@ function 만들기_부분(본문, 크기, 페이지)
 		안내.className = "안내"
 		안내.textContent = "추천 🔼⬆⏫"
 		안내표시줄.appendChild(안내)
-	}
-
-	const 본문 = document.createElement("section")
-	본문.className = "본문"
-	구역.appendChild(본문)
-
-	function 드롭다운()
-	{
-		if (!구역_동영상 && !구역_쇼츠)
-			return
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
 		본문.appendChild(드롭다운_공간)
 
-		const 드롭다운_칸 = document.createElement("div")
-		드롭다운_칸.className = "드롭다운_칸"
-		드롭다운_공간.appendChild(드롭다운_칸)
+			const 드롭다운_칸 = document.createElement("div")
+			드롭다운_칸.className = "드롭다운_칸"
+			드롭다운_공간.appendChild(드롭다운_칸)
 
-		const 선택지 = document.createElement("select")
-		선택지.className = "드롭다운_선택"
-		드롭다운_칸.appendChild(선택지)
+			const 선택지 = document.createElement("select")
+			선택지.className = "드롭다운_선택"
+			드롭다운_칸.appendChild(선택지)
 
-		// "노래 골라" 안내 (열면 사라지고, 선택 없이 닫으면 다시 보임)
-		const 안내 = document.createElement("option")
-		안내.value = ""
-		안내.textContent = "노래 골라"
-		안내.selected = true
-		안내.disabled = true
-		안내.hidden = true
-		선택지.appendChild(안내)
+			// "노래 골라" 안내 (열면 사라지고, 선택 없이 닫으면 다시 보임)
+			const 안내 = document.createElement("option")
+			안내.value = ""
+			안내.textContent = "노래 골라"
+			안내.selected = true
+			안내.disabled = true
+			안내.hidden = true
+			선택지.appendChild(안내)
 
-		for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
-		{
-			const 노래 = 임시_목록.부분[순서]
-			const 항목 = document.createElement("option")
-			항목.value = 순서 + ""
-			항목.textContent = 노래.이름 + "\t" + 노래.제목
-			선택지.appendChild(항목)
-		}
+			for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
+			{
+				const 노래 = 임시_목록.부분[순서]
+				const 항목 = document.createElement("option")
+				항목.value = 순서 + ""
+				항목.textContent = 노래.이름 + "\t" + 노래.제목
+				선택지.appendChild(항목)
+			}
 
-		const 재생 = document.createElement("button")
-		재생.className = "재생_시작_버튼"
-		재생.textContent = "재생 시작"
-		재생.disabled = true
-		드롭다운_칸.appendChild(재생)
+			const 재생 = document.createElement("button")
+			재생.className = "재생_시작_버튼"
+			재생.textContent = "재생 시작"
+			재생.disabled = true
+			드롭다운_칸.appendChild(재생)
 
 		// 선택지를 고르면 재생 버튼 활성화
 		선택지.addEventListener("change", () =>
@@ -552,27 +544,13 @@ function 만들기_부분(본문, 크기, 페이지)
 	// 노래를 페이지 형태로 모두 보여주는 목록 (한 줄 = 이름 200px | 제목 | 재생 시작 100px)
 	function 만들기_노래_목록()
 	{
-		const 노래들_공간 = document.createElement("section")
-		노래들_공간.className = "노래들_공간"
-		본문.appendChild(노래들_공간)
-
-		// 크기 감지(ResizeObserver)가 .목록 을 감시하므로 클래스를 "목록 부분"으로 지정
-		const 목록 = document.createElement("section")
-		목록.className = "목록 부분"
-		// 작게 화면에서는 시작부터 disable (inert = 클릭, 포커스 모두 차단)
-		목록.inert = 구역.dataset.크게 !== "참"
-		노래들_공간.appendChild(목록)
-
-		const 페이지 = document.createElement("div")
-		페이지.className = "페이지 부분"
-		목록.appendChild(페이지)
+		크기_계산.inert = 구역.dataset.크기 !== "커짐"
 
 		for (let 번호 = 0 ; 번호 < 임시_목록.부분.length ; 번호++)
 		{
 			const 노래 = 임시_목록.부분[번호]
 			const 몇번 = (번호 + "").padStart(3, "0")
 
-			// 페이지_재구성이 data-종류, data-숫자로 보임/숨김을 결정함
 			const 항목 = document.createElement("div")
 			항목.className = "노래_항목"
 			항목.dataset.종류 = "부분"
@@ -589,15 +567,14 @@ function 만들기_부분(본문, 크기, 페이지)
 			칸_제목.textContent = 노래.제목
 			항목.appendChild(칸_제목)
 
-			const 칸_재생 = document.createElement("span")
+			const 칸_재생 = document.createElement("button")
 			칸_재생.className = "노래_칸 노래_재생"
 			항목.appendChild(칸_재생)
 
-			const 재생 = document.createElement("button")
+			const 재생 = document.createElement("span")
 			재생.className = "재생_시작_버튼"
 			재생.textContent = "재생 시작"
 			칸_재생.appendChild(재생)
-
 			재생.addEventListener("click", () =>
 			{
 				이미지_클릭_강조("부분" + 몇번)
@@ -606,9 +583,7 @@ function 만들기_부분(본문, 크기, 페이지)
 		}
 	}
 
-	// 단독 = 부분 구역만 있는지, 크게 = 지금 큰 화면인지 (CSS와 크기_조절이 이 값을 사용함)
-	구역.dataset.단독 = (!구역_동영상 && !구역_쇼츠) ? "참" : "거짓"
-	구역.dataset.크게 = 구역.dataset.단독
+	구역.dataset.크기 = "작아짐"
 	드롭다운()
 	만들기_노래_목록()
 
@@ -697,7 +672,7 @@ function 페이지_최대(종류)
 
 	const 몇개 = 종류 === "부분"
 		? document.querySelectorAll(".노래_항목").length
-		: (사용할_동영상들[종류] ?? 임시_목록[종류]).length
+		: 임시_목록[종류].length
 	return Math.ceil(몇개 / 숫자)
 }
 
@@ -751,8 +726,6 @@ function 채우기_페이지_버튼(종류)
 
 
 
-
-const 사용할_동영상들 = { 동영상 : null, 쇼츠 : null }
 
 const 선택한_동영상 = { id : null, 제목 : null }
 const 선택한_채널 = { 이름 : null, 주소 : null }
@@ -819,7 +792,7 @@ function 채우기_페이지(종류)
 	if (!페이지)
 		return
 
-	const 동영상들 = 사용할_동영상들[종류] ?? 임시_목록[종류]
+	const 동영상들 = 임시_목록[종류]
 	if (!동영상들)
 		return
 
@@ -864,7 +837,9 @@ function 채우기_페이지(종류)
 			{
 				이미지_클릭_강조(그거)
 				const 쇼츠 = 종류 === "쇼츠"
-				선택한_동영상_준비(동영상.id, 쇼츠 ? 0 : 동영상.시작, 쇼츠 ? 0 : 동영상.종료)
+				선택한_동영상_준비(동영상.id,
+					쇼츠 ? 0 : 동영상.시작,
+					쇼츠 ? 0 : 동영상.종료)
 			}
 		}
 		버튼.addEventListener("click", 딸깍)
@@ -905,18 +880,22 @@ function 크기_조절(왼쪽, 그거)
 	}
 
 	const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
-	if (부분_구역 && 부분_구역.dataset.단독 === "거짓")
+	if (부분_구역)
 	{
-		const 크게 = 구역_커짐 === "부분"
-		부분_구역.dataset.크게 = 크게 ? "참" : "거짓"
+		const 커짐 = 구역_커짐 === "부분"
+		부분_구역.dataset.크기 = 커짐 ? "커짐" : "작아짐"
 
 		const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
 		if (드롭다운_칸)
-			드롭다운_칸.inert = 크게
+		{
+			드롭다운_칸.inert = 커짐
+		}
 
-		const 노래_목록 = 부분_구역.querySelector(".목록.부분")
+		const 노래_목록 = 부분_구역.querySelector(".크기_계산.부분")
 		if (노래_목록)
-			노래_목록.inert = !크게
+		{
+			노래_목록.inert = !커짐
+		}
 	}
 }
 
@@ -929,15 +908,16 @@ function 만들기_목록()
 	const 원곡 = 임시_목록.원곡 ?? []
 	const 커버 = 임시_목록.커버 ?? []
 	const 동영상 = 원곡.concat(커버)
+	임시_목록.동영상 = 동영상
 
 	const 쇼츠 = 임시_목록.쇼츠 ?? []
 	const 부분 = 임시_목록.부분 ?? []
 
 	const 종류_확인 =
 	[
-		{ 종류 : "동영상", 자료 : 동영상 },
-		{ 종류 : "쇼츠", 자료 : 쇼츠 },
-		{ 종류 : "부분", 자료 : 부분 },
+		{ 종류 : "동영상",	자료 : 동영상 },
+		{ 종류 : "쇼츠",	자료 : 쇼츠 },
+		{ 종류 : "부분",	자료 : 부분 },
 	]
 
 	function 유효_재확인(종류)
@@ -949,8 +929,6 @@ function 만들기_목록()
 	{
 		if (!유효_재확인(분류.자료))
 			continue
-
-		사용할_동영상들[분류.종류] = 분류.자료
 
 		const 구역 = document.createElement("section")
 		구역.className = "구역"
@@ -966,33 +944,28 @@ function 만들기_목록()
 			머리말_재생목록.textContent = 분류.종류 + " 재생 목록"
 			머리말.appendChild(머리말_재생목록)
 
-			const 머리말_종류 = document.createElement("menu")
-			머리말_종류.className = "머리말_종류"
-			머리말.appendChild(머리말_종류)
-
-			const 머리말_페이지 = document.createElement("menu")
-			머리말_페이지.className = "머리말_페이지"
-			머리말.appendChild(머리말_페이지)
-
-			const 머리말_크기 = document.createElement("button")
-			머리말_크기.className = "머리말_크기"
-			머리말.appendChild(머리말_크기)
-
-				const 크기_조절_문자열 = document.createElement("span")
+			const 머리말_구분 = {}
+			for (const 이름 of ["종류", "페이지", "크기"])
+			{
+				const 칸 = document.createElement("menu")
+				칸.className = "머리말_" + 이름
+				머리말.appendChild(칸)
+				머리말_구분[이름] = 칸
+			}
+				const 크기_조절_문자열 = document.createElement("button")
 				크기_조절_문자열.className = "문자열_클릭"
 				크기_조절_문자열.textContent = "크게"
 				크기_조절_문자열.dataset.종류 = 분류.종류
-				머리말_크기.appendChild(크기_조절_문자열)
+				머리말_구분.크기.appendChild(크기_조절_문자열)
 				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
-
 
 		if (분류.종류 === "동영상")
 		{
 			if (유효_재확인(원곡) && 유효_재확인(커버))
 			{
-				function 미리보기_교체(종류)
+				function 미리보기_교체(자료)
 				{
-					사용할_동영상들.동영상 = 종류
+					임시_목록.동영상 = 자료
 
 					const 페이지 = document.querySelector(".페이지.동영상")
 					if (페이지)
@@ -1006,35 +979,24 @@ function 만들기_목록()
 					페이지_갱신("동영상")
 				}
 
-				const 종류_모두 = document.createElement("button")
-				종류_모두.className = "종류_모두"
-				머리말_종류.appendChild(종류_모두)
+				const 종류_목록 =
+				[
+					{ 이름 : "모두", 자료 : 동영상 },
+					{ 이름 : "원곡", 자료 : 원곡 },
+					{ 이름 : "커버", 자료 : 커버 },
+				]
+				for (const 종류 of 종류_목록)
+				{
+					const 종류_버튼 = document.createElement("button")
+					종류_버튼.className = "종류_" + 종류.이름
+					머리말_구분.종류.appendChild(종류_버튼)
 
-					const 문자열_모두 = document.createElement("span")
-					문자열_모두.className = "문자열_클릭"
-					문자열_모두.textContent = "모두"
-					종류_모두.appendChild(문자열_모두)
-					문자열_모두.addEventListener("click", () => 미리보기_교체(동영상))
-
-				const 종류_원곡 = document.createElement("button")
-				종류_원곡.className = "종류_원곡"
-				머리말_종류.appendChild(종류_원곡)
-
-					const 문자열_원곡 = document.createElement("span")
-					문자열_원곡.className = "문자열_클릭"
-					문자열_원곡.textContent = "원곡"
-					종류_원곡.appendChild(문자열_원곡)
-					문자열_원곡.addEventListener("click", () => 미리보기_교체(원곡))
-
-				const 종류_커버 = document.createElement("button")
-				종류_커버.className = "종류_커버"
-				머리말_종류.appendChild(종류_커버)
-
-					const 문자열_커버 = document.createElement("span")
-					문자열_커버.className = "문자열_클릭"
-					문자열_커버.textContent = "커버"
-					종류_커버.appendChild(문자열_커버)
-					문자열_커버.addEventListener("click", () => 미리보기_교체(커버))
+					const 문자열 = document.createElement("span")
+					문자열.className = "문자열_클릭"
+					문자열.textContent = 종류.이름
+					종류_버튼.appendChild(문자열)
+					문자열.addEventListener("click", () => 미리보기_교체(종류.자료))
+				}
 			}
 		}
 
@@ -1051,48 +1013,45 @@ function 만들기_목록()
 			페이지_갱신(분류.종류)
 		}
 
-		const 버튼_이전 = document.createElement("button")
-		버튼_이전.className = "버튼_이전"
-		버튼_이전.dataset.종류 = 분류.종류
-		머리말_페이지.appendChild(버튼_이전)
+		const 페이지_버튼_종류 =
+		[
+			{ 넘김 : "이전", 한장 : -1 },
+			{ 넘김 : "지금", 한장 : 0 },
+			{ 넘김 : "다음", 한장 : +1 },
+		]
+		for (const 버튼_그거 of 페이지_버튼_종류)
+		{
+			const 버튼 = document.createElement("button")
+			버튼.className = "버튼_" + 버튼_그거.넘김
+			버튼.dataset.종류 = 분류.종류
+			머리말_구분.페이지.appendChild(버튼)
 
-			const 버튼_이전_문자열 = document.createElement("span")
-			버튼_이전_문자열.className = "문자열_클릭"
-			버튼_이전.appendChild(버튼_이전_문자열)
-			버튼_이전_문자열.addEventListener("click", () => 팔락(-1))
+			if (버튼_그거.한장 === 0)
+				continue
 
-		const 버튼_지금 = document.createElement("span")
-		버튼_지금.className = "버튼_지금"
-		버튼_지금.dataset.종류 = 분류.종류
-		머리말_페이지.appendChild(버튼_지금)
-
-		const 버튼_다음 = document.createElement("button")
-		버튼_다음.className = "버튼_다음"
-		버튼_다음.dataset.종류 = 분류.종류
-		머리말_페이지.appendChild(버튼_다음)
-
-			const 버튼_다음_문자열 = document.createElement("span")
-			버튼_다음_문자열.className = "문자열_클릭"
-			버튼_다음.appendChild(버튼_다음_문자열)
-			버튼_다음_문자열.addEventListener("click", () => 팔락(+1))
+			const 문자열 = document.createElement("span")
+			문자열.className = "문자열_클릭"
+			버튼.appendChild(문자열)
+			문자열.addEventListener("click", () => 팔락(버튼_그거.한장))
+		}
 
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
 		구역.appendChild(본문)
 
 		// 몇개 들어가는지 크기 계산만 하는 공간
-		const 목록 = document.createElement("div")
-		목록.className = "목록 " + 분류.종류
-		본문.appendChild(목록)
+		const 크기_계산 = document.createElement("div")
+		크기_계산.className = "크기_계산 " + 분류.종류
+		본문.appendChild(크기_계산)
 
 		// 실질적으로 보여주는 공간
 		const 페이지 = document.createElement("div")
 		페이지.className = "페이지 " + 분류.종류
-		목록.appendChild(페이지)
+		크기_계산.appendChild(페이지)
 
 		if (분류.종류 === "부분")
 		{
-			만들기_부분(본문, 목록, 페이지)
+			만들기_부분(본문, 크기_계산, 페이지)
 			continue
 		}
 
@@ -1100,14 +1059,15 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
-	if (왼쪽.querySelectorAll(".구역").length === 1)
-	{
-		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
-	}
-
 	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
 	.map(구역 => 구역_비율[구역.dataset.종류] + "fr")
 	.join(" ")
+
+	if (왼쪽.querySelectorAll(".구역").length === 1)
+	{
+		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
+		크기_조절(왼쪽, 왼쪽.querySelector(".구역").dataset.종류)
+	}
 }
 
 
@@ -1116,8 +1076,8 @@ function 만들기_구역()
 {
 	만들기_목록()
 
-	const 목록들 = document.querySelectorAll(".목록")
-	for (const 감지 of 목록들)
+	const 크기_계산 = document.querySelectorAll(".크기_계산")
+	for (const 감지 of 크기_계산)
 	{
 		재구성.observe(감지)
 	}
