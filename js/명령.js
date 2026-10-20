@@ -1254,7 +1254,7 @@ function 불러오기_재생목록(이름)
 					continue
 				//
 
-				const id = id_찾기(동영상.id)
+				const id = id_찾기(new URL(동영상.id))
 				// const id = id_찾기(동영상.id)
 				const 값 = Array.isArray(id) ? id[0] : id
 				if (값)
