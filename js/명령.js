@@ -1093,6 +1093,11 @@ function 만들기_구역()
 let 재생목록_대기 = null
 function 불러오기_재생목록(이름)
 {
+	//
+	delete window.재생목록
+	//
+
+
 	const script = document.createElement("script")
 	script.src = "명단/" + 이름 + ".js"
 
@@ -1183,7 +1188,13 @@ function 불러오기_재생목록(이름)
 
 			for (const 동영상 of 재생목록[key])
 			{
-				const id = id_찾기(동영상.id)
+				//
+				if (!동영상.id)
+					continue
+				//
+
+				const id = id_찾기(new URL(동영상.id))
+				// const id = id_찾기(동영상.id)
 				const 값 = Array.isArray(id) ? id[0] : id
 				if (값)
 				{
@@ -1251,6 +1262,314 @@ function 불러오기_재생목록(이름)
 	document.head.appendChild(script)
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// (추가) "시작"
+// 본문에 "불러오는 중" 표시 (스타일은 css 의 #불러오는중)
+function 불러오는중(본문)
+{
+	const 불러오는_중 = document.createElement("div")
+	불러오는_중.id = "불러오는중"
+	불러오는_중.textContent = "불러오는 중"
+	본문.appendChild(불러오는_중)
+}
+
+function 불러오는중_제거()
+{
+	const 불러오는_중 = document.getElementById("불러오는중")
+	if (불러오는_중)
+		불러오는_중.remove()
+}
+// (추가) "종료"
+
+// (추가) "시작"
+// 이름별 확인 결과를 저장하는 전역 객체
+// 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
+const 이름표_상태 = {}
+
+// 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
+// script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
+function 파일_확인(이름)
+{
+	return new Promise(resolve =>
+	{
+		// 이전에 불러온 재생목록이 덮어써지거나 섞이는 것을 방지
+		delete window.재생목록
+
+		const script = document.createElement("script")
+		script.src = "명단/" + 이름 + ".js"
+
+		script.addEventListener("load", () =>
+		{
+			// 실행은 됐지만 재생목록이 만들어지지 않았다면 파일이 없는 것과 같이 처리
+			if (!window.재생목록)
+			{
+				script.remove()
+				resolve({ 파일 : false, 검사 : null })
+				return
+			}
+
+			const 결과 = { 파일 : true, 검사 : id_검사(window.재생목록) }
+			script.remove()
+			delete window.재생목록
+			resolve(결과)
+		})
+
+		script.addEventListener("error", () =>
+		{
+			script.remove()
+			resolve({ 파일 : false, 검사 : null })
+		})
+
+		document.head.appendChild(script)
+	})
+}
+// (추가) "종료"
+
+
+
+// (추가) "시작"
+// 재생목록의 모든 id 를 new URL 로 검사 (구 재생목록인가 → id_검사 로 이름 변경 후 전역 이동)
+// 결과 형태
+// { 잘못된주소 : { 소개 : [id, ...], ... }, 최신화필요 : { 커버 : [id, ...], ... } }
+function id_검사(재생목록)
+{
+	const 결과 = { 잘못된주소 : {}, 최신화필요 : {} }
+	if (!재생목록)
+		return 결과
+
+	// 어느 종류에서 나온 id 인지 기억하기 위한 함수
+	function 기록_추가(대상, 종류, id)
+	{
+		대상[종류] ??= []
+		대상[종류].push(id)
+	}
+
+	const 종류들 = ["소개", "원곡", "커버", "쇼츠", "부분"]
+	const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+
+	for (const 종류 of 종류들)
+	{
+		if (!Array.isArray(재생목록[종류]))
+			continue
+
+		for (const 동영상 of 재생목록[종류])
+		{
+			// 비어있는 id 는 아직 채우지 않은 칸이므로 검사하지 않음
+			if (!동영상 || !동영상.id)
+				continue
+
+			let url = null
+			try
+			{
+				url = new URL(동영상.id)
+			}
+			catch
+			{
+				// 주소 모양 자체가 아님
+				기록_추가(결과.잘못된주소, 종류, 동영상.id)
+				continue
+			}
+
+			// list 값이 있으면 재생목록 주소
+			if (url.searchParams.get("list"))
+			{
+				기록_추가(결과.최신화필요, 종류, 동영상.id)
+				continue
+			}
+
+			// 동영상 id 가 11자리 형식이 아님
+			const v = url.searchParams.get("v")
+			const path = url.pathname.split("/").pop()
+			const id_동영상 = v ?? path
+			if (!정규표현식.test(id_동영상))
+				기록_추가(결과.잘못된주소, 종류, 동영상.id)
+		}
+	}
+
+	return 결과
+}
+
+// 문제가 하나라도 있는지 확인
+function 문제_있음(검사)
+{
+	if (!검사)
+		return false
+
+	return Object.keys(검사.잘못된주소).length > 0
+		|| Object.keys(검사.최신화필요).length > 0
+}
+
+// 기억한 문제를 본문 왼쪽 위부터 출력
+function 문제_출력(본문, 검사)
+{
+	const 분류들 =
+	[
+		{ 키 : "잘못된주소", 제목 : "잘못된 주소" },
+		{ 키 : "최신화필요", 제목 : "최신화 필요함" },
+	]
+
+	const 줄들 = []
+	for (const 분류 of 분류들)
+	{
+		const 묶음 = 검사[분류.키]
+		const 종류들 = Object.keys(묶음)
+		if (종류들.length === 0)
+			continue
+
+		줄들.push(분류.제목)
+		for (const 종류 of 종류들)
+		{
+			줄들.push("재생목록." + 종류 + " =")
+			줄들.push("[")
+			for (const id of 묶음[종류])
+			{
+				줄들.push("\t{")
+				줄들.push("\t\tid : \"" + id + "\",")
+				줄들.push("\t},")
+			}
+			줄들.push("]")
+		}
+		줄들.push("")
+	}
+
+	const 출력 = document.createElement("div")
+	출력.className = "문제_출력"
+	출력.textContent = 줄들.join("\n")
+	본문.appendChild(출력)
+}
+// (추가) "종료"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const 가나다순 =
@@ -1266,15 +1585,94 @@ const AtoZ =
 const 소속사 = []
 function 시작()
 {
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// function 채우기_이름표들(왼쪽_이름)
+	// {
+	// 	const 본문 = document.createElement("section")
+	// 	본문.className = "본문"
+	// 	왼쪽_이름.appendChild(본문)
+
+	// 	const 이름표들 = document.createElement("menu")
+	// 	이름표들.className = "이름표들"
+	// 	본문.appendChild(이름표들)
+
+	// 	function 가나다순_정렬(목록)
+	// 	{
+	// 		const 규칙 = new Intl.Collator("ko")
+	// 		const 정렬 = [...목록].sort((앞, 뒤) =>
+	// 		{
+	// 			const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
+	// 			return 비교
+	// 		})
+
+	// 		const map = new Map()
+	// 		for (const 그거 of 정렬)
+	// 		{
+	// 			const 이거 = 그거.이름.trim()
+	// 			if (map.has(이거))
+	// 			{
+	// 				map.get(이거).중복 = true
+	// 			}
+	// 			else
+	// 			{
+	// 				map.set(이거, { ...그거 })
+	// 			}
+	// 		}
+
+	// 		const 결과 = [...map.values()]
+
+	// 		return 결과
+	// 	}
+
+	// 	const 이름들 = 가나다순_정렬(이름_목록)
+	// 	for (const 누구 of 이름들)
+	// 	{
+	// 		const 이름표 = document.createElement("button")
+	// 		이름표.className = "이름표"
+	// 		이름표들.appendChild(이름표)
+
+	// 		const 이름 = document.createElement("span")
+	// 		이름.className = 누구.이름
+	// 		이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
+	// 		이름표.appendChild(이름)
+
+	// 		function 불러오는중(본문)
+	// 		{
+	// 			const 불러오는_중 = document.createElement("div")
+	// 			불러오는_중.id = "불러오는중"
+	// 			불러오는_중.textContent = "불러오는 중"
+	// 			불러오는_중.style.flex = "1"
+	// 			불러오는_중.style.display = "flex"
+	// 			불러오는_중.style.alignItems = "center"
+	// 			불러오는_중.style.justifyContent = "center"
+	// 			불러오는_중.style.fontSize = "60px"
+	// 			본문.appendChild(불러오는_중)
+	// 		}
+
+	// 		이름.addEventListener("click", () =>
+	// 		{
+	// 			본문.innerHTML = ""
+	// 			불러오는중(본문)
+	// 			불러오기_재생목록(누구.이름)
+	// 		})
+	// 	}
+	// }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 	function 채우기_이름표들(왼쪽_이름)
 	{
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
 		왼쪽_이름.appendChild(본문)
 
-		const 이름표들 = document.createElement("menu")
-		이름표들.className = "이름표들"
-		본문.appendChild(이름표들)
+		//
+		불러오는중(본문)
+		// const 이름표들 = document.createElement("menu")
+		// 이름표들.className = "이름표들"
+		// 본문.appendChild(이름표들)
 
 		function 가나다순_정렬(목록)
 		{
@@ -1305,6 +1703,25 @@ function 시작()
 		}
 
 		const 이름들 = 가나다순_정렬(이름_목록)
+
+
+		// (추가) "시작"
+		// 모든 이름의 파일을 하나씩 순서대로 확인
+		// 동시에 불러오면 window.재생목록이 서로 섞이므로 반드시 순서대로 처리
+		for (const 누구 of 이름들)
+		{
+			이름표_상태[누구.이름] = await 파일_확인(누구.이름)
+		}
+		불러오는중_제거()
+
+		const 이름표들 = document.createElement("menu")
+		이름표들.className = "이름표들"
+		본문.appendChild(이름표들)
+		// (추가) "종료"
+
+
+
+
 		for (const 누구 of 이름들)
 		{
 			const 이름표 = document.createElement("button")
@@ -1313,21 +1730,25 @@ function 시작()
 
 			const 이름 = document.createElement("span")
 			이름.className = 누구.이름
-			이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
+
+			const 상태 = 이름표_상태[누구.이름]
+			let 기호 = ""
+			if (!상태.파일)
+			{
+				기호 = "!"
+				이름.classList.add("파일없음")
+			}
+			else if (문제_있음(상태.검사))
+			{
+				기호 = "?"
+				이름.classList.add("문제있음")
+			}
+			이름.textContent = (누구.중복 ? 누구.이름 + "+" : 누구.이름) + 기호
+			// 이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
 			이름표.appendChild(이름)
 
-			function 불러오는중(본문)
-			{
-				const 불러오는_중 = document.createElement("div")
-				불러오는_중.id = "불러오는중"
-				불러오는_중.textContent = "불러오는 중"
-				불러오는_중.style.flex = "1"
-				불러오는_중.style.display = "flex"
-				불러오는_중.style.alignItems = "center"
-				불러오는_중.style.justifyContent = "center"
-				불러오는_중.style.fontSize = "60px"
-				본문.appendChild(불러오는_중)
-			}
+			if (!상태.파일)
+				continue
 
 			이름.addEventListener("click", () =>
 			{
@@ -1337,6 +1758,8 @@ function 시작()
 			})
 		}
 	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function 채우기_가나다()
 	{
