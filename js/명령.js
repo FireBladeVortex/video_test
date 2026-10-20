@@ -1112,29 +1112,29 @@ function 불러오기_재생목록(이름)
 
 	async function id_가공(재생목록)
 	{
-		async function 재생목록_조사(id)
-		{
-			const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
-			const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
+		// async function 재생목록_조사(id)
+		// {
+		// 	const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
+		// 	const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
 
-			player.cuePlaylist(
-			{
-				listType : "playlist",
-				list : id
-			})
+		// 	player.cuePlaylist(
+		// 	{
+		// 		listType : "playlist",
+		// 		list : id
+		// 	})
 
-			await Promise.race([대기, 시간초과])
-			재생목록_대기 = null
+		// 	await Promise.race([대기, 시간초과])
+		// 	재생목록_대기 = null
 
-			const 재생목록 = player.getPlaylist() ?? []
-			const 결과 = 재생목록.map(id => ({ id }))
-			return 결과
-		}
+		// 	const 재생목록 = player.getPlaylist() ?? []
+		// 	const 결과 = 재생목록.map(id => ({ id }))
+		// 	return 결과
+		// }
 
-		function 재생목록인가(id)
-		{
-			return id.startsWith("PL")
-		}
+		// function 재생목록인가(id)
+		// {
+		// 	return id.startsWith("PL")
+		// }
 
 		function id_찾기(주소)
 		{
@@ -1187,12 +1187,12 @@ function 불러오기_재생목록(이름)
 				const 값 = Array.isArray(id) ? id[0] : id
 				if (값)
 				{
-					if (재생목록인가(값))
-					{
-						const 결과 = await 재생목록_조사(값)
-						임시_목록[key] = (임시_목록[key] ?? []).concat(결과)
-					}
-					else
+					// if (재생목록인가(값))
+					// {
+					// 	const 결과 = await 재생목록_조사(값)
+					// 	임시_목록[key] = (임시_목록[key] ?? []).concat(결과)
+					// }
+					// else
 					{
 						if (key === "부분")
 						{
@@ -1209,6 +1209,8 @@ function 불러오기_재생목록(이름)
 			}
 		}
 	}
+
+
 
 	function 나만의_색깔(색깔)
 	{
@@ -1311,7 +1313,7 @@ function 시작()
 
 			const 이름 = document.createElement("span")
 			이름.className = 누구.이름
-			이름.textContent = 누구.중복 ? 누구.이름 + "*" : 누구.이름
+			이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
 			이름표.appendChild(이름)
 
 			function 불러오는중(본문)

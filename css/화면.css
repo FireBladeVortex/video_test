@@ -195,7 +195,7 @@ body
 {
 	grid-column : 2 ;
 	grid-row : 1 ;
-	background : var(--강조1);
+	background : var(--오른쪽바탕색) ;
 	z-index : 1 ;
 }
 
@@ -407,7 +407,7 @@ body
 	width : clamp(480px, 100%, 640px) ;
 	height : clamp(270px, 100%, 360px) ;
 	margin-bottom : 10px ;
-	z-index : 3 ;
+	z-index : 1 ;
 }
 
 #player iframe,
@@ -511,7 +511,6 @@ body
 	flex : 1 ;
 	min-width : 0 ;
 	height : 30px ;
-	font-size : 22px ;
 	text-align : left ;
 	background : var(--왼쪽바탕색) ;
 	border : 1px solid var(--강조2) ;
@@ -522,7 +521,6 @@ body
 
 .드롭다운_선택 option
 {
-	font-size : 22px ;
 	background : var(--왼쪽바탕색) ;
 	white-space : pre ;
 	tab-size : 200px ;
