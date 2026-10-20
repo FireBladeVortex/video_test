@@ -55,6 +55,8 @@ body
 #오른쪽,
 #오른쪽_안내
 {
+	width : 100% ;
+	height : 100% ;
 	display: flex ;
 	flex-direction: column ;
 	align-items: center ;
