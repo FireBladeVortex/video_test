@@ -1090,6 +1090,61 @@ function 만들기_구역()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 let 재생목록_대기 = null
 function 불러오기_재생목록(이름)
 {
@@ -1141,43 +1196,49 @@ function 불러오기_재생목록(이름)
 		// 	return id.startsWith("PL")
 		// }
 
-		function id_찾기(주소)
+		// function id_찾기(주소)
+		// {
+		// 	// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
+		// 	try
+		// 	{
+		// 		// 유효한 링크인지 확인
+		// 		const url = new URL(주소)
+
+		// 		// 해당 링크가 재생목록인지 확인
+		// 		const id_재생목록 = url.searchParams.get("list")
+		// 		// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
+		// 		if (id_재생목록 && 재생목록인가(id_재생목록))
+		// 			// return id_재생목록
+		// 			return
+
+		// 		// 해당 링크가 동영상 링크인지 확인
+		// 		// 링크 모양에 따라 경우의 수 대비
+		// 		const v = url.searchParams.get("v")
+		// 		const path = url.pathname.split("/").pop()
+		// 		const id_동영상 = v ?? path
+
+		// 		// 잘못된 링크인지 대비
+		// 		const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+		// 		// 잘못됐다면 아무것도 안하고 즉시 null 전달
+		// 		if (!정규표현식.test(id_동영상))
+		// 			return null
+
+		// 		// 동영상 시작시간을 포함하고있는지 확인
+		// 		const t = parseInt(url.searchParams.get("t"))
+		// 		// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
+		// 		return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
+		// 	}
+		// 	// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
+		// 	catch
+		// 	{
+		// 		return null
+		// 	}
+		// }
+		function id_찾기(url)
 		{
-			// 잘못된 것을 받아왔을 때 에러 방지를 위한 try
-			try
-			{
-				// 유효한 링크인지 확인
-				const url = new URL(주소)
-
-				// 해당 링크가 재생목록인지 확인
-				const id_재생목록 = url.searchParams.get("list")
-				// 재생목록이 맞고 PL 타입 재생목록인지 확인하고 맞으면 값을 전달
-				if (id_재생목록 && 재생목록인가(id_재생목록))
-					// return id_재생목록
-					return
-
-				// 해당 링크가 동영상 링크인지 확인
-				// 링크 모양에 따라 경우의 수 대비
-				const v = url.searchParams.get("v")
-				const path = url.pathname.split("/").pop()
-				const id_동영상 = v ?? path
-
-				// 잘못된 링크인지 대비
-				const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
-				// 잘못됐다면 아무것도 안하고 즉시 null 전달
-				if (!정규표현식.test(id_동영상))
-					return null
-
-				// 동영상 시작시간을 포함하고있는지 확인
-				const t = parseInt(url.searchParams.get("t"))
-				// 포함하고 있으면 시간도 같이 전달 아니라면 id만 전달 + NaN 방지
-				return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
-			}
-			// try 과정에서 뭔가 잘못됐다면 즉시 멈추고 null 전달
-			catch
-			{
-				return null
-			}
+			const v = url.searchParams.get("v")
+			const path = url.pathname.split("/").pop()
+			return v ?? path
 		}
 
 		const keys = Object.keys(재생목록)
@@ -1193,7 +1254,7 @@ function 불러오기_재생목록(이름)
 					continue
 				//
 
-				const id = id_찾기(new URL(동영상.id))
+				const id = id_찾기(동영상.id)
 				// const id = id_찾기(동영상.id)
 				const 값 = Array.isArray(id) ? id[0] : id
 				if (값)
@@ -1268,47 +1329,23 @@ function 불러오기_재생목록(이름)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // (추가) "시작"
 // 본문에 "불러오는 중" 표시 (스타일은 css 의 #불러오는중)
 function 불러오는중(본문)
 {
+	const 불러오는_중_있냐 = document.getElementById("불러오는중")
+	if (불러오는_중_있냐)
+		return 불러오는_중_있냐.remove()
+
 	const 불러오는_중 = document.createElement("div")
 	불러오는_중.id = "불러오는중"
 	불러오는_중.textContent = "불러오는 중"
 	본문.appendChild(불러오는_중)
 }
 
-function 불러오는중_제거()
-{
-	const 불러오는_중 = document.getElementById("불러오는중")
-	if (불러오는_중)
-		불러오는_중.remove()
-}
-// (추가) "종료"
 
-// (추가) "시작"
 // 이름별 확인 결과를 저장하는 전역 객체
 // 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
 const 이름표_상태 = {}
@@ -1468,107 +1505,13 @@ function 문제_출력(본문, 검사)
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1662,7 +1605,7 @@ function 시작()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function 채우기_이름표들(왼쪽_이름)
+async function 채우기_이름표들(왼쪽_이름)
 	{
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
@@ -1712,7 +1655,7 @@ function 시작()
 		{
 			이름표_상태[누구.이름] = await 파일_확인(누구.이름)
 		}
-		불러오는중_제거()
+		불러오는중(본문)
 
 		const 이름표들 = document.createElement("menu")
 		이름표들.className = "이름표들"
@@ -1732,6 +1675,7 @@ function 시작()
 			이름.className = 누구.이름
 
 			const 상태 = 이름표_상태[누구.이름]
+			///////////////////////////////////////////////////////////////////
 			let 기호 = ""
 			if (!상태.파일)
 			{
