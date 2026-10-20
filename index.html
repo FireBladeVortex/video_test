@@ -22,6 +22,7 @@
 		<section id = "오른쪽_안내">
 			<header class = "머리말">
 				<!-- 안내할 목록들 -->
+				<section id = "본문"></section>
 			</header>
 		</section>
 
@@ -33,17 +34,18 @@
 				<!-- <menu id = "유튜브 치지직 링크 들어갈 자리"></menu> -->
 				<button id = "처음으로"><span>처음으로</span></button>
 			</header>
-			<section id = "player">
-				<div id = "클릭_방지"></div>
-				<div id = "YTP"></div>
+			<section class = "본문">
+				<section id = "player">
+					<div id = "YTP"></div>
+				</section>
+				<div id = "재생_시간_표시줄">
+					<div id = "재생_시간_지금"></div>
+				</div>
+				<div id = "플레이어_메세지">재생 목록에서 선택하세요</div>
+				<div id = "볼륨">
+					<input id = "볼륨_조절" type = "range" min = "0" max = "100" value = "25" step = "1">
+				</div>
 			</section>
-			<div id = "재생_시간_표시줄">
-				<div id = "재생_시간_지금"></div>
-			</div>
-			<div id = "플레이어_메세지">재생 목록에서 선택하세요</div>
-			<div id = "볼륨">
-				<input id = "볼륨_조절" type = "range" min = "0" max = "100" value = "25" step = "1">
-			</div>
 		</section>
 	</main>
 

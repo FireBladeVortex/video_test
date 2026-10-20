@@ -41,7 +41,6 @@ body
 	height : 100% ;
 	height : 100vh ;
 	height : 100dvh ;
-	background : var(--오른쪽바탕색) ;
 }
 
 #화면
@@ -49,34 +48,22 @@ body
 	display : grid ;
 	grid-template-columns : minmax(0, 1fr) minmax(0, 1fr) ;
 	grid-template-rows : 100% ;
-	width : 100% ;
 	height : 100% ;
 }
 
-#화면 menu
+#왼쪽_이름,
+#오른쪽,
+#오른쪽_안내
 {
-	/* width : 100% ; */
-	height : auto
+	display: flex ;
+	flex-direction: column ;
+	align-items: center ;
+	justify-content: flex-start ;
 }
 
-#화면 img
-{
-	width : 100% ;
-	height : 100% ;
-	/* 이미지 비율 유지 + 가득 채움
-	contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
-	object-fit : cover ;
-}
 
-#화면 button > span
-{
-	cursor : pointer ;
-}
 
-#화면 .문자열_클릭
-{
-	cursor : pointer ;
-}
+
 /* 기본 설정들 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 
@@ -89,7 +76,8 @@ body
 .머리말
 {
 	width : 95% ;
-
+	height : auto ;
+	min-height : 30px ;
 	border-bottom : 3px solid var(--강조2) ;
 	padding-bottom : 3px ;
 	display : flex ;
@@ -107,6 +95,27 @@ body
 	height : 100% ;
 }
 
+#화면 menu
+{
+	height : auto
+}
+
+#화면 img
+{
+	width : 100% ;
+	height : 100% ;
+	/* object-fit : cover ; */
+}
+
+.문자열_클릭
+{
+	cursor : pointer ;
+}
+
+#화면 button > span
+{
+	cursor : pointer ;
+}
 
 /* 공공재 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
@@ -121,11 +130,6 @@ body
 	grid-column : 1 ;
 	grid-row : 1 ;
 	background : var(--왼쪽바탕색) ;
-	z-index : 50 ;
-	display: flex ;
-	flex-direction: column ;
-	align-items: center ;
-	justify-content: flex-start ;
 }
 
 #가나다,
@@ -188,13 +192,7 @@ body
 {
 	grid-column : 2 ;
 	grid-row : 1 ;
-	z-index : 50 ;
-	display: flex ;
-	flex-direction: column ;
-	align-items: center ;
-	justify-content: flex-start ;
-	width : 100%;
-	height : 100%;
+	background : var(--강조1);
 }
 
 /* 오른쪽 최초 화면 */
@@ -209,11 +207,7 @@ body
 {
 	grid-column : 1 ;
 	grid-row : 1 ;
-	display : grid ;
-	grid-template-rows : 2fr 2fr 1fr ;
-	/* min-width : 0 ; */
 	background : var(--왼쪽바탕색) ;
-	height : 100% ;
 }
 
 
@@ -247,9 +241,7 @@ body
 	flex-direction : column ;
 	align-items : center ;
 	width : 100% ;
-	height : 100% ;
-	/* min-width : 0 ;
-	min-height : 0 ; */
+	min-height : 0 ;
 }
 
 .구역[data-종류=동영상],
@@ -259,7 +251,6 @@ body
 	grid-template-rows : auto 1fr ;
 	justify-items : center ;
 	align-items : start ;
-	/* align-content : start ; */
 }
 
 
@@ -353,8 +344,6 @@ body
 .선택지_공간 .선택지_재생
 {
 	display : flex ;
-	/* width : 100% ;
-	height : auto ; */
 	flex : 1 ;
 }
 
@@ -365,13 +354,11 @@ body
 	display : flex ;
 	align-items : center ;
 	justify-content : center ;
-	/* cursor : pointer ; */
 }
 
 #화면 .재생_시작_버튼:disabled
 {
 	opacity : 0.5 ;
-	/* cursor : default ; */
 }
 
 /* 왼쪽 본문 화면 */
@@ -406,13 +393,8 @@ body
 {
 	grid-column : 2 ;
 	grid-row : 1 ;
-	position : relative ;
-	display : flex ;
-	flex-direction : column ;
-	align-items : center ;
-	justify-content : center ;
 	gap : 3px ;
-	/* cursor : default ; */
+	background : var(--오른쪽바탕색) ;
 }
 
 #player
@@ -424,20 +406,12 @@ body
 	z-index : 3 ;
 }
 
-#player iframe, #YTP
+#player iframe,
+#YTP
 {
 	width : 100% ;
 	height : 100% ;
 	display : block ;
-}
-
-#클릭_방지
-{
-	position : absolute ;
-	inset : 0 ;
-	z-index : 10 ;
-	/* cursor : default ; */
-	pointer-events : none ;
 }
 
 #재생_시간_표시줄

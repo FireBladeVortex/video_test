@@ -198,14 +198,12 @@ function onPlayerStateChange(event)
 	}
 
 	const 상태 = [1, 2, 3].includes(event.data)
-	// ("#오른쪽, #클릭_방지") // #클릭_방지 개선 방법 찾기전까지 막음
 	const 오른쪽 = document.querySelectorAll("#오른쪽")
 	for (const 화면 of 오른쪽)
 	{
 		화면.style.cursor = 상태 ? "pointer" : "default"
 		화면.onclick = 상태 ? 재생_일시중지_조작 : null
 	}
-	// document.getElementById("클릭_방지").style.pointerEvents = 상태 ? "auto" : "none"
 }
 
 
