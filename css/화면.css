@@ -132,6 +132,7 @@ body
 	grid-column : 1 ;
 	grid-row : 1 ;
 	background : var(--왼쪽바탕색) ;
+	z-index : 1 ;
 }
 
 #가나다,
@@ -195,6 +196,7 @@ body
 	grid-column : 2 ;
 	grid-row : 1 ;
 	background : var(--강조1);
+	z-index : 1 ;
 }
 
 /* 오른쪽 최초 화면 */
@@ -402,7 +404,6 @@ body
 
 #player
 {
-	position : relative ;
 	width : clamp(480px, 100%, 640px) ;
 	height : clamp(270px, 100%, 360px) ;
 	margin-bottom : 10px ;
