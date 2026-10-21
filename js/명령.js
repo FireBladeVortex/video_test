@@ -1144,6 +1144,15 @@ function 만들기_구역()
 
 //////////////////////////////////////////////////////////////////////////////////////
 
+function id_찾기(주소)
+{
+	const url = new URL(주소)
+	const v = url.searchParams.get("v")
+	const path = url.pathname.split("/").pop()
+	return v ?? path
+}
+
+
 
 let 재생목록_대기 = null
 function 불러오기_재생목록(이름)
@@ -1234,12 +1243,7 @@ function 불러오기_재생목록(이름)
 		// 		return null
 		// 	}
 		// }
-		function id_찾기(url)
-		{
-			const v = url.searchParams.get("v")
-			const path = url.pathname.split("/").pop()
-			return v ?? path
-		}
+
 
 		const keys = Object.keys(재생목록)
 		for (const key of keys)
@@ -1254,7 +1258,7 @@ function 불러오기_재생목록(이름)
 					continue
 				//
 
-				const id = id_찾기(new URL(동영상.id))
+				const id = id_찾기(동영상.id)
 				// const id = id_찾기(동영상.id)
 				const 값 = Array.isArray(id) ? id[0] : id
 				if (값)
@@ -1348,7 +1352,7 @@ function 불러오는중(본문)
 
 // 이름별 확인 결과를 저장하는 전역 객체
 // 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
-const 이름표_상태 = {}
+const 이름들_파일_상태 = {}
 
 // 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
 // script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
@@ -1397,7 +1401,7 @@ function 파일_확인(이름)
 // { 잘못됨 : { 소개 : [id, ...], ... }, 최신화 : { 커버 : [id, ...], ... } }
 function id_검사(재생목록)
 {
-	const 결과 = { 잘못됨 : {}, 최신화 : {} }
+	const 결과 = { 잘못됨 : {}, 최신화 : {}, 중복 : {} }
 	if (!재생목록)
 		return 결과
 
@@ -1416,6 +1420,7 @@ function id_검사(재생목록)
 		if (!Array.isArray(재생목록[종류]))
 			continue
 
+		const 세기 = {}
 		for (const 동영상 of 재생목록[종류])
 		{
 			// 비어있는 id 는 아직 채우지 않은 칸이므로 검사하지 않음
@@ -1441,12 +1446,28 @@ function id_검사(재생목록)
 				continue
 			}
 
-			// 동영상 id 가 11자리 형식이 아님
-			const v = url.searchParams.get("v")
-			const path = url.pathname.split("/").pop()
-			const id_동영상 = v ?? path
+			// (추가) "시작"
+			// 동영상 id 가 11자리 형식이 아니면 잘못된 주소, 정규표현식을 통과한 id 만 중복 세기
+			const id_동영상 = id_찾기(url)
 			if (!정규표현식.test(id_동영상))
+			{
 				기록_추가(결과.잘못됨, 종류, 동영상.id)
+				continue
+			}
+
+			// 처음 나온 주소를 원본으로 기억하고 횟수를 올림
+			세기[id_동영상] ??= { 원본 : 동영상.id, 횟수 : 0 }
+			세기[id_동영상].횟수++
+			// (추가) "종료"
+		}
+
+		for (const 키 of Object.keys(세기))
+		{
+			if (세기[키].횟수 > 1)
+			{
+				결과.중복[종류] ??= []
+				결과.중복[종류].push(세기[키])
+			}
 		}
 	}
 
@@ -1461,6 +1482,7 @@ function 문제_있음(검사)
 
 	return Object.keys(검사.잘못됨).length > 0
 		|| Object.keys(검사.최신화).length > 0
+		|| Object.keys(검사.중복).length > 0
 }
 
 // 기억한 문제를 본문 왼쪽 위부터 출력
@@ -1470,6 +1492,7 @@ function 문제_출력(본문, 검사)
 	[
 		{ 키 : "잘못됨", 제목 : "잘못된 주소" },
 		{ 키 : "최신화", 제목 : "최신화 필요" },
+		{ 키 : "중복", 제목 : "중복 있음" },
 	]
 
 	const 줄들 = []
@@ -1486,6 +1509,11 @@ function 문제_출력(본문, 검사)
 			줄들.push("재생목록." + 종류)
 			for (const id of 묶음[종류])
 			{
+				if (분류.키 === "중복")
+				{
+					줄들.push("id : " + 항목.원본 + " " + 항목.횟수 + "번")
+					continue
+				}
 				줄들.push("id : " + id)
 			}
 		}
@@ -1524,84 +1552,7 @@ const AtoZ =
 const 소속사 = []
 function 시작()
 {
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-	// function 채우기_이름표들(왼쪽_이름)
-	// {
-	// 	const 본문 = document.createElement("section")
-	// 	본문.className = "본문"
-	// 	왼쪽_이름.appendChild(본문)
-
-	// 	const 이름표들 = document.createElement("menu")
-	// 	이름표들.className = "이름표들"
-	// 	본문.appendChild(이름표들)
-
-	// 	function 가나다순_정렬(목록)
-	// 	{
-	// 		const 규칙 = new Intl.Collator("ko")
-	// 		const 정렬 = [...목록].sort((앞, 뒤) =>
-	// 		{
-	// 			const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
-	// 			return 비교
-	// 		})
-
-	// 		const map = new Map()
-	// 		for (const 그거 of 정렬)
-	// 		{
-	// 			const 이거 = 그거.이름.trim()
-	// 			if (map.has(이거))
-	// 			{
-	// 				map.get(이거).중복 = true
-	// 			}
-	// 			else
-	// 			{
-	// 				map.set(이거, { ...그거 })
-	// 			}
-	// 		}
-
-	// 		const 결과 = [...map.values()]
-
-	// 		return 결과
-	// 	}
-
-	// 	const 이름들 = 가나다순_정렬(이름_목록)
-	// 	for (const 누구 of 이름들)
-	// 	{
-	// 		const 이름표 = document.createElement("button")
-	// 		이름표.className = "이름표"
-	// 		이름표들.appendChild(이름표)
-
-	// 		const 이름 = document.createElement("span")
-	// 		이름.className = 누구.이름
-	// 		이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
-	// 		이름표.appendChild(이름)
-
-	// 		function 불러오는중(본문)
-	// 		{
-	// 			const 불러오는_중 = document.createElement("div")
-	// 			불러오는_중.id = "불러오는중"
-	// 			불러오는_중.textContent = "불러오는 중"
-	// 			불러오는_중.style.flex = "1"
-	// 			불러오는_중.style.display = "flex"
-	// 			불러오는_중.style.alignItems = "center"
-	// 			불러오는_중.style.justifyContent = "center"
-	// 			불러오는_중.style.fontSize = "60px"
-	// 			본문.appendChild(불러오는_중)
-	// 		}
-
-	// 		이름.addEventListener("click", () =>
-	// 		{
-	// 			본문.innerHTML = ""
-	// 			불러오는중(본문)
-	// 			불러오기_재생목록(누구.이름)
-	// 		})
-	// 	}
-	// }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-async function 채우기_이름표들(왼쪽_이름)
+	async function 채우기_이름표들(왼쪽_이름)
 	{
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
@@ -1609,9 +1560,7 @@ async function 채우기_이름표들(왼쪽_이름)
 
 		//
 		불러오는중(본문)
-		// const 이름표들 = document.createElement("menu")
-		// 이름표들.className = "이름표들"
-		// 본문.appendChild(이름표들)
+		//
 
 		function 가나다순_정렬(목록)
 		{
@@ -1649,7 +1598,7 @@ async function 채우기_이름표들(왼쪽_이름)
 		// 동시에 불러오면 window.재생목록이 서로 섞이므로 반드시 순서대로 처리
 		for (const 누구 of 이름들)
 		{
-			이름표_상태[누구.이름] = await 파일_확인(누구.이름)
+			이름들_파일_상태[누구.이름] = await 파일_확인(누구.이름)
 		}
 		불러오는중(본문)
 
@@ -1670,7 +1619,7 @@ async function 채우기_이름표들(왼쪽_이름)
 			const 이름 = document.createElement("span")
 			이름.className = 누구.이름
 
-			const 상태 = 이름표_상태[누구.이름]
+			const 상태 = 이름들_파일_상태[누구.이름]
 			///////////////////////////////////////////////////////////////////
 			let 기호 = ""
 			if (!상태.파일)
@@ -1700,7 +1649,7 @@ async function 채우기_이름표들(왼쪽_이름)
 			이름.addEventListener("click", () =>
 			{
 				본문.innerHTML = ""
-
+				document.title = 누구.이름
 				// (추가) "시작"
 				// 문제가 있으면 api 호출 없이 문제 목록만 출력하고 종료
 				if (문제_있음(상태.검사))
