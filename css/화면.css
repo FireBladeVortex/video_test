@@ -650,18 +650,17 @@ body
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 
-#도구
+#도구,
+#출력
 {
 	grid-column : 1 ;
 	grid-row : 1 ;
-	background : var(--왼쪽바탕색) ;
+	background : var(--강조2) ;
 	z-index : -1 ;
+	font-size: 14px ;
 }
 
 #출력
 {
 	grid-column : 2 ;
-	grid-row : 1 ;
-	background : var(--오른쪽바탕색) ;
-	z-index : -1 ;
 }
