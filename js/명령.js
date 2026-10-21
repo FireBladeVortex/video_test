@@ -389,6 +389,62 @@ document.getElementById("처음으로").addEventListener("click", () =>
 })
 
 
+const tttt = 3000
+const ttt = 3
+
+let tk = null
+let tt = 0
+let t = 0
+let tok = false
+
+function 도구()
+{
+	// 여기에 실행할 내용
+}
+
+function 부르기(k)
+{
+	if (tok)
+		return
+
+	if (k.repeat)
+		return
+
+	const tkc = k.key
+
+	if (tkc !== ".")
+	{
+		tt = 0
+		return
+	}
+
+	const no = Date.now()
+
+	if (tt > 0 && no - t > tttt)
+	{
+		tt = 0
+	}
+
+	if (tt > 0 && tkc === tk)
+	{
+		tt++
+	}
+	else
+	{
+		tk = tkc
+		tt = 1
+		t = no
+	}
+
+	if (tt === ttt)
+	{
+		tt = 0
+		tok = true
+		도구()
+	}
+}
+document.addEventListener("keydown", 부르기)
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
