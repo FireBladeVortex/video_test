@@ -63,7 +63,12 @@ body
 	justify-content: flex-start ;
 }
 
-
+#처음으로
+{
+	left : 0;
+	bottom : 0;
+	z-index : 3;
+}
 
 
 /* 기본 설정들 */
