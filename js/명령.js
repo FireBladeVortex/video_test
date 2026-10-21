@@ -399,7 +399,14 @@ let tok = false
 
 function 도구()
 {
-	// 여기에 실행할 내용
+	document.getElementById("왼쪽").remove()
+	document.getElementById("왼쪽_이름").remove()
+	document.getElementById("오른쪽").remove()
+	document.getElementById("오른쪽_안내").remove()
+	document.getElementById("왼쪽").destroy()
+	document.getElementById("왼쪽_이름").destroy()
+	document.getElementById("오른쪽").destroy()
+	document.getElementById("오른쪽_안내").destroy()
 }
 
 function 부르기(k)
