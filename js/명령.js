@@ -71,11 +71,11 @@ function 재생_표시줄()
 	// {
 	// 	if (시간_관리.시작 === 0)
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = 지금_문자열 + "<" + 문자열_관리.종료
+	// 		document.getElementById("동영상_제목").textContent = 지금_문자열 + "<" + 문자열_관리.종료
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("플레이어_메세지").textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
+	// 		document.getElementById("동영상_제목").textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
 	// 	}
 	// }
 }
@@ -100,8 +100,8 @@ async function 불러오기_제목(id)
 		if (arguments.length !== 1)
 			return
 
-		document.getElementById("플레이어_메세지").style.textAlign = "start"
-		document.getElementById("플레이어_메세지").textContent = 선택한_동영상.제목
+		document.getElementById("동영상_제목").style.textAlign = "start"
+		document.getElementById("동영상_제목").textContent = 선택한_동영상.제목
 	}
 	catch
 	{
@@ -167,8 +167,8 @@ function onPlayerStateChange(event)
 		}
 		if (title)
 		{
-			document.getElementById("플레이어_메세지").style.textAlign = "start"
-			document.getElementById("플레이어_메세지").textContent = title
+			document.getElementById("동영상_제목").style.textAlign = "start"
+			document.getElementById("동영상_제목").textContent = title
 			불러오기_제목(선택한_동영상.id, title)
 		}
 		else
@@ -344,7 +344,7 @@ let 기회 = false
 
 function 도구()
 {
-	const 조사 = document.getElementById("처음으로")
+	const 조사 = document.getElementById("조사하기")
 	조사.style.zIndex = 5
 	// location.reload()
 }

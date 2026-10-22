@@ -450,10 +450,9 @@ body
 
 }
 
-#플레이어_메세지
+#동영상_제목
 {
-	width : clamp(480px, 100%, 640px) ;
-
+	width : clamp(480px, 95%, 640px) ;
 	text-align : center ;
 }
 
