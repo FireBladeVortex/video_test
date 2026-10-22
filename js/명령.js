@@ -344,7 +344,9 @@ let 기회 = false
 
 function 도구()
 {
-	location.reload()
+	const 조사 = document.getElementById("처음으로")
+	조사.style.zIndex = 5
+	// location.reload()
 }
 
 function 부르기(키)
