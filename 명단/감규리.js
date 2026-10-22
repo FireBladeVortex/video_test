@@ -27,7 +27,8 @@ window.재생목록 ??= {}
 재생목록.원곡 =
 [
 	{
-		id : "",
+		// 다리세개 아이돌 - 열쇠 Official MV
+		id : "https://youtu.be/aJEsZf9isxQ",
 	},
 ]
 
@@ -48,33 +49,39 @@ window.재생목록 ??= {}
 		id : "https://youtu.be/M1xcjPfWKAA",
 	},
 	{
+		// 【감규리】회전하는 하늘토끼 남자COVER
 		id : "https://youtu.be/LfffxwcY8MI",
 	},
 	{
+		// 【블루아카이브 OST】Thanks to - Cover by 감규리
 		id : "https://youtu.be/Z5liMZMHo4g",
 	},
 	{
+		// 【감규리】내꺼 하는 법 | 남자Cover
 		id : "https://youtu.be/mW0jfEH6HW0",
 	},
 	{
+		// YOASOBI「Biri-Biri」 감규리COVER
 		id : "https://youtu.be/8Wbp-ccnElU",
 	},
 	{
-		id : "https://youtu.be/aJEsZf9isxQ",
-	},
-	{
+		// 【감규리】 SUPADOPA ｜남자 cover.
 		id : "https://youtu.be/h-fei75JawY",
 	},
 	{
+		// 포니(フォニイ) / 감규리cover
 		id : "https://youtu.be/IrcmOHtuiXY",
 	},
 	{
+		// 튜링 러브 / 감규리 【남・여 혼자서 불러 봤습니다♪】
 		id : "https://youtu.be/tq_9c4KnMWY",
 	},
 	{
+		// 【감규리】레몬메론쿠키🍋🍈🍪 / 남자 Cover
 		id : "https://youtu.be/KXyHtVm9OQo",
 	},
 	{
+		// 【MV】삐질게 / 남자 Cover
 		id : "https://youtu.be/2dq0PY3d9OQ",
 	},
 ]
