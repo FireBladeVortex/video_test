@@ -1228,11 +1228,12 @@ function 불러오기_재생목록(이름)
 		if (!소개)
 			return
 
-		const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
+		// const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
 
 		player.cueVideoById(
 		{
-			videoId : 무작위.id,
+			// videoId : 무작위.id,
+			videoId : 소개.id,
 		})
 
 	}
@@ -1412,178 +1413,178 @@ function 불러오는중(본문)
 // 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
 const 이름들_파일_상태 = {}
 
-// 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
-// script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
-function 파일_확인(이름)
-{
-	return new Promise(resolve =>
-	{
-		// 이전에 불러온 재생목록이 덮어써지거나 섞이는 것을 방지
-		delete window.재생목록
+// // 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
+// // script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
+// function 파일_확인(이름)
+// {
+// 	return new Promise(resolve =>
+// 	{
+// 		// 이전에 불러온 재생목록이 덮어써지거나 섞이는 것을 방지
+// 		delete window.재생목록
 
-		const script = document.createElement("script")
-		script.src = "명단/" + 이름 + ".js"
+// 		const script = document.createElement("script")
+// 		script.src = "명단/" + 이름 + ".js"
 
-		script.addEventListener("load", () =>
-		{
-			// 실행은 됐지만 재생목록이 만들어지지 않았다면 파일이 없는 것과 같이 처리
-			if (!window.재생목록)
-			{
-				script.remove()
-				resolve({ 파일 : false, 검사 : null })
-				return
-			}
+// 		script.addEventListener("load", () =>
+// 		{
+// 			// 실행은 됐지만 재생목록이 만들어지지 않았다면 파일이 없는 것과 같이 처리
+// 			if (!window.재생목록)
+// 			{
+// 				script.remove()
+// 				resolve({ 파일 : false, 검사 : null })
+// 				return
+// 			}
 
-			const 결과 = { 파일 : true, 검사 : id_검사(window.재생목록) }
-			script.remove()
-			delete window.재생목록
-			resolve(결과)
-		})
+// 			const 결과 = { 파일 : true, 검사 : id_검사(window.재생목록) }
+// 			script.remove()
+// 			delete window.재생목록
+// 			resolve(결과)
+// 		})
 
-		script.addEventListener("error", () =>
-		{
-			script.remove()
-			resolve({ 파일 : false, 검사 : null })
-		})
+// 		script.addEventListener("error", () =>
+// 		{
+// 			script.remove()
+// 			resolve({ 파일 : false, 검사 : null })
+// 		})
 
-		document.head.appendChild(script)
-	})
-}
-// (추가) "종료"
+// 		document.head.appendChild(script)
+// 	})
+// }
+// // (추가) "종료"
 
 
 
-// (추가) "시작"
-// 재생목록의 모든 id 를 new URL 로 검사 (구 재생목록인가 → id_검사 로 이름 변경 후 전역 이동)
-// 결과 형태
-// { 잘못됨 : { 소개 : [id, ...], ... }, 최신화 : { 커버 : [id, ...], ... } }
-function id_검사(재생목록)
-{
-	const 결과 = { 잘못됨 : {}, 최신화 : {}, 중복 : {} }
-	if (!재생목록)
-		return 결과
+// // (추가) "시작"
+// // 재생목록의 모든 id 를 new URL 로 검사 (구 재생목록인가 → id_검사 로 이름 변경 후 전역 이동)
+// // 결과 형태
+// // { 잘못됨 : { 소개 : [id, ...], ... }, 최신화 : { 커버 : [id, ...], ... } }
+// function id_검사(재생목록)
+// {
+// 	const 결과 = { 잘못됨 : {}, 최신화 : {}, 중복 : {} }
+// 	if (!재생목록)
+// 		return 결과
 
-	// 어느 종류에서 나온 id 인지 기억하기 위한 함수
-	function 기록_추가(대상, 종류, id)
-	{
-		대상[종류] ??= []
-		대상[종류].push(id)
-	}
+// 	// 어느 종류에서 나온 id 인지 기억하기 위한 함수
+// 	function 기록_추가(대상, 종류, id)
+// 	{
+// 		대상[종류] ??= []
+// 		대상[종류].push(id)
+// 	}
 
-	const 종류들 = ["소개", "원곡", "커버", "쇼츠", "부분"]
-	const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+// 	const 종류들 = ["소개", "원곡", "커버", "쇼츠", "부분"]
+// 	const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
 
-	for (const 종류 of 종류들)
-	{
-		if (!Array.isArray(재생목록[종류]))
-			continue
+// 	for (const 종류 of 종류들)
+// 	{
+// 		if (!Array.isArray(재생목록[종류]))
+// 			continue
 
-		const 세기 = {}
-		for (const 동영상 of 재생목록[종류])
-		{
-			// 비어있는 id 는 아직 채우지 않은 칸이므로 검사하지 않음
-			if (!동영상 || !동영상.id)
-				continue
+// 		const 세기 = {}
+// 		for (const 동영상 of 재생목록[종류])
+// 		{
+// 			// 비어있는 id 는 아직 채우지 않은 칸이므로 검사하지 않음
+// 			if (!동영상 || !동영상.id)
+// 				continue
 
-			let url = null
-			try
-			{
-				url = new URL(동영상.id)
-			}
-			catch
-			{
-				// 주소 모양 자체가 아님
-				기록_추가(결과.잘못됨, 종류, 동영상.id)
-				continue
-			}
+// 			let url = null
+// 			try
+// 			{
+// 				url = new URL(동영상.id)
+// 			}
+// 			catch
+// 			{
+// 				// 주소 모양 자체가 아님
+// 				기록_추가(결과.잘못됨, 종류, 동영상.id)
+// 				continue
+// 			}
 
-			// list 값이 있으면 재생목록 주소
-			if (url.searchParams.get("list"))
-			{
-				기록_추가(결과.최신화, 종류, 동영상.id)
-				continue
-			}
+// 			// list 값이 있으면 재생목록 주소
+// 			if (url.searchParams.get("list"))
+// 			{
+// 				기록_추가(결과.최신화, 종류, 동영상.id)
+// 				continue
+// 			}
 
-			// (추가) "시작"
-			// 동영상 id 가 11자리 형식이 아니면 잘못된 주소, 정규표현식을 통과한 id 만 중복 세기
-			const id_동영상 = id_찾기(url)
-			if (!정규표현식.test(id_동영상))
-			{
-				기록_추가(결과.잘못됨, 종류, 동영상.id)
-				continue
-			}
+// 			// (추가) "시작"
+// 			// 동영상 id 가 11자리 형식이 아니면 잘못된 주소, 정규표현식을 통과한 id 만 중복 세기
+// 			const id_동영상 = id_찾기(url)
+// 			if (!정규표현식.test(id_동영상))
+// 			{
+// 				기록_추가(결과.잘못됨, 종류, 동영상.id)
+// 				continue
+// 			}
 
-			// 처음 나온 주소를 원본으로 기억하고 횟수를 올림
-			세기[id_동영상] ??= { 원본 : 동영상.id, 횟수 : 0 }
-			세기[id_동영상].횟수++
-			// (추가) "종료"
-		}
+// 			// 처음 나온 주소를 원본으로 기억하고 횟수를 올림
+// 			세기[id_동영상] ??= { 원본 : 동영상.id, 횟수 : 0 }
+// 			세기[id_동영상].횟수++
+// 			// (추가) "종료"
+// 		}
 
-		for (const 키 of Object.keys(세기))
-		{
-			if (세기[키].횟수 > 1)
-			{
-				결과.중복[종류] ??= []
-				결과.중복[종류].push(세기[키])
-			}
-		}
-	}
+// 		for (const 키 of Object.keys(세기))
+// 		{
+// 			if (세기[키].횟수 > 1)
+// 			{
+// 				결과.중복[종류] ??= []
+// 				결과.중복[종류].push(세기[키])
+// 			}
+// 		}
+// 	}
 
-	return 결과
-}
+// 	return 결과
+// }
 
-// 문제가 하나라도 있는지 확인
-function 문제_있음(검사)
-{
-	if (!검사)
-		return false
+// // 문제가 하나라도 있는지 확인
+// function 문제_있음(검사)
+// {
+// 	if (!검사)
+// 		return false
 
-	return Object.keys(검사.잘못됨).length > 0
-		|| Object.keys(검사.최신화).length > 0
-		|| Object.keys(검사.중복).length > 0
-}
+// 	return Object.keys(검사.잘못됨).length > 0
+// 		|| Object.keys(검사.최신화).length > 0
+// 		|| Object.keys(검사.중복).length > 0
+// }
 
-// 기억한 문제를 본문 왼쪽 위부터 출력
-function 문제_출력(본문, 검사)
-{
-	const 분류들 =
-	[
-		{ 키 : "잘못됨", 제목 : "잘못된 주소" },
-		{ 키 : "최신화", 제목 : "최신화 필요" },
-		{ 키 : "중복", 제목 : "중복 있음" },
-	]
+// // 기억한 문제를 본문 왼쪽 위부터 출력
+// function 문제_출력(본문, 검사)
+// {
+// 	const 분류들 =
+// 	[
+// 		{ 키 : "잘못됨", 제목 : "잘못된 주소" },
+// 		{ 키 : "최신화", 제목 : "최신화 필요" },
+// 		{ 키 : "중복", 제목 : "중복 있음" },
+// 	]
 
-	const 줄들 = []
-	for (const 분류 of 분류들)
-	{
-		const 묶음 = 검사[분류.키]
-		const 종류들 = Object.keys(묶음)
-		if (종류들.length === 0)
-			continue
+// 	const 줄들 = []
+// 	for (const 분류 of 분류들)
+// 	{
+// 		const 묶음 = 검사[분류.키]
+// 		const 종류들 = Object.keys(묶음)
+// 		if (종류들.length === 0)
+// 			continue
 
-		줄들.push(분류.제목)
-		for (const 종류 of 종류들)
-		{
-			줄들.push("재생목록." + 종류)
-			for (const id of 묶음[종류])
-			{
-				if (분류.키 === "중복")
-				{
-					줄들.push("id : " + id.원본 + " " + id.횟수 + "번")
-					continue
-				}
-				줄들.push("id : " + id)
-			}
-		}
-		줄들.push("")
-	}
+// 		줄들.push(분류.제목)
+// 		for (const 종류 of 종류들)
+// 		{
+// 			줄들.push("재생목록." + 종류)
+// 			for (const id of 묶음[종류])
+// 			{
+// 				if (분류.키 === "중복")
+// 				{
+// 					줄들.push("id : " + id.원본 + " " + id.횟수 + "번")
+// 					continue
+// 				}
+// 				줄들.push("id : " + id)
+// 			}
+// 		}
+// 		줄들.push("")
+// 	}
 
-	const 출력 = document.createElement("div")
-	출력.className = "문제_출력"
-	출력.textContent = 줄들.join("\n")
-	본문.appendChild(출력)
-}
-// (추가) "종료"
+// 	const 출력 = document.createElement("div")
+// 	출력.className = "문제_출력"
+// 	출력.textContent = 줄들.join("\n")
+// 	본문.appendChild(출력)
+// }
+// // (추가) "종료"
 
 
 
@@ -1654,10 +1655,10 @@ function 시작()
 		// (추가) "시작"
 		// 모든 이름의 파일을 하나씩 순서대로 확인
 		// 동시에 불러오면 window.재생목록이 서로 섞이므로 반드시 순서대로 처리
-		for (const 누구 of 이름들)
-		{
-			이름들_파일_상태[누구.이름] = await 파일_확인(누구.이름)
-		}
+		// for (const 누구 of 이름들)
+		// {
+		// 	이름들_파일_상태[누구.이름] = await 파일_확인(누구.이름)
+		// }
 		불러오는중(본문)
 
 		const 이름표들 = document.createElement("menu")
@@ -1677,25 +1678,25 @@ function 시작()
 			const 이름 = document.createElement("span")
 			이름.className = 누구.이름
 
-			const 상태 = 이름들_파일_상태[누구.이름]
-			///////////////////////////////////////////////////////////////////
+			// const 상태 = 이름들_파일_상태[누구.이름]
+			// ///////////////////////////////////////////////////////////////////
 			let 기호 = ""
-			if (!상태.파일)
-			{
-				기호 = "!"
-				이름.classList.add("파일없음")
-			}
-			else if (문제_있음(상태.검사))
-			{
-				기호 = "?"
-				이름.classList.add("문제있음")
-			}
+			// if (!상태.파일)
+			// {
+			// 	기호 = "!"
+			// 	이름.classList.add("파일없음")
+			// }
+			// else if (문제_있음(상태.검사))
+			// {
+			// 	기호 = "?"
+			// 	이름.classList.add("문제있음")
+			// }
 			이름.textContent = (누구.중복 ? 누구.이름 + "+" : 누구.이름) + 기호
 			// 이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
 			이름표.appendChild(이름)
 
-			if (!상태.파일)
-				continue
+			// if (!상태.파일)
+			// 	continue
 
 			// 이름.addEventListener("click", () =>
 			// {
@@ -1711,11 +1712,11 @@ function 시작()
 				불러오는중(본문)
 				// (추가) "시작"
 				// 문제가 있으면 api 호출 없이 문제 목록만 출력하고 종료
-				if (문제_있음(상태.검사))
-				{
-					문제_출력(본문, 상태.검사)
-					return
-				}
+				// if (문제_있음(상태.검사))
+				// {
+				// 	문제_출력(본문, 상태.검사)
+				// 	return
+				// }
 				// (추가) "종료"
 
 				불러오기_재생목록(누구.이름)
