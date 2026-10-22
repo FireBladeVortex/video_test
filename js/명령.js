@@ -83,12 +83,16 @@ function 재생_표시줄()
 
 async function 불러오기_제목(id)
 {
-	const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
-	const 주소_2 = id
-	const 주소_3 = "&format=json"
-	const 주소 = 주소_1 + 주소_2 + 주소_3
+	if (arguments.length !== 1)
+		return
+
 	try
 	{
+		const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
+		const 주소_2 = id
+		const 주소_3 = "&format=json"
+		const 주소 = 주소_1 + 주소_2 + 주소_3
+
 		const 호출 = await fetch(주소)
 		const 데이터 = await 호출.json()
 
@@ -97,14 +101,12 @@ async function 불러오기_제목(id)
 		선택한_동영상.제목 = 데이터.title
 		// document.title = 선택한_채널.이름
 
-		if (arguments.length !== 1)
-			return
-
 		document.getElementById("동영상_제목").style.textAlign = "start"
 		document.getElementById("동영상_제목").textContent = 선택한_동영상.제목
 	}
 	catch
 	{
+		return
 	}
 }
 
