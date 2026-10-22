@@ -1228,12 +1228,12 @@ function 불러오기_재생목록(이름)
 		if (!소개)
 			return
 
-		// const 무작위 = 소개[Math.floor(Math.random() * 소개.length)]
-
+		const 선택 = 소개.length === 1
+			? 소개[0]
+			: 소개[Math.floor(Math.random() * 소개.length)]
 		player.cueVideoById(
 		{
-			// videoId : 무작위.id,
-			videoId : 소개.id,
+			videoId : 선택.id,
 		})
 
 	}
@@ -1411,7 +1411,7 @@ function 불러오는중(본문)
 
 // 이름별 확인 결과를 저장하는 전역 객체
 // 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
-const 이름들_파일_상태 = {}
+// const 이름들_파일_상태 = {}
 
 // // 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
 // // script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
