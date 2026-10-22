@@ -324,6 +324,72 @@ function 드르륵(마우스휠)
 document.addEventListener("wheel", 드르륵, { passive : false })
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+document.getElementById("처음으로").addEventListener("click", () =>
+{
+	location.reload()
+})
+
+
+const 밀리초 = 3000
+const 횟수 = 3
+
+let 연속 = null
+let 기억 = 0
+let 제한시간 = 0
+let 기회 = false
+
+function 도구()
+{
+	location.reload()
+}
+
+function 부르기(키)
+{
+	if (기회)
+		return
+
+	if (키.repeat)
+		return
+
+	const 입력 = 키.key
+
+	if (입력 !== ".")
+	{
+		기억 = 0
+		return
+	}
+
+	const now = Date.now()
+
+	if (기억 > 0 && now - 제한시간 > 밀리초)
+	{
+		기억 = 0
+	}
+
+	if (기억 > 0 && 입력 === 연속)
+	{
+		기억++
+	}
+	else
+	{
+		연속 = 입력
+		기억 = 1
+		제한시간 = now
+	}
+
+	if (기억 === 횟수)
+	{
+		기억 = 0
+		기회 = true
+		도구()
+	}
+}
+document.addEventListener("keydown", 부르기)
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -378,79 +444,6 @@ function 시간_표기법(시간)
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-document.getElementById("처음으로").addEventListener("click", () =>
-{
-	location.reload()
-})
-
-
-const tttt = 3000
-const ttt = 3
-
-let tk = null
-let tt = 0
-let t = 0
-let tok = false
-
-function 도구()
-{
-	document.getElementById("왼쪽").remove()
-	document.getElementById("왼쪽_이름").remove()
-	document.getElementById("오른쪽").remove()
-	document.getElementById("오른쪽_안내").remove()
-	document.getElementById("왼쪽").destroy()
-	document.getElementById("왼쪽_이름").destroy()
-	document.getElementById("오른쪽").destroy()
-	document.getElementById("오른쪽_안내").destroy()
-}
-
-function 부르기(k)
-{
-	if (tok)
-		return
-
-	if (k.repeat)
-		return
-
-	const tkc = k.key
-
-	if (tkc !== ".")
-	{
-		tt = 0
-		return
-	}
-
-	const no = Date.now()
-
-	if (tt > 0 && no - t > tttt)
-	{
-		tt = 0
-	}
-
-	if (tt > 0 && tkc === tk)
-	{
-		tt++
-	}
-	else
-	{
-		tk = tkc
-		tt = 1
-		t = no
-	}
-
-	if (tt === ttt)
-	{
-		tt = 0
-		tok = true
-		도구()
-	}
-}
-document.addEventListener("keydown", 부르기)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
