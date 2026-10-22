@@ -17,6 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
+		// 【Original Song】 미녕이데려오깨 | 지구 정복 Official MV
 		id : "https://youtu.be/rsfFoMuWKBQ",
 	},
 ]
@@ -26,6 +27,7 @@ window.재생목록 ??= {}
 재생목록.원곡 =
 [
 	{
+		// 【Original Song】 미녕이데려오깨 | 지구 정복 Official MV
 		id : "https://youtu.be/rsfFoMuWKBQ",
 	},
 ]
@@ -35,7 +37,24 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
-		id : "https://youtube.com/playlist?list=PLLVly1JFu80s&si=5P7wLpSw5idUNLcI",
+		// 내꺼 하는 법(How to be mine)｜Cover by 미녕이데려오깨
+		id : "https://youtu.be/dQz_N7cG4eQ",
+	},
+	{
+		// 팬 서비스( ファンサ ) 한국어 【Cover by 미녕이데려오깨】
+		id : "https://youtu.be/zeuFYzA7wPA",
+	},
+	{
+		// 내 이름 맑음┃Cover by 미녕이
+		id : "https://youtu.be/yMY4S1htFyw",
+	},
+	{
+		// 사랑해줘 사랑해줘 사랑해줘 ( 愛して愛して愛して) | 미녕이 cover
+		id : "https://youtu.be/z1yKzg-bjeA",
+	},
+	{
+		// 귀엽기만 하면 안 되나요? (かわいいだけじゃだめですか？) | 이오몽X마젯X미녕이X위도 Cover
+		id : "https://youtu.be/d8E8db1u-b8",
 	},
 ]
 

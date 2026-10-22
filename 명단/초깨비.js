@@ -35,6 +35,7 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
+		// 【세노】데스노트 - 죽음의 게임 / 세노 x 초깨비 Cover (ft. 아쿠루)
 		id : "https://youtu.be/h3l1SyPMpoE",
 	},
 ]

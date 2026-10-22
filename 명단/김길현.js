@@ -28,9 +28,6 @@ window.재생목록 ??= {}
 	{
 		id : "",
 	},
-	{
-		id : "https://youtu.be/1111111111111111111123123ㄴㄹㄹㄹㄹㄹㅈㄷ",
-	},
 ]
 
 
@@ -38,6 +35,7 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
+		// 머쉬베놈 (MUSHVENOM) - 돌림판 / 니르 (cover) ft.김길현
 		id : "https://youtu.be/KR7H0nH_TzA",
 	},
 ]

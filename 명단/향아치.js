@@ -17,7 +17,8 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		id : "https://youtube.com/shorts/nQba51L_uHI?si=UvPM4UvidvxyTW1K",
+		// 야르 민원송
+		id : "https://youtu.be/nQba51L_uHI",
 	},
 ]
 
@@ -44,7 +45,8 @@ window.재생목록 ??= {}
 재생목록.쇼츠 =
 [
 	{
-		id : "https://youtube.com/shorts/nQba51L_uHI?si=UvPM4UvidvxyTW1K",
+		// 야르 민원송
+		id : "https://youtu.be/nQba51L_uHI",
 	},
 ]
 

@@ -35,7 +35,12 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
+		// 【세노】데스노트 - 죽음의 게임 / 세노 x 초깨비 Cover (ft. 아쿠루)
 		id : "https://youtu.be/h3l1SyPMpoE",
+	},
+	{
+		// 【세노】쿨 - 애상 / 세노 x 마젯 Cover (ft. 이오몽)
+		id : "https://youtu.be/m7d7RkvCU70",
 	},
 ]
 
