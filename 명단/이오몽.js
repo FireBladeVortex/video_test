@@ -173,7 +173,7 @@ window.재생목록 ??= {}
 	{
 		// New오몽으로 귀여워서 송구해 #shorts
 		id : "https://youtu.be/KM-h-RcGA2Q",
-	}
+	},
 	{
 		// #별이_떨어질_때 #이오몽 @이오몽 님과 무지개를 그려보았습니다🌈
 		id : "https://youtu.be/kw4ItHZoLxk",
@@ -186,7 +186,8 @@ window.재생목록 ??= {}
 [
 	{
 		// 【3D 콘서트】 이오몽 1st 콘서트, 〈오몽이의 작은 마당놀이〉
-		id : "https://youtu.be/Gkxc6yil_wQ",
+		// id : "https://youtu.be/Gkxc6yil_wQ",
+		id : "",
 		노래 :
 		[
 			{
