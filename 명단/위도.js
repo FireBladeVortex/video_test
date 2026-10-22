@@ -45,7 +45,6 @@ window.재생목록 ??= {}
 ]
 
 
-
 재생목록.커버 =
 [
 	{
@@ -63,6 +62,10 @@ window.재생목록 ??= {}
 	{
 		// 별이 쏟아지는 바다 (星降る海) | 위도(W2RDO) Cover
 		id : "https://youtu.be/jswUdIb8aVM",
+	},
+	{
+		// Siren Song | 위도(W2RDO) Live Cover
+		id : "https://youtu.be/0zI7YQoExlg",
 	},
 	{
 		// 귀엽기만 하면 안 되나요? (かわいいだけじゃだめですか？) | 이오몽X마젯X미녕이X위도 Cover

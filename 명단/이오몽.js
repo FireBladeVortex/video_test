@@ -63,6 +63,10 @@ window.재생목록 ??= {}
 		id : "https://youtu.be/WddLi5cr1lw",
 	},
 	{
+		// 도깨비의세계 ost [ 이오몽 - 도깨비의세계 ] Original song
+		id : "https://youtu.be/Cweuw5j5EMg",
+	},
+	{
 		// 이오몽 - 비상선언(飛上宣言) | Official MV
 		id : "https://youtu.be/PAW9dCGshTk",
 	},
@@ -186,8 +190,7 @@ window.재생목록 ??= {}
 [
 	{
 		// 【3D 콘서트】 이오몽 1st 콘서트, 〈오몽이의 작은 마당놀이〉
-		// id : "https://youtu.be/Gkxc6yil_wQ",
-		id : "",
+		id : "https://youtu.be/Gkxc6yil_wQ",
 		노래 :
 		[
 			{

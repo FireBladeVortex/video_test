@@ -31,6 +31,10 @@ window.재생목록 ??= {}
 		id : "https://youtu.be/RXNwZg_WzT8",
 	},
 	{
+		// 흑사자 by PahNic (RAVE) x 판구리
+		id : "https://youtu.be/WN68VoQ-mEg",
+	},
+	{
 		// 봉누도2 굿걸선녀 테마곡 "진짜의 삶" ㅣ 판구리 오리지널곡
 		id : "https://youtu.be/O1t3_CPP14E",
 	},
