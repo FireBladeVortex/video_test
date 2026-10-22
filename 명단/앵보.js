@@ -17,8 +17,8 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		// 아저씨가 말아주는 오지콤 멘트
-		id : "https://youtu.be/JuPtWkc6xtU",
+		// 너희가 행복하면 됐어..
+		id : "https://youtu.be/1H1FEYUUJCg",
 	},
 ]
 
