@@ -167,6 +167,14 @@ window.재생목록 ??= {}
 재생목록.쇼츠 =
 [
 	{
+		// 국악 버튜버가 풀트로 귀여워서 미안해 #Shorts
+		id : "https://youtu.be/LitXLvgQfbU",
+	},
+	{
+		// New오몽으로 귀여워서 송구해 #shorts
+		id : "https://youtu.be/KM-h-RcGA2Q",
+	}
+	{
 		// #별이_떨어질_때 #이오몽 @이오몽 님과 무지개를 그려보았습니다🌈
 		id : "https://youtu.be/kw4ItHZoLxk",
 	},
