@@ -1004,7 +1004,7 @@ function 만들기_목록()
 
 			const 머리말_재생목록 = document.createElement("span")
 			머리말_재생목록.className = "머리말_재생목록"
-			머리말_재생목록.textContent = 분류.종류 + " 재생 목록"
+			머리말_재생목록.textContent = 분류.종류
 			머리말.appendChild(머리말_재생목록)
 
 			const 머리말_구분 = {}
