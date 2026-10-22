@@ -17,6 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
+		// 【추석특집】감규리 브이로그 모음집 + 쿠키영상
 		id : "https://youtu.be/w0dn6qxsjBM",
 	},
 ]
@@ -35,43 +36,46 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
-		id : "https://youtu.be/tq_9c4KnMWY",
-	},
-	{
-		id : "https://youtu.be/h-fei75JawY",
-	},
-	{
+		// 남자인데 귀여워서 미안해ㅎ 【可愛くてごめん COVER】 남자 커버
 		id : "https://youtu.be/3rvHu9oGUbQ",
 	},
 	{
+		// Target For Love - 감규리【블루 아카이브 OST Cover】
+		id : "https://youtu.be/5KNsPRNkGnw",
+	},
+	{
+		// ✽きゅうくらりん/두근어질 【감규리Cover】
 		id : "https://youtu.be/M1xcjPfWKAA",
-	},
-	{
-		id : "https://youtu.be/IrcmOHtuiXY",
-	},
-	{
-		id : "https://youtu.be/mW0jfEH6HW0",
 	},
 	{
 		id : "https://youtu.be/LfffxwcY8MI",
 	},
 	{
-		id : "https://youtu.be/2dq0PY3d9OQ",
+		id : "https://youtu.be/Z5liMZMHo4g",
 	},
 	{
-		id : "https://youtu.be/KXyHtVm9OQo",
-	},
-	{
-		id : "https://youtu.be/5KNsPRNkGnw",
+		id : "https://youtu.be/mW0jfEH6HW0",
 	},
 	{
 		id : "https://youtu.be/8Wbp-ccnElU",
 	},
 	{
-		id : "https://youtu.be/Z5liMZMHo4g",
+		id : "https://youtu.be/aJEsZf9isxQ",
 	},
 	{
-		id : "https://youtu.be/aJEsZf9isxQ",
+		id : "https://youtu.be/h-fei75JawY",
+	},
+	{
+		id : "https://youtu.be/IrcmOHtuiXY",
+	},
+	{
+		id : "https://youtu.be/tq_9c4KnMWY",
+	},
+	{
+		id : "https://youtu.be/KXyHtVm9OQo",
+	},
+	{
+		id : "https://youtu.be/2dq0PY3d9OQ",
 	},
 ]
 

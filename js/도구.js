@@ -37,6 +37,41 @@ async function 제목_조사(id)
 }
 // (추가) "종료"
 
+
+
+
+// (추가) "시작"
+// 입력창 문자열에서 앞뒤 공백을 지우고, 첫 번째 " 와 그 다음 " 사이의 문자열만 꺼내는 함수
+// 아래 3가지 모양 모두 같은 주소를 돌려줌
+// id : "https://youtu.be/xxxxxxxxxxx",
+// "https://youtu.be/xxxxxxxxxxx",
+// 따옴표가 없으면 trim 한 문자열을 그대로 돌려줌
+function 문자열_정리(문자열)
+{
+	const 정리 = 문자열.trim()
+
+	const 앞 = 정리.indexOf("\"")
+	if (앞 === -1)
+		return 정리
+
+	const 뒤 = 정리.indexOf("\"", 앞 + 1)
+	if (뒤 === -1)
+		return 정리
+
+	return 정리.slice(앞 + 1, 뒤).trim()
+}
+// (추가) "종료"
+
+
+
+
+
+
+
+
+
+
+
 const 이름_모음 = new Set(이름_목록.map(누구 => 누구.이름.trim()))
 for (const 이름 of 이름_모음)
 {
@@ -285,7 +320,10 @@ function 버튼_잠금(잠금)
 
 function 버튼_갱신()
 {
-	const 주소_같음 = 주소_입력.value.trim() === 마지막_주소
+		// (수정)
+	// 불러오기 때 저장한 마지막_주소가 정리된 문자열이므로 비교할 때도 같은 방식으로 정리
+	const 주소_같음 = 문자열_정리(주소_입력.value) === 마지막_주소
+	// const 주소_같음 = 주소_입력.value.trim() === 마지막_주소
 	const 비교_같음 = (이름_선택.value + "/" + 종류_선택.value) === 마지막_비교
 	const 선택_안함 = 이름_선택.value === "" || 종류_선택.value === ""
 
@@ -298,7 +336,10 @@ function 버튼_갱신()
 
 document.getElementById("불러오기").addEventListener("click", async () =>
 {
-	const 주소 = document.getElementById("주소_입력").value.trim()
+	// const 주소 = document.getElementById("주소_입력").value.trim()
+		// (수정)
+	// 입력창 값을 trim 한 뒤 따옴표 사이의 문자열만 사용
+	const 주소 = 문자열_정리(document.getElementById("주소_입력").value)
 
 	버튼_잠금(true)
 	상태_칸.textContent = "불러오는 중"
