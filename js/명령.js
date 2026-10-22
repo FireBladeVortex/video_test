@@ -346,7 +346,7 @@ function 도구()
 {
 	const 조사 = document.getElementById("조사하기")
 	조사.style.zIndex = 5
-	// location.reload()
+	location.reload()
 }
 
 function 부르기(키)
