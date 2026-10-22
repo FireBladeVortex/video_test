@@ -12,6 +12,30 @@ let 불러온_값 = []
 
 let 마지막_주소 = ""
 let 마지막_비교 = ""
+let 타이틀 = null
+
+// (추가) "시작"
+// 일반 동영상 id 를 cue 시켜서 CUED(5) 상태가 될 때까지 기다린 뒤 제목을 타이틀에 담는 함수
+// 재생목록_조사와 같은 재생목록_대기 를 같이 사용하며, onStateChange 에서 5 가 되면 풀림
+async function 제목_조사(id)
+{
+	await api_준비
+
+	타이틀 = null
+
+	const 대기 = new Promise(resolve => { 재생목록_대기 = resolve })
+	const 시간초과 = new Promise(resolve => setTimeout(resolve, 5000))
+
+	player.cueVideoById({ videoId : id })
+
+	await Promise.race([대기, 시간초과])
+	재생목록_대기 = null
+
+	// 제목이 비어있으면 null 로 처리
+	타이틀 = player.getVideoData?.()?.title || null
+	return 타이틀
+}
+// (추가) "종료"
 
 const 이름_모음 = new Set(이름_목록.map(누구 => 누구.이름.trim()))
 for (const 이름 of 이름_모음)
@@ -122,8 +146,23 @@ function id_찾기(주소)
 
 
 
-// 주소 입력창 → 영상 id 목록
-async function 주소_조사(주소)
+// // 주소 입력창 → 영상 id 목록
+// async function 주소_조사(주소)
+// {
+// 	const 값 = id_찾기(주소)
+// 	if (!값)
+// 		return []
+
+// 	if (재생목록인가(값))
+// 		return await 재생목록_조사(값)
+
+// 	return [{ id : 값 }]
+// }
+
+
+// (수정)
+// 제목_필요 인자 추가 (기존 비교 과정에서는 제목이 필요 없어서 기본값 false)
+async function 주소_조사(주소, 제목_필요 = false)
 {
 	const 값 = id_찾기(주소)
 	if (!값)
@@ -132,8 +171,20 @@ async function 주소_조사(주소)
 	if (재생목록인가(값))
 		return await 재생목록_조사(값)
 
+	// (수정) "시작"
+	// 제목이 필요하면 cue 시켜서 타이틀을 얻고 영상 정보에 같이 담아서 전달
+	if (제목_필요)
+	{
+		await 제목_조사(값)
+		return [{ id : 값, 제목 : 타이틀 }]
+	}
+
 	return [{ id : 값 }]
+	// (수정) "종료"
 }
+
+
+
 
 // 명단/이름.js 에서 선택한 종류의 영상 id 목록 얻기
 function 파일_불러오기(이름)
@@ -185,20 +236,40 @@ async function 기존_id_모으기(이름, 종류)
 function 결과_출력(값)
 {
 	const 종류 = 종류_선택.value
-	const 앞 = "\t{\n\t\tid : "
+	// const 앞 = "\t{\n\t\tid : "
+	// const 뒤 = ",\n\t},"
+
+	// const 출력_id = 값.map(동영상 =>
+	// {
+	// 	const 주소 = "https://youtu.be/" + 동영상.id
+	// 	const 결과 = 주소.replace(/^|$/g, "\"")
+	// 	return 앞 + 결과 + 뒤
+	// }).join("\n")
+	// (수정)
+	// 앞에 { 줄을 분리하여 제목 주석 줄을 id 바로 윗줄에 끼워 넣을 수 있게 함
+	const 앞 = "\t\tid : "
 	const 뒤 = ",\n\t},"
 
 	const 출력_id = 값.map(동영상 =>
 	{
 		const 주소 = "https://youtu.be/" + 동영상.id
 		const 결과 = 주소.replace(/^|$/g, "\"")
-		return 앞 + 결과 + 뒤
+
+		// (추가) "시작"
+		// 제목이 있는 경우에만 id 윗줄에 주석으로 제목 삽입
+		const 제목_줄 = 동영상.제목 ? "\t\t// " + 동영상.제목 + "\n" : ""
+		// (추가) "종료"
+
+		// (수정)
+		// 여는 중괄호와 제목 줄, id 줄을 순서대로 이어붙임
+		return "\t{\n" + 제목_줄 + 앞 + 결과 + 뒤
 	}).join("\n")
+
 
 	if (종류 === "")
 		return 출력_id
 
-	const 출력_id에_종류까지 = "재생목록." + 종류 + " =\n[\n" + 내용 + "\n]"
+	const 출력_id에_종류까지 = "재생목록." + 종류 + " =\n[\n" + 출력_id + "\n]"
 	return 출력_id에_종류까지
 }
 
@@ -237,7 +308,7 @@ document.getElementById("불러오기").addEventListener("click", async () =>
 	if (값 && 재생목록인가(값))
 		await api_준비
 
-	불러온_값 = await 주소_조사(주소)
+	불러온_값 = await 주소_조사(주소, true)
 	상태_칸.textContent = "불러온 영상 " + 불러온_값.length + "개"
 
 	결과_칸.textContent = 결과_출력(불러온_값)
