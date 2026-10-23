@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ko">
 <head>
 	<meta charset="UTF-8">
@@ -153,4 +153,195 @@
 
 <script src="js/준비.js"></script>
 <script src="js/도구.js"></script>
+</html> -->
+
+
+
+<!-- (수정) "시작" -->
+<!-- index.html 과 같은 화면 > 왼쪽(머리말, 본문) / 오른쪽(머리말, 본문) 구조로 변경 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<title>재생목록 조사</title>
+	<style>
+		* { margin : 0; padding : 0; border : 0; box-sizing : border-box; }
+
+		:root
+		{
+			--오른쪽바탕색 : #021322;
+			--왼쪽바탕색 : #230213;
+			--강조1 : #FFD700;
+			--강조2 : #800020;
+		}
+
+		body
+		{
+			width : 100vw;
+			height : 100dvh;
+			overflow : hidden;
+			background : var(--오른쪽바탕색);
+			color : var(--강조1);
+			font-size : 14px;
+		}
+
+		#화면
+		{
+			display : grid;
+			grid-template-columns : minmax(0, 1fr) minmax(0, 1fr);
+			grid-template-rows : 100%;
+			height : 100%;
+		}
+
+		#왼쪽,
+		#오른쪽
+		{
+			display : flex;
+			flex-direction : column;
+			align-items : center;
+			height : 100%;
+			min-height : 0;
+		}
+
+		#왼쪽 { background : var(--왼쪽바탕색); }
+		#오른쪽 { background : var(--오른쪽바탕색); }
+
+		.머리말
+		{
+			display : flex;
+			align-items : center;
+			justify-content : center;
+			width : 95%;
+			min-height : 30px;
+			padding-bottom : 3px;
+			border-bottom : 3px solid var(--강조2);
+		}
+
+		.본문
+		{
+			display : flex;
+			flex-direction : column;
+			align-items : center;
+			width : 90%;
+			flex : 1;
+			min-height : 0;
+		}
+
+		#왼쪽 .본문
+		{
+			justify-content : center;
+			gap : 12px;
+		}
+
+		/* 머리말 가운데 player */
+		#player
+		{
+			width : 320px;
+			height : 180px;
+			margin : 6px 0;
+		}
+
+		#player iframe,
+		#YTP
+		{
+			display : block;
+			width : 100%;
+			height : 100%;
+		}
+
+		.줄
+		{
+			display : flex;
+			width : 80%;
+			gap : 6px;
+		}
+
+		.줄 input,
+		.줄 select
+		{
+			flex : 1;
+			min-width : 0;
+			padding : 6px;
+		}
+
+		.줄 button
+		{
+			flex : 0 0 80px;
+			width : 80px;
+			padding : 6px 12px;
+			cursor : pointer;
+			background : var(--강조2);
+			color : var(--강조1);
+		}
+
+		.줄 button:disabled
+		{
+			opacity : 0.4;
+			cursor : default;
+		}
+
+		.아래줄 { justify-content : space-between; }
+
+		#상태
+		{
+			width : 80%;
+			text-align : left;
+			white-space : pre-wrap;
+			word-break : break-all;
+		}
+
+		#결과
+		{
+			width : 100%;
+			flex : 1;
+			overflow : auto;
+			padding : 10px 0;
+			white-space : pre-wrap;
+			word-break : break-all;
+		}
+	</style>
+</head>
+
+<body>
+	<main id="화면">
+
+		<section id="왼쪽">
+			<header class="머리말">
+				<section id="player">
+					<div id="YTP"></div>
+				</section>
+			</header>
+			<section class="본문">
+				<div class="줄">
+					<input id="주소_입력" type="text" placeholder="재생목록 주소를 여기에 입력하세요">
+				</div>
+				<div class="줄">
+					<select id="종류_선택">
+						<option value="" selected disabled hidden>종류를 선택하세요</option>
+						<option value="원곡">원곡</option>
+						<option value="커버">커버</option>
+						<option value="쇼츠">쇼츠</option>
+					</select>
+					<button id="불러오기">불러오기</button>
+				</div>
+				<div class="줄 아래줄">
+					<button id="초기화">초기화</button>
+					<button id="복사하기" disabled>복사하기</button>
+				</div>
+				<div id="상태"></div>
+			</section>
+		</section>
+
+		<section id="오른쪽">
+			<header class="머리말"></header>
+			<section class="본문">
+				<div id="결과"></div>
+			</section>
+		</section>
+
+	</main>
+
+	<script src="js/도구.js"></script>
+</body>
 </html>
+<!-- (수정) "종료" -->

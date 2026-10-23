@@ -1,4 +1,7 @@
 
+/*
+
+
 const 상태_칸 = document.getElementById("상태")
 const 결과_칸 = document.getElementById("결과")
 const 이름_선택 = document.getElementById("이름_선택")
@@ -449,3 +452,370 @@ document.getElementById("초기화").addEventListener("click", () =>
 })
 
 버튼_갱신()
+
+
+*/
+
+
+
+
+// (추가) "시작"
+// 도구.js 전체 (기존 내용은 모두 삭제하고 아래 내용으로 교체)
+
+const 상태_칸 = document.getElementById("상태")
+const 결과_칸 = document.getElementById("결과")
+const 주소_입력 = document.getElementById("주소_입력")
+const 종류_선택 = document.getElementById("종류_선택")
+
+// 불러온 결과 : [{ 순서, id, 제목 }]
+let 결과 = null
+// 입력창에서 "ㅁㅁㅁ", 구조를 발견했을 때 true, 출력에서 { } 를 생략할지 정하는 변수
+let 중괄호_생략 = false
+
+const 제한시간 = 3000
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// YouTube Player iframe API 준비 (명령.js 와 같은 구조)
+
+const api = document.createElement("script")
+api.src = "https://www.youtube.com/iframe_api"
+document.head.appendChild(api)
+
+let api_준비_대기 = null
+const api_준비 = new Promise(resolve => { api_준비_대기 = resolve })
+
+let player = null
+
+// cue 완료나 에러를 기다리는 곳에서 풀어줄 함수
+let 상태_대기자 = null
+
+function 대기_끝(내용)
+{
+	if (!상태_대기자)
+		return
+
+	const 끝 = 상태_대기자
+	상태_대기자 = null
+	끝(내용)
+}
+
+function onYouTubeIframeAPIReady()
+{
+	player = new YT.Player("YTP",
+	{
+		width : "100%",
+		height : "100%",
+		videoId : "",
+		playerVars :
+		{
+			autoplay : 0,
+			rel : 0,
+			disablekb : 1,
+		},
+		events :
+		{
+			onReady : () =>
+			{
+				api_준비_대기()
+				player.setVolume(0)
+			},
+			onError : event =>
+			{
+				대기_끝("플레이어 오류 코드 " + event.data)
+			},
+			onStateChange : event =>
+			{
+				if (event.data === YT.PlayerState.CUED)
+					대기_끝("cued")
+			},
+		}
+	})
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// 기다리기 도구들
+
+// 시작() 을 실행한 뒤 CUED 가 되거나 에러가 나거나 3초가 지날 때까지 기다린다
+// 돌려주는 값 : "cued" 또는 실패 원인 문자열
+function cued_대기(시작)
+{
+	const 대기 = new Promise(resolve => { 상태_대기자 = resolve })
+
+	let 타이머 = null
+	const 시간초과 = new Promise(resolve =>
+	{
+		타이머 = setTimeout(() => resolve("3초 안에 CUED 상태가 되지 않음"), 제한시간)
+	})
+
+	시작()
+
+	return Promise.race([대기, 시간초과]).then(내용 =>
+	{
+		clearTimeout(타이머)
+		상태_대기자 = null
+		return 내용
+	})
+}
+
+// player.getPlaylist() 가 값을 줄 때까지 0.1초마다 확인한다
+// 돌려주는 값 : 배열(0개일 수도 있음) 또는 null(3초 동안 배열을 못 받음)
+async function 재생목록_받기()
+{
+	const 끝 = Date.now() + 제한시간
+	let 마지막 = null
+
+	while (Date.now() < 끝)
+	{
+		const 목록 = player.getPlaylist?.()
+		if (Array.isArray(목록))
+		{
+			마지막 = 목록
+			if (목록.length > 0)
+				return 목록
+		}
+		await new Promise(resolve => setTimeout(resolve, 100))
+	}
+
+	return 마지막
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// 입력 문자열 가공
+
+// 앞뒤 공백을 지우고 첫 번째 " 와 다음 " 사이의 문자열만 꺼낸다
+// 따옴표가 없으면 trim 한 문자열을 그대로 돌려줌
+function 문자열_정리(문자열)
+{
+	const 정리 = 문자열.trim()
+
+	const 앞 = 정리.indexOf("\"")
+	if (앞 === -1)
+		return 정리
+
+	const 뒤 = 정리.indexOf("\"", 앞 + 1)
+	if (뒤 === -1)
+		return 정리
+
+	return 정리.slice(앞 + 1, 뒤).trim()
+}
+
+// "ㅁㅁㅁ", 구조이면 true
+function 따옴표_쉼표_확인(문자열)
+{
+	const 정리 = 문자열.trim()
+
+	const 앞 = 정리.indexOf("\"")
+	if (앞 === -1)
+		return false
+
+	const 뒤 = 정리.indexOf("\"", 앞 + 1)
+	if (뒤 === -1)
+		return false
+
+	return 정리[뒤 + 1] === ","
+}
+
+// 주소에서 재생목록 id (PL...) 추출, 못 찾으면 null
+function 재생목록_id_찾기(주소)
+{
+	if (주소.startsWith("PL") && !주소.includes("/"))
+		return 주소
+
+	try
+	{
+		const url = new URL(주소)
+		const 목록 = url.searchParams.get("list")
+		return 목록 ? 목록 : null
+	}
+	catch
+	{
+		return null
+	}
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// 출력
+
+function 결과_출력()
+{
+	if (!결과 || 결과.length === 0)
+		return ""
+
+	const 종류 = 종류_선택.value
+	const 앞 = "\t\tid : "
+	const 뒤 = 중괄호_생략 ? "," : ",\n\t},"
+	const 여는_줄 = 중괄호_생략 ? "" : "\t{\n"
+
+	const 출력_id = 결과.map(동영상 =>
+	{
+		const 순서_줄 = "\t\t// " + 동영상.순서 + "\n"
+		const 제목_줄 = "\t\t// " + 동영상.제목 + "\n"
+		const 주소 = "\"https://youtu.be/" + 동영상.id + "\""
+		return 여는_줄 + 순서_줄 + 제목_줄 + 앞 + 주소 + 뒤
+	}).join("\n")
+
+	if (종류 === "")
+		return 출력_id
+
+	return "재생목록." + 종류 + " =\n[\n" + 출력_id
+		+ "\n]"
+}
+
+function 버튼_갱신()
+{
+	document.getElementById("복사하기").disabled = 결과_칸.textContent === ""
+}
+
+function 실패_출력(단계, 원인)
+{
+	상태_칸.textContent = "실패 위치 : " + 단계 + "\n원인 : " + 원인
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// 불러오기
+
+async function 불러오기()
+{
+	const 불러오기_버튼 = document.getElementById("불러오기")
+	불러오기_버튼.disabled = true
+	결과 = []
+	결과_칸.textContent = ""
+	버튼_갱신()
+
+	const 입력 = document.getElementById("주소_입력").value
+	const 주소 = 문자열_정리(입력)
+	중괄호_생략 = 따옴표_쉼표_확인(입력)
+
+	try
+	{
+		// 1. api 호출 확인
+		상태_칸.textContent = "api 호출 중"
+		const api_결과 = await Promise.race(
+		[
+			api_준비.then(() => "ready"),
+			new Promise(resolve => setTimeout(() => resolve("3초 안에 api 가 준비되지 않음"), 제한시간)),
+		])
+		if (api_결과 !== "ready")
+		{
+			실패_출력("api 호출", api_결과 + " (인터넷 연결이나 차단 확장 프로그램 확인)")
+			return
+		}
+
+		// 2. 입력창 문자열에서 재생목록 id 찾기
+		const 재생목록_호출 = 재생목록_id_찾기(주소)
+		if (!재생목록_호출)
+		{
+			실패_출력("입력창 확인", "재생목록 주소(list=PL...)를 찾을 수 없음")
+			return
+		}
+
+		// 3. 재생목록 cue
+		상태_칸.textContent = "재생목록 cue 중"
+		const 목록_결과 = await cued_대기(() =>
+		{
+			player.cuePlaylist({ listType : "playlist", list : 재생목록_호출 })
+		})
+		if (목록_결과 !== "cued")
+		{
+			실패_출력("player.cuePlaylist", 목록_결과)
+			return
+		}
+
+		// 4. getPlaylist 로 동영상 목록 받기
+		const 동영상들_호출 = await 재생목록_받기()
+		if (동영상들_호출 === null)
+		{
+			실패_출력("player.getPlaylist", "3초 안에 배열을 받지 못함 (비공개 재생목록이거나 id 가 잘못됐을 수 있음)")
+			return
+		}
+		if (동영상들_호출.length === 0)
+		{
+			실패_출력("player.getPlaylist", "배열은 받았지만 0개 (비어있는 재생목록이거나 비공개)")
+			return
+		}
+
+		// 5. 동영상마다 cueVideoById 후 제목 기억
+		const 실패들 = []
+		for (let 번호 = 0 ; 번호 < 동영상들_호출.length ; 번호++)
+		{
+			const id = 동영상들_호출[번호]
+			const 순서 = 번호 + 1
+			상태_칸.textContent = "제목 조사 중 " + 순서 + " / " + 동영상들_호출.length
+
+			const 동영상_결과 = await cued_대기(() =>
+			{
+				player.cueVideoById({ videoId : id })
+			})
+
+			if (동영상_결과 !== "cued")
+			{
+				실패들.push(순서 + "번 " + id + " : player.cueVideoById 실패, " + 동영상_결과)
+				continue
+			}
+
+			const 제목 = player.getVideoData?.()?.title
+			if (!제목)
+			{
+				실패들.push(순서 + "번 " + id + " : player.getVideoData 에서 제목이 비어있음")
+				continue
+			}
+
+			결과.push({ 순서 : 순서, id : id, 제목 : 제목 })
+
+			// 하나 끝날 때마다 바로 보여줌
+			결과_칸.textContent = 결과_출력()
+		}
+
+		let 마무리 = "불러온 영상 " + 결과.length + " / " + 동영상들_호출.length + "개"
+		if (실패들.length > 0)
+			마무리 += "\n실패 " + 실패들.length + "개\n" + 실패들.join("\n")
+		상태_칸.textContent = 마무리
+	}
+	finally
+	{
+		결과_칸.textContent = 결과_출력()
+		불러오기_버튼.disabled = false
+		버튼_갱신()
+	}
+}
+
+document.getElementById("불러오기").addEventListener("click", 불러오기)
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// 복사하기, 초기화, 종류 변경
+
+document.getElementById("복사하기").addEventListener("click", async () =>
+{
+	await navigator.clipboard.writeText(결과_칸.textContent)
+	상태_칸.textContent = "복사됨"
+})
+
+document.getElementById("초기화").addEventListener("click", () =>
+{
+	location.reload()
+})
+
+// 종류를 바꾸면 다시 불러오지 않고 출력값만 변환
+종류_선택.addEventListener("change", () =>
+{
+	if (!결과 || 결과.length === 0)
+		return
+
+	결과_칸.textContent = 결과_출력()
+	버튼_갱신()
+})
+
+버튼_갱신()
+// (추가) "종료"
