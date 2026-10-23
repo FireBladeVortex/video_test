@@ -659,7 +659,9 @@ function 재생목록_id_찾기(주소)
 	{
 		const url = new URL(주소)
 		const 목록 = url.searchParams.get("list")
-		return 목록 ? 목록 : null
+		// (수정)
+		// list 값이 PL 로 시작할 때만 재생목록으로 인정 (아니면 null 이 되어 동영상 주소로 처리됨)
+		return 목록 && 목록.startsWith("PL") ? 목록 : null
 	}
 	catch
 	{
@@ -667,7 +669,31 @@ function 재생목록_id_찾기(주소)
 	}
 }
 
+// (추가) "시작"
+// 주소에서 동영상 id (11자리) 추출, 못 찾으면 null
+// youtu.be/xxx, watch?v=xxx, shorts/xxx, id 11자리만 입력한 경우 모두 처리
+function 동영상_id_찾기(주소)
+{
+	const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
 
+	if (정규표현식.test(주소))
+		return 주소
+
+	try
+	{
+		const url = new URL(주소)
+		const v = url.searchParams.get("v")
+		const 마지막 = url.pathname.split("/").filter(값 => 값 !== "").pop()
+		const id = v ?? 마지막
+
+		return 정규표현식.test(id) ? id : null
+	}
+	catch
+	{
+		return null
+	}
+}
+// (추가) "종료"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // 출력
@@ -751,42 +777,54 @@ async function 불러오기()
 		}
 		// (수정) "종료"
 
+		// (수정) "시작"
+		// 재생목록 주소면 기존대로 cuePlaylist + getPlaylist, 아니면 동영상 id 하나만 뽑아서 바로 5번 구간으로 넘김
+		let 동영상들_호출 = null
+
 		// 2. 입력창 문자열에서 재생목록 id 찾기
 		const 재생목록_호출 = 재생목록_id_찾기(주소)
-		if (!재생목록_호출)
-		{
-			실패_출력("입력창 확인", "재생목록 주소(list=PL...)를 찾을 수 없음")
-			return
-		}
 
-		// (수정) "시작"
-		// 3번(cuePlaylist)과 4번(getPlaylist)을 하나로 묶어서, 어느 쪽이 실패해도 cuePlaylist 부터 다시 시도
-		// 어디서 실패했는지는 실패 내용의 위치에 담아서 전달
-		const 목록_응답 = await 재시도("재생목록 불러오기", async () =>
+		if (재생목록_호출)
 		{
-			상태_칸.textContent = "재생목록 cue 중"
-			const 목록_결과 = await cued_대기(() =>
+			// 3번(cuePlaylist)과 4번(getPlaylist)을 하나로 묶어서, 어느 쪽이 실패해도 cuePlaylist 부터 다시 시도
+			const 목록_응답 = await 재시도("재생목록 불러오기", async () =>
 			{
-				player.cuePlaylist({ listType : "playlist", list : 재생목록_호출 })
+				상태_칸.textContent = "재생목록 cue 중"
+				const 목록_결과 = await cued_대기(() =>
+				{
+					player.cuePlaylist({ listType : "playlist", list : 재생목록_호출 })
+				})
+				if (목록_결과 !== "cued")
+					return { 성공 : false, 위치 : "player.cuePlaylist", 원인 : 목록_결과 }
+
+				const 받은_목록 = await 재생목록_받기()
+				if (받은_목록 === null)
+					return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "3초 안에 배열을 받지 못함 (비공개 재생목록이거나 id 가 잘못됐을 수 있음)" }
+				if (받은_목록.length === 0)
+					return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "배열은 받았지만 0개 (비어있는 재생목록이거나 비공개)" }
+
+				return { 성공 : true, 값 : 받은_목록 }
 			})
-			if (목록_결과 !== "cued")
-				return { 성공 : false, 위치 : "player.cuePlaylist", 원인 : 목록_결과 }
+			if (!목록_응답.성공)
+			{
+				실패_출력(목록_응답.위치, 목록_응답.원인)
+				return
+			}
 
-			const 받은_목록 = await 재생목록_받기()
-			if (받은_목록 === null)
-				return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "3초 안에 배열을 받지 못함 (비공개 재생목록이거나 id 가 잘못됐을 수 있음)" }
-			if (받은_목록.length === 0)
-				return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "배열은 받았지만 0개 (비어있는 재생목록이거나 비공개)" }
-
-			return { 성공 : true, 값 : 받은_목록 }
-		})
-		if (!목록_응답.성공)
-		{
-			실패_출력(목록_응답.위치, 목록_응답.원인)
-			return
+			동영상들_호출 = 목록_응답.값
 		}
+		else
+		{
+			// 재생목록이 아니면 즉시 동영상 id 추출
+			const 동영상_id = 동영상_id_찾기(주소)
+			if (!동영상_id)
+			{
+				실패_출력("입력창 확인", "재생목록(list=PL...) 또는 동영상 주소를 찾을 수 없음")
+				return
+			}
 
-		const 동영상들_호출 = 목록_응답.값
+			동영상들_호출 = [동영상_id]
+		}
 		// (수정) "종료"
 
 		// 5. 동영상마다 cueVideoById 후 제목 기억
