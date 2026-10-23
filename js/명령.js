@@ -1548,7 +1548,7 @@ function 불러오는중(본문)
 
 // 이름별 확인 결과를 저장하는 전역 객체
 // 형태 : { 파일 : true 또는 false, 검사 : id_검사 결과 또는 null }
-// const 이름들_파일_상태 = {}
+const 이름들_파일_상태 = {}
 
 // // 파일이 실제로 있는지 확인하고, 있으면 id_검사까지 같이 실행
 // // script 의 error 이벤트가 발생하면 파일이 없는 것으로 판단
@@ -1670,58 +1670,58 @@ function 불러오는중(본문)
 // 	return 결과
 // }
 
-// // 문제가 하나라도 있는지 확인
-// function 문제_있음(검사)
-// {
-// 	if (!검사)
-// 		return false
+// 문제가 하나라도 있는지 확인
+function 문제_있음(검사)
+{
+	if (!검사)
+		return false
 
-// 	return Object.keys(검사.잘못됨).length > 0
-// 		|| Object.keys(검사.최신화).length > 0
-// 		|| Object.keys(검사.중복).length > 0
-// }
+	return Object.keys(검사.잘못됨).length > 0
+		|| Object.keys(검사.최신화).length > 0
+		|| Object.keys(검사.중복).length > 0
+}
 
-// // 기억한 문제를 본문 왼쪽 위부터 출력
-// function 문제_출력(본문, 검사)
-// {
-// 	const 분류들 =
-// 	[
-// 		{ 키 : "잘못됨", 제목 : "잘못된 주소" },
-// 		{ 키 : "최신화", 제목 : "최신화 필요" },
-// 		{ 키 : "중복", 제목 : "중복 있음" },
-// 	]
+// 기억한 문제를 본문 왼쪽 위부터 출력
+function 문제_출력(본문, 검사)
+{
+	const 분류들 =
+	[
+		{ 키 : "잘못됨", 제목 : "잘못된 주소" },
+		{ 키 : "최신화", 제목 : "최신화 필요" },
+		{ 키 : "중복", 제목 : "중복 있음" },
+	]
 
-// 	const 줄들 = []
-// 	for (const 분류 of 분류들)
-// 	{
-// 		const 묶음 = 검사[분류.키]
-// 		const 종류들 = Object.keys(묶음)
-// 		if (종류들.length === 0)
-// 			continue
+	const 줄들 = []
+	for (const 분류 of 분류들)
+	{
+		const 묶음 = 검사[분류.키]
+		const 종류들 = Object.keys(묶음)
+		if (종류들.length === 0)
+			continue
 
-// 		줄들.push(분류.제목)
-// 		for (const 종류 of 종류들)
-// 		{
-// 			줄들.push("재생목록." + 종류)
-// 			for (const id of 묶음[종류])
-// 			{
-// 				if (분류.키 === "중복")
-// 				{
-// 					줄들.push("id : " + id.원본 + " " + id.횟수 + "번")
-// 					continue
-// 				}
-// 				줄들.push("id : " + id)
-// 			}
-// 		}
-// 		줄들.push("")
-// 	}
+		줄들.push(분류.제목)
+		for (const 종류 of 종류들)
+		{
+			줄들.push("재생목록." + 종류)
+			for (const id of 묶음[종류])
+			{
+				if (분류.키 === "중복")
+				{
+					줄들.push("id : " + id.원본 + " " + id.횟수 + "번")
+					continue
+				}
+				줄들.push("id : " + id)
+			}
+		}
+		줄들.push("")
+	}
 
-// 	const 출력 = document.createElement("div")
-// 	출력.className = "문제_출력"
-// 	출력.textContent = 줄들.join("\n")
-// 	본문.appendChild(출력)
-// }
-// // (추가) "종료"
+	const 출력 = document.createElement("div")
+	출력.className = "문제_출력"
+	출력.textContent = 줄들.join("\n")
+	본문.appendChild(출력)
+}
+// (추가) "종료"
 
 
 
