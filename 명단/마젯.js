@@ -17,8 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		// "어흐100만배" 파라오 마젯 고양이모캡
-		id : "https://youtu.be/sKvPVAJTbdU",
+		id : "",
 	},
 ]
 

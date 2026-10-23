@@ -39,17 +39,17 @@ function onYouTubeIframeAPIReady()
 		{
 			onReady : () =>
 			{
-				player.setVolume(+볼륨_조절.value)
 				api_준비_대기()
+				player.setVolume(+볼륨_조절.value)
 			},
-			onError : () =>
-			{
-				if (재생목록_대기)
-				{
-					재생목록_대기()
-					재생목록_대기 = null
-				}
-			},
+			// onError : () =>
+			// {
+			// 	if (재생목록_대기)
+			// 	{
+			// 		재생목록_대기()
+			// 		재생목록_대기 = null
+			// 	}
+			// },
 			onStateChange : onPlayerStateChange,
 		}
 	})
@@ -145,12 +145,12 @@ let 재생_시간_표시줄 = null
 // 동영상 상태가 변하면 즉시 작동
 function onPlayerStateChange(event)
 {
-	if (event.data === 5 && 재생목록_대기)
-	{
-		재생목록_대기()
-		재생목록_대기 = null
-		return
-	}
+	// if (event.data === 5 && 재생목록_대기)
+	// {
+	// 	재생목록_대기()
+	// 	재생목록_대기 = null
+	// 	return
+	// }
 
 	if (event.data === 5)
 	{
@@ -328,7 +328,116 @@ document.addEventListener("wheel", 드르륵, { passive : false })
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+async function 전체_조사()
+{
+	const 종류들 = ["소개", "원곡", "커버", "쇼츠", "부분"]
+	const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+	const 이름들 = new Set(이름_목록.map(누구 => 누구.이름.trim()))
+	const 상태들 = {}
 
+	// 파일 하나를 불러와서 id 를 검사하고 { 파일, 검사 } 를 돌려주는 함수
+	function 한개_조사(이름)
+	{
+		return new Promise(resolve =>
+		{
+			// 이전에 불러온 재생목록과 섞이는 것을 방지
+			delete window.재생목록
+
+			const script = document.createElement("script")
+			script.src = "명단/" + 이름 + ".js"
+
+			script.addEventListener("load", () =>
+			{
+				const 재생목록 = window.재생목록
+				script.remove()
+				delete window.재생목록
+
+				// 실행은 됐지만 재생목록이 만들어지지 않았다면 파일이 없는 것과 같이 처리
+				if (!재생목록)
+				{
+					resolve({ 파일 : false, 검사 : null })
+					return
+				}
+
+				const 검사 = { 잘못됨 : {}, 최신화 : {}, 중복 : {} }
+
+				for (const 종류 of 종류들)
+				{
+					if (!Array.isArray(재생목록[종류]))
+						continue
+
+					const 세기 = {}
+					for (const 동영상 of 재생목록[종류])
+					{
+						// 비어있는 id 는 아직 채우지 않은 칸이므로 검사하지 않음
+						if (!동영상 || !동영상.id)
+							continue
+
+						let url = null
+						try
+						{
+							url = new URL(동영상.id)
+						}
+						catch
+						{
+							// 주소 모양 자체가 아님
+							검사.잘못됨[종류] ??= []
+							검사.잘못됨[종류].push(동영상.id)
+							continue
+						}
+
+						// list 값이 있으면 재생목록 주소
+						if (url.searchParams.get("list"))
+						{
+							검사.최신화[종류] ??= []
+							검사.최신화[종류].push(동영상.id)
+							continue
+						}
+
+						// 동영상 id 가 11자리 형식이 아니면 잘못된 주소
+						const id_동영상 = id_찾기(url)
+						if (!정규표현식.test(id_동영상))
+						{
+							검사.잘못됨[종류] ??= []
+							검사.잘못됨[종류].push(동영상.id)
+							continue
+						}
+
+						// 처음 나온 주소를 원본으로 기억하고 횟수를 올림
+						세기[id_동영상] ??= { 원본 : 동영상.id, 횟수 : 0 }
+						세기[id_동영상].횟수++
+					}
+
+					for (const 키 of Object.keys(세기))
+					{
+						if (세기[키].횟수 > 1)
+						{
+							검사.중복[종류] ??= []
+							검사.중복[종류].push(세기[키])
+						}
+					}
+				}
+
+				resolve({ 파일 : true, 검사 })
+			})
+
+			script.addEventListener("error", () =>
+			{
+				script.remove()
+				resolve({ 파일 : false, 검사 : null })
+			})
+
+			document.head.appendChild(script)
+		})
+	}
+
+	for (const 이름 of 이름들)
+	{
+		상태들[이름] = await 한개_조사(이름)
+	}
+
+	return 상태들
+}
 
 document.getElementById("처음으로").addEventListener("click", () =>
 {
@@ -348,9 +457,38 @@ function 도구()
 {
 	const 조사 = document.getElementById("조사하기")
 	조사.style.zIndex = 5
-	location.reload()
 }
+document.getElementById("조사하기").addEventListener("click", async () =>
+{
+	const 조사_버튼 = document.getElementById("조사하기")
+	const 출력_화면 = document.getElementById("출력")
+	const 출력_본문 = 출력_화면.querySelector(".본문")
 
+	// 검사 중 다시 누르는 것을 방지하고 이전 결과를 지움
+	조사_버튼.disabled = true
+	출력_본문.innerHTML = ""
+
+	const 상태들 = await 전체_조사()
+
+	for (const 이름 of Object.keys(상태들))
+	{
+		const 상태 = 상태들[이름]
+		const 문제 = 상태.파일 && 문제_있음(상태.검사)
+
+		const 제목 = document.createElement("div")
+		제목.className = "조사_제목"
+		제목.textContent = !상태.파일 ? "[" + 이름 + "] 파일 없음" : 문제 ? "[" + 이름 + "] 문제 있음" : "[" + 이름 + "] 문제 없음"
+		출력_본문.appendChild(제목)
+
+		// 문제가 있으면 기존 문제_출력 으로 상세 내용 출력
+		if (문제)
+			문제_출력(출력_본문, 상태.검사)
+	}
+
+	// #출력 을 앞으로 꺼냄 (왼쪽_이름, 오른쪽_안내 의 z-index 1 보다 높게, 처음으로 버튼 z-index 3 보다 낮게)
+	출력_화면.style.zIndex = 2
+	조사_버튼.disabled = false
+})
 function 부르기(키)
 {
 	if (기회)
@@ -1214,7 +1352,7 @@ function id_찾기(주소)
 
 
 
-let 재생목록_대기 = null
+// let 재생목록_대기 = null
 function 불러오기_재생목록(이름)
 {
 	//
@@ -1358,11 +1496,8 @@ function 불러오기_재생목록(이름)
 
 		const 색깔_종류 =
 		[
-			"오른쪽바탕색",
-			"왼쪽바탕색",
-			"강조1",
-			"강조2",
-			"강조3",
+			"오른쪽바탕색", "왼쪽바탕색",
+			"강조1", "강조2", "강조3",
 		]
 		for (const 이거 of 색깔_종류)
 		{
@@ -1661,6 +1796,8 @@ function 시작()
 		// {
 		// 	이름들_파일_상태[누구.이름] = await 파일_확인(누구.이름)
 		// }
+
+		Object.assign(이름들_파일_상태, await 전체_조사())
 		불러오는중(본문)
 
 		const 이름표들 = document.createElement("menu")
