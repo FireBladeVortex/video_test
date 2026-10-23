@@ -474,6 +474,34 @@ let 중괄호_생략 = false
 
 const 제한시간 = 3000
 
+// (추가) "시작"
+// 실패했을 때 다시 시도할 횟수
+const 재시도_횟수 = 3
+
+// 실행 함수를 최대 재시도_횟수 번 실행하고, 성공하면 그 결과를 바로 돌려주는 함수
+// 실행 함수는 { 성공 : true, 값 : ... } 또는 { 성공 : false, 위치 : "...", 원인 : "..." } 를 돌려줘야 함
+// 모두 실패하면 마지막 실패 내용에 재시도 횟수를 덧붙여서 돌려줌
+async function 재시도(단계, 실행)
+{
+	let 마지막 = null
+
+	for (let 시도 = 1 ; 시도 <= 재시도_횟수 ; 시도++)
+	{
+		마지막 = await 실행()
+		if (마지막.성공)
+			return 마지막
+
+		// 마지막 시도 뒤에는 다시 하지 않으므로 안내와 대기를 건너뜀
+		if (시도 === 재시도_횟수)
+			break
+
+		상태_칸.textContent = 단계 + " 실패 (" + 시도 + " / " + 재시도_횟수 + ") 다시 시도합니다\n원인 : " + 마지막.원인
+		await new Promise(resolve => setTimeout(resolve, 500))
+	}
+
+	return { ...마지막, 원인 : 마지막.원인 + " (" + 재시도_횟수 + "번 시도 후 실패)" }
+}
+// (추가) "종료"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -700,16 +728,28 @@ async function 불러오기()
 	{
 		// 1. api 호출 확인
 		상태_칸.textContent = "api 호출 중"
-		const api_결과 = await Promise.race(
-		[
-			api_준비.then(() => "ready"),
-			new Promise(resolve => setTimeout(() => resolve("3초 안에 api 가 준비되지 않음"), 제한시간)),
-		])
-		if (api_결과 !== "ready")
+		// (수정) "시작"
+		// 기존에는 한 번 실패하면 바로 종료했지만, 재시도 함수로 감싸서 최대 3번 시도
+		상태_칸.textContent = "api 호출 중"
+		const api_결과 = await 재시도("api 호출", async () =>
 		{
-			실패_출력("api 호출", api_결과 + " (인터넷 연결이나 차단 확장 프로그램 확인)")
+			const 응답 = await Promise.race(
+			[
+				api_준비.then(() => "ready"),
+				new Promise(resolve => setTimeout(() => resolve("3초 안에 api 가 준비되지 않음"), 제한시간)),
+			])
+
+			if (응답 !== "ready")
+				return { 성공 : false, 위치 : "api 호출", 원인 : 응답 }
+
+			return { 성공 : true }
+		})
+		if (!api_결과.성공)
+		{
+			실패_출력(api_결과.위치, api_결과.원인 + " (인터넷 연결이나 차단 확장 프로그램 확인)")
 			return
 		}
+		// (수정) "종료"
 
 		// 2. 입력창 문자열에서 재생목록 id 찾기
 		const 재생목록_호출 = 재생목록_id_찾기(주소)
@@ -719,30 +759,35 @@ async function 불러오기()
 			return
 		}
 
-		// 3. 재생목록 cue
-		상태_칸.textContent = "재생목록 cue 중"
-		const 목록_결과 = await cued_대기(() =>
+		// (수정) "시작"
+		// 3번(cuePlaylist)과 4번(getPlaylist)을 하나로 묶어서, 어느 쪽이 실패해도 cuePlaylist 부터 다시 시도
+		// 어디서 실패했는지는 실패 내용의 위치에 담아서 전달
+		const 목록_응답 = await 재시도("재생목록 불러오기", async () =>
 		{
-			player.cuePlaylist({ listType : "playlist", list : 재생목록_호출 })
+			상태_칸.textContent = "재생목록 cue 중"
+			const 목록_결과 = await cued_대기(() =>
+			{
+				player.cuePlaylist({ listType : "playlist", list : 재생목록_호출 })
+			})
+			if (목록_결과 !== "cued")
+				return { 성공 : false, 위치 : "player.cuePlaylist", 원인 : 목록_결과 }
+
+			const 받은_목록 = await 재생목록_받기()
+			if (받은_목록 === null)
+				return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "3초 안에 배열을 받지 못함 (비공개 재생목록이거나 id 가 잘못됐을 수 있음)" }
+			if (받은_목록.length === 0)
+				return { 성공 : false, 위치 : "player.getPlaylist", 원인 : "배열은 받았지만 0개 (비어있는 재생목록이거나 비공개)" }
+
+			return { 성공 : true, 값 : 받은_목록 }
 		})
-		if (목록_결과 !== "cued")
+		if (!목록_응답.성공)
 		{
-			실패_출력("player.cuePlaylist", 목록_결과)
+			실패_출력(목록_응답.위치, 목록_응답.원인)
 			return
 		}
 
-		// 4. getPlaylist 로 동영상 목록 받기
-		const 동영상들_호출 = await 재생목록_받기()
-		if (동영상들_호출 === null)
-		{
-			실패_출력("player.getPlaylist", "3초 안에 배열을 받지 못함 (비공개 재생목록이거나 id 가 잘못됐을 수 있음)")
-			return
-		}
-		if (동영상들_호출.length === 0)
-		{
-			실패_출력("player.getPlaylist", "배열은 받았지만 0개 (비어있는 재생목록이거나 비공개)")
-			return
-		}
+		const 동영상들_호출 = 목록_응답.값
+		// (수정) "종료"
 
 		// 5. 동영상마다 cueVideoById 후 제목 기억
 		const 실패들 = []
@@ -752,25 +797,33 @@ async function 불러오기()
 			const 순서 = 번호 + 1
 			상태_칸.textContent = "제목 조사 중 " + 순서 + " / " + 동영상들_호출.length
 
-			const 동영상_결과 = await cued_대기(() =>
+			// (수정) "시작"
+			// cueVideoById 와 제목 읽기를 하나로 묶어서, 어느 쪽이 실패해도 cueVideoById 부터 다시 시도
+			const 동영상_응답 = await 재시도(순서 + "번 영상", async () =>
 			{
-				player.cueVideoById({ videoId : id })
+				const 동영상_결과 = await cued_대기(() =>
+				{
+					player.cueVideoById({ videoId : id })
+				})
+				if (동영상_결과 !== "cued")
+					return { 성공 : false, 위치 : "player.cueVideoById", 원인 : 동영상_결과 }
+
+				const 제목 = player.getVideoData?.()?.title
+				if (!제목)
+					return { 성공 : false, 위치 : "player.getVideoData", 원인 : "제목이 비어있음" }
+
+				return { 성공 : true, 값 : 제목 }
 			})
 
-			if (동영상_결과 !== "cued")
+			// 3번 모두 실패하면 실패 목록에 기록하고 다음 영상으로 넘어감
+			if (!동영상_응답.성공)
 			{
-				실패들.push(순서 + "번 " + id + " : player.cueVideoById 실패, " + 동영상_결과)
+				실패들.push(순서 + "번 " + id + " : " + 동영상_응답.위치 + " 실패, " + 동영상_응답.원인)
 				continue
 			}
 
-			const 제목 = player.getVideoData?.()?.title
-			if (!제목)
-			{
-				실패들.push(순서 + "번 " + id + " : player.getVideoData 에서 제목이 비어있음")
-				continue
-			}
-
-			결과.push({ 순서 : 순서, id : id, 제목 : 제목 })
+			결과.push({ 순서 : 순서, id : id, 제목 : 동영상_응답.값 })
+			// (수정) "종료"
 
 			// 하나 끝날 때마다 바로 보여줌
 			결과_칸.textContent = 결과_출력()
