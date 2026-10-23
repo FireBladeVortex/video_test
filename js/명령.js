@@ -1797,7 +1797,7 @@ function 시작()
 		// 	이름들_파일_상태[누구.이름] = await 파일_확인(누구.이름)
 		// }
 
-		Object.assign(이름들_파일_상태, await 전체_조사())
+		// Object.assign(이름들_파일_상태, await 전체_조사())
 		불러오는중(본문)
 
 		const 이름표들 = document.createElement("menu")
