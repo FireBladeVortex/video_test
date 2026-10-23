@@ -45,7 +45,8 @@ window.재생목록 ??= {}
 재생목록.쇼츠 =
 [
 	{
-		id : "",
+		// 우사기 랩 #shorts #치이카와
+		id : "https://youtu.be/0CCqHsp7Ppk",
 	},
 ]
 
