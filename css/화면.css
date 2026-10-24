@@ -461,7 +461,7 @@ body
 
 #동영상_제목
 {
-	width : 95% ;
+	width : clamp(480px, 95%, 640px) ;
 	text-align : center ;
 }
 

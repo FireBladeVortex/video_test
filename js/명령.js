@@ -681,10 +681,6 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 		if (!구역_동영상 && !구역_쇼츠)
 			return
 
-		const 안내표시줄 = document.createElement("section")
-		안내표시줄.className = "안내표시줄"
-		구역.appendChild(안내표시줄)
-
 		const 안내_문자열 = document.createElement("span")
 		안내_문자열.className = "안내"
 		안내_문자열.textContent = "추천 🔼⬆⏫"
@@ -692,7 +688,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
-		크기_계산.appendChild(드롭다운_공간)
+		구역.appendChild(드롭다운_공간)
 
 			const 드롭다운_칸 = document.createElement("div")
 			드롭다운_칸.className = "드롭다운_칸"
@@ -1237,6 +1233,10 @@ function 만들기_목록()
 			버튼.appendChild(문자열)
 			문자열.addEventListener("click", () => 팔락(버튼_그거.한장))
 		}
+
+		const 안내표시줄 = document.createElement("section")
+		안내표시줄.className = "안내표시줄"
+		구역.appendChild(안내표시줄)
 
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
