@@ -266,7 +266,14 @@ body
 	display : grid ;
 	grid-template-rows : auto minmax(0, 1fr) ;
 	justify-items : center ;
-	align-items : start ;
+	align-items : stretch ;
+}
+
+.구역[data-종류=동영상] .본문,
+.구역[data-종류=쇼츠] .본문
+{
+	height : 100% ;
+	min-height : 0 ;
 }
 
 .크기_계산
@@ -499,7 +506,7 @@ body
 .구역[data-종류=부분] .본문
 {
 	display : grid ;
-	grid-template-rows : 0fr 1fr ;
+	grid-template-rows : minmax(0, 0fr) minmax(0, 1fr) ;
 	flex : 1 ;
 	min-height : 0 ;
 	height : auto ;
@@ -508,7 +515,7 @@ body
 
 .구역[data-종류=부분][data-크기=커짐] .본문
 {
-	grid-template-rows : 1fr 0fr ;
+	grid-template-rows : minmax(0, 1fr) minmax(0, 0fr) ;
 }
 
 .드롭다운_공간

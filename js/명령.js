@@ -1061,12 +1061,9 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
-	// (수정) "시작"
-	// 여기도 minmax(0, Nfr) 로 변경
 	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
 	.map(구역 => "minmax(0, " + 구역_비율[구역.dataset.종류] + "fr)")
 	.join(" ")
-	// (수정) "종료"
 
 	if (왼쪽.querySelectorAll(".구역").length === 1)
 	{
