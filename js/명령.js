@@ -1255,16 +1255,16 @@ function 불러오기_재생목록(이름)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function 불러오는중(본문)
+function 대기_문자열(본문, 출력)
 {
-	const 불러오는_중_있냐 = document.getElementById("불러오는중")
-	if (불러오는_중_있냐)
-		return 불러오는_중_있냐.remove()
+	const 있냐 = document.getElementById("대기_문자열")
+	if (있냐)
+		return 있냐.remove()
 
-	const 불러오는_중 = document.createElement("div")
-	불러오는_중.id = "불러오는중"
-	불러오는_중.textContent = "불러오는 중"
-	본문.appendChild(불러오는_중)
+	const 대기_문자열 = document.createElement("div")
+	대기_문자열.id = "대기_문자열"
+	대기_문자열.textContent = 출력
+	본문.appendChild(대기_문자열)
 }
 
 
@@ -1288,7 +1288,7 @@ function 시작()
 		본문.className = "본문"
 		왼쪽_이름.appendChild(본문)
 
-		불러오는중(본문)
+		대기_문자열(본문, "불러오는 중")
 
 		function 가나다순_정렬(목록)
 		{
@@ -1339,10 +1339,11 @@ function 시작()
 			{
 				본문.innerHTML = ""
 				document.title = 누구.이름
-				불러오는중(본문)
+				대기_문자열(본문, "준비 중")
 				불러오기_재생목록(누구.이름)
 			})
 		}
+		대기_문자열(본문)
 	}
 
 	function 채우기_가나다()
