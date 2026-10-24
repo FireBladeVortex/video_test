@@ -443,7 +443,7 @@ function 시간_표기법(시간)
 
 
 
-function 만들기_부분(본문, 크기_계산, 페이지, 안내표시줄)
+function 만들기_부분(본문, 크기_계산, 페이지)
 {
 	if (!임시_목록.부분)
 		return
@@ -464,6 +464,10 @@ function 만들기_부분(본문, 크기_계산, 페이지, 안내표시줄)
 		if (!구역_동영상 && !구역_쇼츠)
 			return
 
+		const 안내표시줄 = document.createElement("section")
+		안내표시줄.className = "안내표시줄"
+		본문.appendChild(안내표시줄)
+
 		const 안내_문자열 = document.createElement("span")
 		안내_문자열.className = "안내"
 		안내_문자열.textContent = "추천 🔼⬆⏫"
@@ -471,8 +475,7 @@ function 만들기_부분(본문, 크기_계산, 페이지, 안내표시줄)
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
-		// 본문.appendChild(드롭다운_공간)
-		본문.insertBefore(드롭다운_공간, 본문.firstChild)
+		본문.appendChild(드롭다운_공간)
 
 			const 드롭다운_칸 = document.createElement("div")
 			드롭다운_칸.className = "드롭다운_칸"
@@ -1014,10 +1017,6 @@ function 만들기_목록()
 			문자열.addEventListener("click", () => 팔락(버튼_그거.한장))
 		}
 
-		const 안내표시줄 = document.createElement("section")
-		안내표시줄.className = "안내표시줄"
-		구역.appendChild(안내표시줄)
-
 		const 본문 = document.createElement("section")
 		본문.className = "본문"
 		구역.appendChild(본문)
@@ -1032,7 +1031,7 @@ function 만들기_목록()
 
 		if (분류.종류 === "부분")
 		{
-			만들기_부분(본문, 크기_계산, 페이지, 안내표시줄)
+			만들기_부분(본문, 크기_계산, 페이지)
 			continue
 		}
 
