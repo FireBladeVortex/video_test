@@ -102,7 +102,7 @@ async function 불러오기_제목(id)
 		// document.title = 선택한_채널.이름
 
 		document.getElementById("동영상_제목").style.textAlign = "start"
-		document.getElementById("동영상_제목").textContent = 선택한_동영상.제목
+		document.getElementById("제목표시줄").textContent = 선택한_동영상.제목
 	}
 	catch
 	{
@@ -170,7 +170,7 @@ function onPlayerStateChange(event)
 		if (title)
 		{
 			document.getElementById("동영상_제목").style.textAlign = "start"
-			document.getElementById("동영상_제목").textContent = title
+			document.getElementById("제목표시줄").textContent = title
 			불러오기_제목(선택한_동영상.id, title)
 		}
 		else
@@ -692,11 +692,15 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
-		본문.appendChild(드롭다운_공간)
+		크기_계산.appendChild(드롭다운_공간)
 
 			const 드롭다운_칸 = document.createElement("div")
 			드롭다운_칸.className = "드롭다운_칸"
-			드롭다운_공간.appendChild(드롭다운_칸)
+			크기_계산.appendChild(드롭다운_칸)
+
+			const 드롭다운_칸 = document.createElement("div")
+			드롭다운_칸.className = "드롭다운_칸"
+			크기_계산.appendChild(드롭다운_칸)
 
 			const 선택지 = document.createElement("select")
 			선택지.className = "드롭다운_선택"
