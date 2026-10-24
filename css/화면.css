@@ -94,12 +94,17 @@ body
 .안내표시줄
 {
 	width : 95%;
+	height : 0 ;
+	min-height : 0 ;
+	flex : 0 0 auto ;
 }
 
 .본문
 {
 	width : 90% ;
-	height : 100% ;
+	flex : 1 ;
+	min-height : 0 ;
+	height : auto ;
 }
 
 #화면 menu
@@ -258,11 +263,16 @@ body
 .구역[data-종류=쇼츠]
 {
 	display : grid ;
-	grid-template-rows : auto 1fr ;
+	grid-template-rows : auto auto 1fr ;
 	justify-items : center ;
 	align-items : start ;
 }
 
+.구역[data-종류=부분] .안내표시줄
+{
+	height : auto ;
+	min-height : 30px ;
+}
 
 .크기_계산
 {
