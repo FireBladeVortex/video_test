@@ -428,10 +428,19 @@ body
 	align-items : center ;
 }
 
+#player,
+#재생_시간_표시줄,
+#동영상_제목,
+#볼륨
+{
+	width : 100% ;
+	max-width : 960px ;
+}
+
 #player
 {
-	width : clamp(480px, 100%, 640px) ;
-	height : clamp(270px, 100%, 360px) ;
+	aspect-ratio : 16 / 9 ;
+	height : auto ;
 	margin-bottom : 10px ;
 	z-index : 1 ;
 }
@@ -446,11 +455,9 @@ body
 
 #재생_시간_표시줄
 {
-	width : clamp(480px, 100%, 640px) ;
 	height : 9px ;
 	background : #000000 ;
 	border-radius : var(--세로) ;
-
 	margin-bottom : 10px ;
 }
 
@@ -465,7 +472,6 @@ body
 
 #동영상_제목
 {
-	width : clamp(480px, 100%, 640px) ;
 	text-align : center ;
 	box-sizing : border-box ;
 	padding : 0 3% ;
@@ -475,7 +481,6 @@ body
 {
 	display : flex ;
 	align-items : center ;
-	width : clamp(480px, 100%, 640px) ;
 	height : 50px ;
 }
 
