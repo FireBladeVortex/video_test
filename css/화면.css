@@ -103,7 +103,7 @@ body
 .본문
 {
 	width : 90% ;
-	/* min-height : 0 ; */
+	min-height : 0 ;
 	height : auto ;
 }
 
