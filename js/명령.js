@@ -301,11 +301,24 @@ document.addEventListener("keydown", 키_입력)
 
 
 
-// 마우스 휠로 소리 크기 조절 및 오작동 방지
 function 드르륵(마우스휠)
 {
+	if (마우스휠.target.closest("#오른쪽"))
+	{
+		마우스휠.preventDefault()
+		소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
+		return
+	}
+
+	const 구역 = 마우스휠.target.closest(".구역[data-종류=동영상], .구역[data-종류=쇼츠]")
+	if (구역)
+	{
+		마우스휠.preventDefault()
+		페이지_넘기기(구역.dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
+		return
+	}
+
 	마우스휠.preventDefault()
-	소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
 }
 document.addEventListener("wheel", 드르륵, { passive : false })
 
@@ -574,8 +587,17 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 
 
+function 페이지_넘기기(종류, 한장)
+{
+	const 페이지_마지막 = 페이지_최대(종류)
+	const 넘기기 = 페이지_관리[종류] + 한장
 
+	if (넘기기 < 1 || 넘기기 > 페이지_마지막)
+		return
 
+	페이지_관리[종류] = 넘기기
+	페이지_갱신(종류)
+}
 
 
 
@@ -765,6 +787,14 @@ function 이미지_클릭_강조(이거)
 	}
 	이미지_클릭함 = 이거
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -982,18 +1012,6 @@ function 만들기_목록()
 			}
 		}
 
-		function 팔락(한장)
-		{
-			const 페이지_마지막 = 페이지_최대(분류.종류)
-			const 페이지_지금 = 페이지_관리[분류.종류]
-			const 넘기기 = 페이지_지금 + 한장
-
-			if (넘기기 < 1 || 넘기기 > 페이지_마지막)
-				return
-
-			페이지_관리[분류.종류] = 넘기기
-			페이지_갱신(분류.종류)
-		}
 
 		const 페이지_버튼_종류 =
 		[
@@ -1014,7 +1032,8 @@ function 만들기_목록()
 			const 문자열 = document.createElement("span")
 			문자열.className = "문자열_클릭"
 			버튼.appendChild(문자열)
-			문자열.addEventListener("click", () => 팔락(버튼_그거.한장))
+			문자열.addEventListener("click", () => 페이지_넘기기(분류.종류, 버튼_그거.한장))
+
 		}
 
 		const 본문 = document.createElement("section")

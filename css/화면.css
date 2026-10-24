@@ -626,11 +626,3 @@ body
 	justify-content : center ;
 	font-size : 60px ;
 }
-
-/* 머리말을 뺀 나머지 높이를 본문이 차지해야 세로 중앙이 정확히 맞음 */
-#왼쪽_이름 > .본문
-{
-	flex : 1 ;
-	min-height : 0 ;
-	height : auto ;
-}
