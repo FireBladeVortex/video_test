@@ -17,6 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
+		// 1
 		// 【추석특집】감규리 브이로그 모음집 + 쿠키영상
 		id : "https://youtu.be/w0dn6qxsjBM",
 	},
@@ -27,6 +28,7 @@ window.재생목록 ??= {}
 재생목록.원곡 =
 [
 	{
+		// 1
 		// 다리세개 아이돌 - 열쇠 Official MV
 		id : "https://youtu.be/aJEsZf9isxQ",
 	},
@@ -37,50 +39,62 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
+		// 1
 		// 남자인데 귀여워서 미안해ㅎ 【可愛くてごめん COVER】 남자 커버
 		id : "https://youtu.be/3rvHu9oGUbQ",
 	},
 	{
+		// 2
 		// Target For Love - 감규리【블루 아카이브 OST Cover】
 		id : "https://youtu.be/5KNsPRNkGnw",
 	},
 	{
+		// 3
 		// ✽きゅうくらりん/두근어질 【감규리Cover】
 		id : "https://youtu.be/M1xcjPfWKAA",
 	},
 	{
+		// 4
 		// 【감규리】회전하는 하늘토끼 남자COVER
 		id : "https://youtu.be/LfffxwcY8MI",
 	},
 	{
+		// 5
 		// 【블루아카이브 OST】Thanks to - Cover by 감규리
 		id : "https://youtu.be/Z5liMZMHo4g",
 	},
 	{
+		// 6
 		// 【감규리】내꺼 하는 법 | 남자Cover
 		id : "https://youtu.be/mW0jfEH6HW0",
 	},
 	{
+		// 7
 		// YOASOBI「Biri-Biri」 감규리COVER
 		id : "https://youtu.be/8Wbp-ccnElU",
 	},
 	{
+		// 8
 		// 【감규리】 SUPADOPA ｜남자 cover.
 		id : "https://youtu.be/h-fei75JawY",
 	},
 	{
+		// 9
 		// 포니(フォニイ) / 감규리cover
 		id : "https://youtu.be/IrcmOHtuiXY",
 	},
 	{
+		// 10
 		// 튜링 러브 / 감규리 【남・여 혼자서 불러 봤습니다♪】
 		id : "https://youtu.be/tq_9c4KnMWY",
 	},
 	{
+		// 11
 		// 【감규리】레몬메론쿠키🍋🍈🍪 / 남자 Cover
 		id : "https://youtu.be/KXyHtVm9OQo",
 	},
 	{
+		// 12
 		// 【MV】삐질게 / 남자 Cover
 		id : "https://youtu.be/2dq0PY3d9OQ",
 	},

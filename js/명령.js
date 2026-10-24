@@ -471,7 +471,8 @@ function 만들기_부분(본문, 크기_계산, 페이지, 안내표시줄)
 
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
-		구역.appendChild(드롭다운_공간)
+		// 본문.appendChild(드롭다운_공간)
+		본문.insertBefore(드롭다운_공간, 본문.firstChild)
 
 			const 드롭다운_칸 = document.createElement("div")
 			드롭다운_칸.className = "드롭다운_칸"

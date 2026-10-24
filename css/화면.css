@@ -521,6 +521,7 @@ body
 {
 	height : 100% ;
 	min-height : 0 ;
+	overflow : hidden ;
 }
 
 .드롭다운_칸

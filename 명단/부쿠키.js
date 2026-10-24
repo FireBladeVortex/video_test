@@ -35,6 +35,7 @@ window.재생목록 ??= {}
 재생목록.커버 =
 [
 	{
+		// 1
 		// ROSÉ & Bruno Mars - APT. || Cover by Bukuki & Mare Flos
 		id : "https://youtu.be/UeSDWPdR5IQ",
 	},
@@ -45,6 +46,7 @@ window.재생목록 ??= {}
 재생목록.쇼츠 =
 [
 	{
+		// 1
 		// 우사기 랩 #shorts #치이카와
 		id : "https://youtu.be/0CCqHsp7Ppk",
 	},
