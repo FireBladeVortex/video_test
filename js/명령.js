@@ -870,16 +870,19 @@ function 크기_조절(왼쪽, 그거)
 
 	const 조절_딸깍 = 구역_커짐 === 그거 ? null : 그거
 
+	// (수정) "시작"
+	// fr 값을 minmax(0, Nfr) 로 감싸서 내용 때문에 행이 커지지 않게 함
 	const 비율들 = 확인된_구역_종류들.map(종류 =>
 	{
 		if (확인된_구역_종류들.length === 1)
-			return "1fr"
+			return "minmax(0, 1fr)"
 
 		if (조절_딸깍)
-			return 종류 === 조절_딸깍 ? "1fr" : "0fr"
+			return 종류 === 조절_딸깍 ? "minmax(0, 1fr)" : "minmax(0, 0fr)"
 
-		return 구역_비율[종류] + "fr"
+		return "minmax(0, " + 구역_비율[종류] + "fr)"
 	})
+	// (수정) "종료"
 
 	왼쪽.style.gridTemplateRows = 비율들.join(" ")
 
@@ -1058,9 +1061,12 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
+	// (수정) "시작"
+	// 여기도 minmax(0, Nfr) 로 변경
 	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
-	.map(구역 => 구역_비율[구역.dataset.종류] + "fr")
+	.map(구역 => "minmax(0, " + 구역_비율[구역.dataset.종류] + "fr)")
 	.join(" ")
+	// (수정) "종료"
 
 	if (왼쪽.querySelectorAll(".구역").length === 1)
 	{

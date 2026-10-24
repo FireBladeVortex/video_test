@@ -222,6 +222,7 @@ body
 	grid-column : 1 ;
 	grid-row : 1 ;
 	display : grid ;
+	min-height : 0 ;
 	background : var(--왼쪽바탕색) ;
 }
 
@@ -263,7 +264,7 @@ body
 .구역[data-종류=쇼츠]
 {
 	display : grid ;
-	grid-template-rows : auto 1fr ;
+	grid-template-rows : auto minmax(0, 1fr) ;
 	justify-items : center ;
 	align-items : start ;
 }
