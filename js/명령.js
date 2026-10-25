@@ -905,24 +905,21 @@ function 만들기_목록()
 {
 	const 왼쪽 = document.getElementById("왼쪽")
 
-	const 원곡 = 임시_목록.원곡 ?? []
-	const 커버 = 임시_목록.커버 ?? []
-	const 동영상 = 원곡.concat(커버)
-	임시_목록.동영상 = 동영상
-
-	const 쇼츠 = 임시_목록.쇼츠 ?? []
-	const 부분 = 임시_목록.부분 ?? []
+	if (임시_목록.원곡 || 임시_목록.커버)
+	{
+		임시_목록.동영상 = (임시_목록.원곡 ?? []).concat(임시_목록.커버 ?? [])
+	}
 
 	const 종류_확인 =
 	[
-		{ 종류 : "동영상", 자료 : 동영상 },
-		{ 종류 : "쇼츠", 자료 : 쇼츠 },
-		{ 종류 : "부분", 자료 : 부분 },
+		{ 종류 : "동영상", 자료 : 임시_목록.동영상 },
+		{ 종류 : "쇼츠", 자료 : 임시_목록.쇼츠 },
+		{ 종류 : "부분", 자료 : 임시_목록.부분 },
 	]
 
 	for (const 분류 of 종류_확인)
 	{
-		if (!분류.자료)
+		if (!분류.자료 || 분류.자료.length === 0)
 			continue
 
 		const 구역 = document.createElement("section")
@@ -934,10 +931,13 @@ function 만들기_목록()
 		머리말.className = "머리말"
 		구역.appendChild(머리말)
 
-			const 머리말_재생목록 = document.createElement("span")
+			const 머리말_재생목록 = document.createElement("div")
 			머리말_재생목록.className = "머리말_재생목록"
-			머리말_재생목록.textContent = 분류.종류
 			머리말.appendChild(머리말_재생목록)
+
+				const 머리말_재생목록_문자열 = document.createElement("span")
+				머리말_재생목록_문자열.textContent = 분류.종류
+				머리말_재생목록.appendChild(머리말_재생목록_문자열)
 
 			const 머리말_종류 = document.createElement("menu")
 			머리말_종류.className = "머리말_종류"
@@ -960,13 +960,13 @@ function 만들기_목록()
 
 		if (분류.종류 === "동영상")
 		{
-			if (원곡 && 커버)
+			if (임시_목록.원곡 && 임시_목록.커버)
 			{
 				const 종류_목록 =
 				[
-					{ 이름 : "모두", 자료 : 동영상 },
-					{ 이름 : "원곡", 자료 : 원곡 },
-					{ 이름 : "커버", 자료 : 커버 },
+					{ 이름 : "모두", 자료 : 임시_목록.동영상 },
+					{ 이름 : "원곡", 자료 : 임시_목록.원곡 },
+					{ 이름 : "커버", 자료 : 임시_목록.커버 },
 				]
 				for (const 종류 of 종류_목록)
 				{
@@ -1116,6 +1116,32 @@ function id_찾기(주소)
 	return v ?? path
 }
 
+function id_찾기(주소)
+{
+	try
+	{
+		const url = new URL(주소)
+
+		const id_재생목록 = url.searchParams.get("list")
+		if (id_재생목록 && id.startsWith("PL"))
+			return
+
+		const v = url.searchParams.get("v")
+		const path = url.pathname.split("/").pop()
+		const id_동영상 = v ?? path
+
+		const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
+		if (!정규표현식.test(id_동영상))
+			return
+
+		const t = parseInt(url.searchParams.get("t"))
+		return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
+	}
+	catch
+	{
+		return
+	}
+}
 
 
 function 불러오기_재생목록(이름)
@@ -1142,34 +1168,6 @@ function 불러오기_재생목록(이름)
 
 	async function id_가공(재생목록)
 	{
-		function id_찾기(주소)
-		{
-			try
-			{
-				const url = new URL(주소)
-
-				const id_재생목록 = url.searchParams.get("list")
-				if (id_재생목록 && id.startsWith("PL"))
-					return
-
-				const v = url.searchParams.get("v")
-				const path = url.pathname.split("/").pop()
-				const id_동영상 = v ?? path
-
-				const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
-				if (!정규표현식.test(id_동영상))
-					return
-
-				const t = parseInt(url.searchParams.get("t"))
-				return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
-			}
-			catch
-			{
-				return
-			}
-		}
-
-
 		const keys = Object.keys(재생목록)
 		for (const key of keys)
 		{
