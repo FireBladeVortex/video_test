@@ -605,12 +605,12 @@ body
 {
 	justify-content : flex-end ;
 	text-align : right ;
-	padding-right : 3px ;
+	padding-right : 9px ;
 }
 
 .노래_제목
 {
-	padding-left : 6px ;
+	padding-left : 9px ;
 }
 
 .노래_구분선

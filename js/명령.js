@@ -930,14 +930,9 @@ function 만들기_목록()
 		{ 종류 : "부분",	자료 : 부분 },
 	]
 
-	function 유효_재확인(종류)
-	{
-		return Array.isArray(종류) && 종류.some(동영상 => 동영상.id)
-	}
-
 	for (const 분류 of 종류_확인)
 	{
-		if (!유효_재확인(분류.자료))
+		if (!분류.자료)
 			continue
 
 		const 구역 = document.createElement("section")
@@ -954,24 +949,28 @@ function 만들기_목록()
 			머리말_재생목록.textContent = 분류.종류
 			머리말.appendChild(머리말_재생목록)
 
-			const 머리말_구분 = {}
-			for (const 이름 of ["종류", "페이지", "크기"])
-			{
-				const 칸 = document.createElement("menu")
-				칸.className = "머리말_" + 이름
-				머리말.appendChild(칸)
-				머리말_구분[이름] = 칸
-			}
-				const 크기_조절_문자열 = document.createElement("button")
+			const 머리말_종류 = document.createElement("menu")
+			머리말_종류.className = "머리말_종류"
+			머리말.appendChild(머리말_종류)
+
+			const 머리말_페이지 = document.createElement("menu")
+			머리말_페이지.className = "머리말_페이지"
+			머리말.appendChild(머리말_페이지)
+
+			const 머리말_크기 = document.createElement("button")
+			머리말_크기.className = "머리말_크기"
+			머리말.appendChild(머리말_크기)
+
+				const 크기_조절_문자열 = document.createElement("span")
 				크기_조절_문자열.className = "문자열_클릭"
 				크기_조절_문자열.textContent = "크게"
 				크기_조절_문자열.dataset.종류 = 분류.종류
-				머리말_구분.크기.appendChild(크기_조절_문자열)
+				머리말_크기.appendChild(크기_조절_문자열)
 				크기_조절_문자열.addEventListener("click", () => 크기_조절(왼쪽, 분류.종류))
 
 		if (분류.종류 === "동영상")
 		{
-			if (유효_재확인(원곡) && 유효_재확인(커버))
+			if (원곡 && 커버)
 			{
 				function 미리보기_교체(자료)
 				{
@@ -984,7 +983,6 @@ function 만들기_목록()
 					}
 
 					채우기_페이지("동영상")
-
 					페이지_관리.동영상 = 1
 					페이지_갱신("동영상")
 				}
