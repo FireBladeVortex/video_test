@@ -331,12 +331,12 @@ body
 	outline-offset : -3px ;
 }
 
-.버튼.발기
+.버튼.밝게
 {
 	filter : brightness(25%) ;
 }
 
-.버튼.발기:hover
+.버튼.밝게:hover
 {
 	filter : brightness(100%) ;
 }

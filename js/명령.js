@@ -765,7 +765,7 @@ function 이미지_클릭_강조(이거)
 		const 그거 = 딸깍.dataset.종류 + 딸깍.dataset.숫자
 		const 클릭 = 그거 === 이거
 		딸깍.classList.toggle("강조", 클릭)
-		딸깍.classList.toggle("발기", !클릭)
+		딸깍.classList.toggle("밝게", !클릭)
 	}
 	이미지_클릭함 = 이거
 }
