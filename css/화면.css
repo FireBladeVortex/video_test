@@ -532,8 +532,8 @@ body
 
 .드롭다운_선택
 {
-	flex : 1 ;
-	min-width : 0 ;
+	flex : 0 1 auto ;
+	min-width : 50% ;
 	height : 30px ;
 	text-align : left ;
 	background : var(--왼쪽바탕색) ;
@@ -603,8 +603,14 @@ body
 
 .노래_이름
 {
-	justify-content : center ;
-	text-align : center ;
+	justify-content : flex-end ;
+	text-align : right ;
+	padding-right : 3px ;
+}
+
+.노래_제목
+{
+	padding-left : 3px ;
 }
 
 /* 세로 구분선 (높이의 80%) */
@@ -615,7 +621,7 @@ body
 	left : 0 ;
 	top : 10% ;
 	height : 80% ;
-	width : 1px ;
+	width : 3px ;
 	background : var(--강조2) ;
 }
 
