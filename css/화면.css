@@ -528,6 +528,7 @@ body
 	height : 30px ;
 	gap : 3px ;
 	overflow : visible ;
+	justify-content : center ;
 }
 
 .드롭다운_선택
