@@ -925,9 +925,9 @@ function 만들기_목록()
 
 	const 종류_확인 =
 	[
-		{ 종류 : "동영상",	자료 : 동영상 },
-		{ 종류 : "쇼츠",	자료 : 쇼츠 },
-		{ 종류 : "부분",	자료 : 부분 },
+		{ 종류 : "동영상", 자료 : 동영상 },
+		{ 종류 : "쇼츠", 자료 : 쇼츠 },
+		{ 종류 : "부분", 자료 : 부분 },
 	]
 
 	for (const 분류 of 종류_확인)
@@ -1020,7 +1020,7 @@ function 만들기_목록()
 			const 버튼 = document.createElement("button")
 			버튼.className = "버튼_" + 버튼_그거.넘김
 			버튼.dataset.종류 = 분류.종류
-			머리말_구분.페이지.appendChild(버튼)
+			머리말_페이지.appendChild(버튼)
 
 			if (버튼_그거.한장 === 0)
 				continue
@@ -1029,7 +1029,6 @@ function 만들기_목록()
 			문자열.className = "문자열_클릭"
 			버튼.appendChild(문자열)
 			문자열.addEventListener("click", () => 페이지_넘기기(분류.종류, 버튼_그거.한장))
-
 		}
 
 		const 본문 = document.createElement("section")
