@@ -997,13 +997,13 @@ function 만들기_목록()
 				{
 					const 종류_버튼 = document.createElement("button")
 					종류_버튼.className = "종류_" + 종류.이름
-					머리말_구분.종류.appendChild(종류_버튼)
+					머리말_종류.appendChild(종류_버튼)
 
-					const 문자열 = document.createElement("span")
-					문자열.className = "문자열_클릭"
-					문자열.textContent = 종류.이름
-					종류_버튼.appendChild(문자열)
-					문자열.addEventListener("click", () => 미리보기_교체(종류.자료))
+						const 문자열 = document.createElement("span")
+						문자열.className = "문자열_클릭"
+						문자열.textContent = 종류.이름
+						종류_버튼.appendChild(문자열)
+						문자열.addEventListener("click", () => 미리보기_교체(종류.자료))
 				}
 			}
 		}
