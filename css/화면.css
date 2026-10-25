@@ -91,15 +91,6 @@ body
 	align-items : center ;
 }
 
-.안내표시줄
-{
-	width : 95%;
-	height : 0 ;
-	min-height : 0 ;
-	flex : 0 0 auto ;
-	text-align : right ;
-}
-
 .본문
 {
 	width : 90% ;

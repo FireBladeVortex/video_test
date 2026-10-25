@@ -477,15 +477,6 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 		if (!구역_동영상 && !구역_쇼츠)
 			return
 
-		const 안내표시줄 = document.createElement("section")
-		안내표시줄.className = "안내표시줄"
-		본문.appendChild(안내표시줄)
-
-		const 안내_문자열 = document.createElement("span")
-		안내_문자열.className = "안내"
-		안내_문자열.textContent = "추천 🔼⬆⏫"
-		안내표시줄.appendChild(안내_문자열)
-
 		const 드롭다운_공간 = document.createElement("section")
 		드롭다운_공간.className = "드롭다운_공간"
 		본문.appendChild(드롭다운_공간)
