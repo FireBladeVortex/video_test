@@ -502,7 +502,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 				const 노래 = 임시_목록.부분[순서]
 				const 항목 = document.createElement("option")
 				항목.value = 순서 + ""
-				항목.textContent = 노래.이름 + "\t" + 노래.제목
+				항목.textContent = 노래.이름 + " - " + 노래.제목
 				선택지.appendChild(항목)
 			}
 
