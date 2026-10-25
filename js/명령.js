@@ -508,7 +508,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 			const 재생 = document.createElement("button")
 			재생.className = "재생_시작_버튼"
-			재생.textContent = "재생 시작"
+			재생.textContent = "듣기"
 			재생.disabled = true
 			드롭다운_칸.appendChild(재생)
 
@@ -548,6 +548,10 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			칸_이름.textContent = 노래.이름
 			항목.appendChild(칸_이름)
 
+			const 칸_구분선 = document.createElement("div")
+			칸_구분선.className = "노래_구분선"
+			항목.appendChild(칸_구분선)
+
 			const 칸_제목 = document.createElement("span")
 			칸_제목.className = "노래_칸 노래_제목"
 			칸_제목.textContent = 노래.제목
@@ -559,7 +563,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 			const 재생 = document.createElement("span")
 			재생.className = "재생_시작_버튼"
-			재생.textContent = "재생 시작"
+			재생.textContent = "듣기"
 			칸_재생.appendChild(재생)
 			재생.addEventListener("click", () =>
 			{

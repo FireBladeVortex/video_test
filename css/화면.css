@@ -82,7 +82,7 @@ body
 
 .머리말
 {
-	width : 95% ;
+	width : 90% ;
 	height : auto ;
 	min-height : 30px ;
 	border-bottom : 3px solid var(--강조2) ;
@@ -523,18 +523,18 @@ body
 
 .드롭다운_칸
 {
-	display : flex ;
+	display : grid ;
+	grid-template-columns : minmax(0, 3fr) minmax(0, 1fr) ;
 	width : 100% ;
 	height : 30px ;
-	gap : 3px ;
-	overflow : visible ;
-	justify-content : center ;
+	/* justify-content : center ; */
 }
 
 .드롭다운_선택
 {
-	flex : 0 1 auto ;
-	min-width : 50% ;
+	/* flex : 0 1 auto ; */
+	width : 100% ;
+	min-width : 0 ;
 	height : 30px ;
 	text-align : left ;
 	background : var(--왼쪽바탕색) ;
@@ -555,8 +555,7 @@ body
 .드롭다운_칸 .재생_시작_버튼,
 .노래_재생 .재생_시작_버튼
 {
-	flex : 0 0 100px ;
-	width : 100px ;
+	width : 100% ;
 	height : 30px ;
 	background : var(--강조2) ;
 	cursor : pointer ;
@@ -581,7 +580,7 @@ body
 .노래_항목
 {
 	display : grid ;
-	grid-template-columns : 200px 1fr 100px ;
+	grid-template-columns : minmax(0, 1.5fr) minmax(0, 0fr) minmax(0, 1.5fr) minmax(0, 1fr) ;
 	flex : 0 0 30px ;
 	width : 100% ;
 	height : 30px ;
@@ -614,19 +613,15 @@ body
 	padding-left : 6px ;
 }
 
-/* 세로 구분선 (높이의 80%) */
-.노래_칸 + .노래_칸::before
+.노래_구분선
 {
-	content : "" ;
-	position : absolute ;
-	left : 0 ;
-	top : 10% ;
+	width : 0 ;
 	height : 80% ;
-	width : 3px ;
+	padding : 0 1.5px ;
 	background : var(--강조2) ;
+	justify-self : center ;
+	align-self : center ;
 }
-
-
 
 #대기_문자열
 {
