@@ -641,28 +641,6 @@ const 재구성 = new ResizeObserver(크기_감지)
 
 
 
-function 페이지_재구성(종류)
-{
-	const 숫자 = 이거_몇칸임[종류]
-	if (!숫자)
-		return
-
-	const 페이지_지금 = 페이지_관리[종류]
-	const 숫자_최소 = (페이지_지금 - 1) * 숫자
-	const 숫자_최대 = (페이지_지금 * 숫자) - 1
-
-	const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
-	const 그거 = document.querySelectorAll(불러올거)
-	for (const 버튼 of 그거)
-	{
-		const 번호 = +버튼.dataset.숫자
-		const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
-		버튼.style.display = 몇번 ? "" : "none"
-	}
-}
-
-
-
 function 페이지_최대(종류)
 {
 	const 숫자 = 이거_몇칸임[종류]
@@ -677,8 +655,39 @@ function 페이지_최대(종류)
 
 
 
-function 채우기_페이지_버튼(종류)
+
+
+
+const 선택한_동영상 = { id : null, 제목 : null }
+const 선택한_채널 = { 이름 : null, 주소 : null }
+
+const 시간_관리 = { 시작 : null, 종료 : null }
+const 문자열_관리 = { 시작 : null, 종료 : null }
+
+const 페이지_관리 = { 동영상 : 1, 쇼츠 : 1, 부분 : 1 }
+
+
+
+function 페이지_갱신(종류)
 {
+	const 페이지_지금 = 페이지_관리[종류]
+
+	const 숫자 = 이거_몇칸임[종류]
+	if (숫자)
+	{
+		const 숫자_최소 = (페이지_지금 - 1) * 숫자
+		const 숫자_최대 = (페이지_지금 * 숫자) - 1
+
+		const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
+		const 그거 = document.querySelectorAll(불러올거)
+		for (const 버튼 of 그거)
+		{
+			const 번호 = +버튼.dataset.숫자
+			const 몇번 = 번호 >= 숫자_최소 && 번호 <= 숫자_최대
+			버튼.style.display = 몇번 ? "" : "none"
+		}
+	}
+
 	function 페이지_버튼_찾기(종류, 위치)
 	{
 		return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
@@ -703,8 +712,6 @@ function 채우기_페이지_버튼(종류)
 		return
 	}
 
-	const 페이지_지금 = 페이지_관리[종류]
-
 	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
 	버튼_지금.textContent = ""
 	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
@@ -720,26 +727,6 @@ function 채우기_페이지_버튼(종류)
 		숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
 		버튼_지금.appendChild(숫자)
 	}
-}
-
-
-
-
-
-const 선택한_동영상 = { id : null, 제목 : null }
-const 선택한_채널 = { 이름 : null, 주소 : null }
-
-const 시간_관리 = { 시작 : null, 종료 : null }
-const 문자열_관리 = { 시작 : null, 종료 : null }
-
-const 페이지_관리 = { 동영상 : 1, 쇼츠 : 1, 부분 : 1 }
-
-
-
-function 페이지_갱신(종류)
-{
-	채우기_페이지_버튼(종류)
-	페이지_재구성(종류)
 }
 
 
@@ -847,14 +834,13 @@ function 채우기_페이지(종류, 자료)
 		}
 		버튼.addEventListener("click", 딸깍)
 	}
-	// (추가) "시작"
-	// 자료를 넘겨서 교체한 경우에만 1페이지로 돌아가 화면 갱신 (최초 생성 때는 ResizeObserver 가 처리)
+
 	if (자료)
 	{
+		이미지_클릭함 = null
 		페이지_관리[종류] = 1
 		페이지_갱신(종류)
 	}
-	// (추가) "종료"
 }
 
 
@@ -1038,7 +1024,7 @@ function 만들기_목록()
 			continue
 		}
 
-		채우기_페이지_버튼(분류.종류)
+		페이지_갱신(분류.종류)
 		채우기_페이지(분류.종류)
 	}
 
