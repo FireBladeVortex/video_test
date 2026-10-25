@@ -787,21 +787,17 @@ function 이미지_클릭_강조(이거)
 
 
 
-
-
-
-
-
-
-function 채우기_페이지(종류)
+function 채우기_페이지(종류, 자료)
 {
 	const 페이지 = document.querySelector(".페이지." + 종류)
 	if (!페이지)
 		return
 
-	const 동영상들 = 임시_목록[종류]
+	const 동영상들 = 임시_목록[종류] = 자료 ?? 임시_목록[종류]
 	if (!동영상들)
 		return
+
+	페이지.innerHTML = ""
 
 	for (let 숫자 = 0 ; 숫자 < 동영상들.length ; 숫자++)
 	{
@@ -851,6 +847,14 @@ function 채우기_페이지(종류)
 		}
 		버튼.addEventListener("click", 딸깍)
 	}
+	// (추가) "시작"
+	// 자료를 넘겨서 교체한 경우에만 1페이지로 돌아가 화면 갱신 (최초 생성 때는 ResizeObserver 가 처리)
+	if (자료)
+	{
+		페이지_관리[종류] = 1
+		페이지_갱신(종류)
+	}
+	// (추가) "종료"
 }
 
 
@@ -972,21 +976,6 @@ function 만들기_목록()
 		{
 			if (원곡 && 커버)
 			{
-				function 미리보기_교체(자료)
-				{
-					임시_목록.동영상 = 자료
-
-					const 페이지 = document.querySelector(".페이지.동영상")
-					if (페이지)
-					{
-						페이지.innerHTML = ""
-					}
-
-					채우기_페이지("동영상")
-					페이지_관리.동영상 = 1
-					페이지_갱신("동영상")
-				}
-
 				const 종류_목록 =
 				[
 					{ 이름 : "모두", 자료 : 동영상 },
@@ -1003,7 +992,7 @@ function 만들기_목록()
 						문자열.className = "문자열_클릭"
 						문자열.textContent = 종류.이름
 						종류_버튼.appendChild(문자열)
-						문자열.addEventListener("click", () => 미리보기_교체(종류.자료))
+						문자열.addEventListener("click", () => 채우기_페이지(분류.종류, 종류.자료))
 				}
 			}
 		}
