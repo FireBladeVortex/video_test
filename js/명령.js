@@ -841,7 +841,7 @@ function 채우기_페이지(종류, 자료)
 		버튼.addEventListener("click", 딸깍)
 	}
 
-	페이지.appendChild(모음)
+	페이지.appendChild(조각모음)
 
 	if (자료)
 	{
