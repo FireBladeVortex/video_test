@@ -1228,8 +1228,8 @@ function 불러오기_재생목록(이름)
 		await api_준비
 		await id_가공(window.재생목록)
 
-		delete window.재생목록
-		script.remove()
+		// delete window.재생목록
+		// script.remove()
 
 		await 불러오기_소개(임시_목록.소개)
 		만들기_구역()
