@@ -345,7 +345,9 @@ function 시간_표기법(시간)
 		const 시간_길이 = 시분초.findIndex(값 => 값 !== 0)
 		const 시간_길이_확인 = 시간_길이 === -1 ? 시분초.length - 1 : 시간_길이
 		const 시간_정리 = 시분초.slice(시간_길이_확인)
-		const 시간_변환 = 시간_정리.map((값, 순서) => 순서 === 0 ? (값 + "") : (값 + "").padStart(2,"0"))
+		const 시간_변환 = 시간_정리.map((값, 순서) => 순서 === 0
+			? (값 + "")
+			: (값 + "").padStart(2,"0"))
 		const 결과 = 시간_변환.join(":")
 		return 결과
 	}
@@ -1225,6 +1227,10 @@ function 불러오기_재생목록(이름)
 		나만의_색깔(window.재생목록.색깔)
 		await api_준비
 		await id_가공(window.재생목록)
+
+		delete window.재생목록
+		script.remove()
+
 		await 불러오기_소개(임시_목록.소개)
 		만들기_구역()
 		document.getElementById("왼쪽_이름").remove()
