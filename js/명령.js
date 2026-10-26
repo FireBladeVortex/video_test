@@ -51,11 +51,13 @@ function onYouTubeIframeAPIReady()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+const 재생_시간_지금 = document.getElementById("재생_시간_지금")
+const 동영상_제목 = document.getElementById("동영상_제목")
+const 제목표시줄 = document.getElementById("제목표시줄")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
 	const 비율 = (지금_시간 - 시간_관리.시작) / (시간_관리.종료 - 시간_관리.시작)
-	const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 	재생_시간_지금.style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
 
 	// const [, 지금_문자열] = 시간_표기법(지금_시간)
@@ -63,11 +65,11 @@ function 재생_표시줄()
 	// {
 	// 	if (시간_관리.시작 === 0)
 	// 	{
-	// 		document.getElementById("동영상_제목").textContent = 지금_문자열 + "<" + 문자열_관리.종료
+	// 		동영상_제목.textContent = 지금_문자열 + "<" + 문자열_관리.종료
 	// 	}
 	// 	else
 	// 	{
-	// 		document.getElementById("동영상_제목").textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
+	// 		동영상_제목.textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
 	// 	}
 	// }
 }
@@ -93,8 +95,8 @@ async function 불러오기_제목(id)
 		선택한_동영상.제목 = 데이터.title
 		// document.title = 선택한_채널.이름
 
-		document.getElementById("동영상_제목").style.textAlign = "start"
-		document.getElementById("제목표시줄").textContent = 선택한_동영상.제목
+		동영상_제목.style.textAlign = "start"
+		제목표시줄.textContent = 선택한_동영상.제목
 	}
 	catch
 	{
@@ -154,8 +156,8 @@ function onPlayerStateChange(event)
 		}
 		if (title)
 		{
-			document.getElementById("동영상_제목").style.textAlign = "start"
-			document.getElementById("제목표시줄").textContent = title
+			동영상_제목.style.textAlign = "start"
+			제목표시줄.textContent = title
 			불러오기_제목(선택한_동영상.id, title)
 		}
 		else
@@ -230,22 +232,30 @@ const 방지 = 간섭 => 간섭.stopPropagation()
 
 function 키_입력(키)
 {
-	const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
-	const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
+	// const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
+	// const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
+	const 증감 =
+		(키.code === "NumpadAdd" || 키.code === "ArrowUp")
+		- (키.code === "NumpadSubtract" || 키.code === "ArrowDown")
 	// const 컨트롤_쉬프트 = 키.ctrlKey || 키.shiftKey
 
+	if (증감)
+	{
+		키.preventDefault()
+		소리_크기_값_조절(증감 * 5)
+	}
 	// if (!컨트롤_쉬프트)
 	// {
-		if (증가)
-		{
-			키.preventDefault()
-			소리_크기_값_조절(+5)
-		}
-		else if (감소)
-		{
-			키.preventDefault()
-			소리_크기_값_조절(-5)
-		}
+		// if (증가)
+		// {
+		// 	키.preventDefault()
+		// 	소리_크기_값_조절(+5)
+		// }
+		// else if (감소)
+		// {
+		// 	키.preventDefault()
+		// 	소리_크기_값_조절(-5)
+		// }
 	// }
 	// else if (컨트롤_쉬프트 && 증가 || 감소)
 	// {
@@ -324,10 +334,7 @@ function 드르륵(마우스휠)
 document.addEventListener("wheel", 드르륵, { passive : false })
 
 
-document.getElementById("처음으로").addEventListener("click", () =>
-{
-	location.reload()
-})
+document.getElementById("처음으로").addEventListener("click", () => location.reload())
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,51 +346,28 @@ document.getElementById("처음으로").addEventListener("click", () =>
 // 없는거 채워서 시간값 2개 전달하기
 function 시간_표기법(시간)
 {
-	// 시간 메세지 표기법 정리 24:00:00
-	function 시분초_표준(시분초)
-	{
-		const 시간_길이 = 시분초.findIndex(값 => 값 !== 0)
-		const 시간_길이_확인 = 시간_길이 === -1 ? 시분초.length - 1 : 시간_길이
-		const 시간_정리 = 시분초.slice(시간_길이_확인)
-		const 시간_변환 = 시간_정리.map((값, 순서) => 순서 === 0
-			? (값 + "")
-			: (값 + "").padStart(2,"0"))
-		const 결과 = 시간_변환.join(":")
-		return 결과
-	}
+	const 값 =
+		typeof 시간 === "number"
+		? 시간
+		: (typeof 시간 === "string" && /[:;]/.test(시간))
+			? 시간.split(/[:;]/).reduce((합, 값) => 합 * 60 + +값, 0)
+			: 0
 
-	// 숫자 모양인 시간 값이 들어왔을 떄
-	if (typeof 시간 === "number" && 시간 > 0)
-	{
-		const 표준시간 = new Date(시간 * 1000)
-		const 시 = 표준시간.getUTCHours()
-		const 분 = 표준시간.getUTCMinutes()
-		const 초 = 표준시간.getUTCSeconds()
-		const 시간_숫자 = 시간
-		const 시간_문자 = 시분초_표준([시, 분, 초])
-		return [ 시간_숫자, 시간_문자 ]
-	}
+	if (!(값 > 0))
+		return [ 0, 0 ]
 
-	// 문자열 모양 시간 값이 들어왔을 때
-	if (typeof 시간 === "string")
-	{
-		const 오타확인 = 시간.replace(/;/g, ":")
-		const 재확인 = 오타확인.includes(":")
-		if (재확인)
-		{
-			const 시분초 = 오타확인.split(":")
-			const 초 = +(시분초.pop())
-			const 분 = 시분초.length ? +(시분초.pop()) : 0
-			const 시 = 시분초.length ? +(시분초.pop()) : 0
-			const 시간_숫자 = 시 * 3600 + 분 * 60 + 초
-			const 시간_문자 = 시분초_표준([시, 분, 초])
-			return [ 시간_숫자, 시간_문자 ]
-		}
-	}
+	const 시 = Math.floor(값 / 3600)
+	const 분 = Math.floor(값 % 3600 / 60)
+	const 초 = Math.floor(값 % 60)
+	const 시분초 = [시, 분, 초]
 
-	return [ 0, 0 ]
+
+	const 길이 = 시분초.findIndex(값 => 값 !== 0)
+	const [처음, ...나머지] = 시분초.slice(길이 === -1 ? 시분초.length - 1 : 길이)
+	const 문자열 = [처음, ...나머지.map(값 => String(값).padStart(2, "0"))].join(":")
+
+	return [ 값, 문자열 ]
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -515,10 +499,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			재생.disabled = true
 			드롭다운_칸.appendChild(재생)
 
-		선택지.addEventListener("change", () =>
-		{
-			재생.disabled = 선택지.value === ""
-		})
+		선택지.addEventListener("change", () => 재생.disabled = 선택지.value === "")
 
 		재생.addEventListener("click", () =>
 		{
@@ -635,6 +616,9 @@ function 크기_감지(구역)
 			총몇칸 = 몇칸
 		}
 
+		if (이거_몇칸임[종류] === 총몇칸)
+			continue
+
 		이거_몇칸임[종류] = 총몇칸
 		페이지_관리[종류] = 1
 		페이지_갱신(종류)
@@ -692,13 +676,16 @@ function 페이지_갱신(종류)
 		}
 	}
 
-	function 페이지_버튼_찾기(종류, 위치)
-	{
-		return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
-	}
-	const 버튼_이전 = 페이지_버튼_찾기(종류, "이전")
-	const 버튼_지금 = 페이지_버튼_찾기(종류, "지금")
-	const 버튼_다음 = 페이지_버튼_찾기(종류, "다음")
+	// function 페이지_버튼_찾기(종류, 위치)
+	// {
+	// 	return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
+	// }
+	// const 버튼_이전 = 페이지_버튼_찾기(종류, "이전")
+	// const 버튼_지금 = 페이지_버튼_찾기(종류, "지금")
+	// const 버튼_다음 = 페이지_버튼_찾기(종류, "다음")
+
+	const [버튼_이전, 버튼_지금, 버튼_다음] =
+		document.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지")?.children ?? []
 
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
 		return
@@ -710,9 +697,10 @@ function 페이지_갱신(종류)
 
 	if (페이지_수 <= 1)
 	{
-		버튼_이전_문자열.textContent = ""
-		버튼_지금.textContent = ""
-		버튼_다음_문자열.textContent = ""
+		for (const 숫자 of 버튼_지금.children)
+		{
+			숫자.textContent = ""
+		}
 		return
 	}
 
@@ -725,11 +713,14 @@ function 페이지_갱신(종류)
 	{
 		const 페이지_숫자 = 페이지_지금 + 한장_차이
 
-		const 숫자 = document.createElement("span")
-		숫자.className = 페이지_앞_지금_뒤[한장_차이 + 1]
-		숫자.dataset.종류 = 종류
-		숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
-		버튼_지금.appendChild(숫자)
+		버튼_지금.children[한장_차이 + 1].textContent =
+			(페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
+
+		// const 숫자 = document.createElement("span")
+		// 숫자.className = 페이지_앞_지금_뒤[한장_차이 + 1]
+		// 숫자.dataset.종류 = 종류
+		// 숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
+		// 버튼_지금.appendChild(숫자)
 	}
 }
 
@@ -812,33 +803,6 @@ function 채우기_페이지(종류, 자료)
 
 		버튼.appendChild(img)
 		조각모음.appendChild(버튼)
-
-		function 딸깍()
-		{
-			const 그거 = 종류 + 몇번
-			if (그거 === 이미지_클릭함)
-			{
-				// if (재생())
-				// {
-				// 	player.pauseVideo()
-				// }
-				// else if (일시중지())
-				// {
-				// 	player.playVideo()
-				// }
-				// else
-					return
-			}
-			else
-			{
-				// 이미지_클릭_강조(그거)
-				const 쇼츠 = 종류 === "쇼츠"
-				선택한_동영상_준비(동영상.id,
-					쇼츠 ? 0 : 동영상.시작,
-					쇼츠 ? 0 : 동영상.종료)
-			}
-		}
-		버튼.addEventListener("click", 딸깍)
 	}
 
 	페이지.appendChild(조각모음)
@@ -1006,6 +970,13 @@ function 만들기_목록()
 			머리말_페이지.appendChild(버튼)
 
 			if (버튼_그거.한장 === 0)
+				for (const 클래스 of ["이전_숫자", "지금_숫자", "다음_숫자"])
+				{
+					const 숫자 = document.createElement("span")
+					숫자.className = 클래스
+					숫자.dataset.종류 = 분류.종류
+					버튼.appendChild(숫자)
+				}
 				continue
 
 			const 문자열 = document.createElement("span")
@@ -1031,6 +1002,25 @@ function 만들기_목록()
 			만들기_부분(본문, 크기_계산, 페이지)
 			continue
 		}
+
+		function 딸깍(클릭)
+		{
+			const 버튼 = 클릭.target.closest(".버튼")
+			if (!버튼)
+				return
+
+			const 종류 = 버튼.dataset.종류
+			const 그거 = 종류 + 버튼.dataset.숫자
+			if (그거 === 이미지_클릭함)
+				return
+
+			const 동영상 = 임시_목록[종류][+버튼.dataset.숫자]
+			const 쇼츠 = 종류 === "쇼츠"
+			선택한_동영상_준비(동영상.id,
+				쇼츠 ? 0 : 동영상.시작,
+				쇼츠 ? 0 : 동영상.종료)
+		}
+		페이지.addEventListener("click", 딸깍)
 
 		페이지_갱신(분류.종류)
 		채우기_페이지(분류.종류)
@@ -1176,7 +1166,7 @@ function 불러오기_재생목록(이름)
 
 			for (const 동영상 of 재생목록[key])
 			{
-				if (!동영상.id && 동영상.id.length === 0)
+				if (!동영상.id || 동영상.id.length === 0)
 					continue
 
 				const id = id_찾기(동영상.id)
@@ -1207,12 +1197,7 @@ function 불러오기_재생목록(이름)
 
 		const 스타일 = document.documentElement.style
 
-		const 색깔_종류 =
-		[
-			"오른쪽바탕색", "왼쪽바탕색",
-			"강조1", "강조2", "강조3",
-		]
-		for (const 이거 of 색깔_종류)
+		for (const 이거 of Object.keys(색깔))
 		{
 			if (색깔[이거])
 			{
@@ -1228,8 +1213,8 @@ function 불러오기_재생목록(이름)
 		await api_준비
 		await id_가공(window.재생목록)
 
-		// delete window.재생목록
-		// script.remove()
+		delete window.재생목록
+		script.remove()
 
 		await 불러오기_소개(임시_목록.소개)
 		만들기_구역()
@@ -1286,11 +1271,8 @@ function 시작()
 		function 가나다순_정렬(목록)
 		{
 			const 규칙 = new Intl.Collator("ko")
-			const 정렬 = [...목록].sort((앞, 뒤) =>
-			{
-				const 비교 = 규칙.compare(앞.이름.trim(), 뒤.이름.trim())
-				return 비교
-			})
+			const 정렬 = [...목록].sort((앞, 뒤) => 규칙.compare(앞.이름.trim(), 뒤.이름.trim()))
+
 
 			const map = new Map()
 			for (const 그거 of 정렬)
