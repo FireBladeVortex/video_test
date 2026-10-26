@@ -55,7 +55,8 @@ function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
 	const 비율 = (지금_시간 - 시간_관리.시작) / (시간_관리.종료 - 시간_관리.시작)
-	document.getElementById("재생_시간_지금").style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
+	const 재생_시간_지금 = document.getElementById("재생_시간_지금")
+	재생_시간_지금.style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
 
 	// const [, 지금_문자열] = 시간_표기법(지금_시간)
 	// if (문자열_관리.종료 && 문자열_관리.시작)
@@ -599,6 +600,10 @@ function 페이지_넘기기(종류, 한장)
 
 
 const 이거_몇칸임 = { 동영상 : 0, 쇼츠 : 0, 부분 : 0 }
+const 설정 = getComputedStyle(document.documentElement)
+const 길이 = {}
+길이.가로 = parseInt(설정.getPropertyValue("--가로"))
+길이.세로 = parseInt(설정.getPropertyValue("--세로"))
 let 총몇칸 = null
 function 크기_감지(구역)
 {
@@ -615,12 +620,8 @@ function 크기_감지(구역)
 		}
 		else
 		{
-			const 설정 = getComputedStyle(document.documentElement)
-			const 가로값 = parseInt(설정.getPropertyValue("--가로"))
-			const 세로값 = parseInt(설정.getPropertyValue("--세로"))
-
-			const 쇼츠_가로 = 쇼츠 ? 세로값 : 가로값
-			const 쇼츠_세로 = 쇼츠 ? 가로값 : 세로값
+			const 쇼츠_가로 = 쇼츠 ? 길이.세로 : 길이.가로
+			const 쇼츠_세로 = 쇼츠 ? 길이.가로 : 길이.세로
 
 			const 너비 = 목록.contentBoxSize[0].inlineSize
 			const 높이 = 목록.contentBoxSize[0].blockSize
@@ -678,8 +679,9 @@ function 페이지_갱신(종류)
 		const 숫자_최소 = (페이지_지금 - 1) * 숫자
 		const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
+		const 구역 = document.querySelector(".구역[data-종류=" + 종류 + "]")
 		const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
-		const 그거 = document.querySelectorAll(불러올거)
+		const 그거 = 구역.querySelectorAll(불러올거)
 		for (const 버튼 of 그거)
 		{
 			const 번호 = +버튼.dataset.숫자
@@ -785,6 +787,7 @@ function 채우기_페이지(종류, 자료)
 		return
 
 	페이지.innerHTML = ""
+	const 조각모음 = document.createDocumentFragment()
 
 	for (let 숫자 = 0 ; 숫자 < 동영상들.length ; 숫자++)
 	{
@@ -799,13 +802,14 @@ function 채우기_페이지(종류, 자료)
 		버튼.dataset.숫자 = 몇번
 
 		const img = document.createElement("img")
+		img.loading = "lazy"
 		const src_1 = "https://img.youtube.com/vi/"
 		const src_2 = 동영상.id
 		const src_3 = "/mqdefault.jpg"
 		img.src = src_1 + src_2 + src_3
 
 		버튼.appendChild(img)
-		페이지.appendChild(버튼)
+		조각모음.appendChild(버튼)
 
 		function 딸깍()
 		{
@@ -834,6 +838,8 @@ function 채우기_페이지(종류, 자료)
 		}
 		버튼.addEventListener("click", 딸깍)
 	}
+
+	페이지.appendChild(모음)
 
 	if (자료)
 	{
@@ -1110,20 +1116,12 @@ function 만들기_구역()
 
 function id_찾기(주소)
 {
-	const url = new URL(주소)
-	const v = url.searchParams.get("v")
-	const path = url.pathname.split("/").pop()
-	return v ?? path
-}
-
-function id_찾기(주소)
-{
 	try
 	{
 		const url = new URL(주소)
 
-		const id_재생목록 = url.searchParams.get("list")
-		if (id_재생목록 && id.startsWith("PL"))
+		const list = url.searchParams.get("list")
+		if (list && list.startsWith("PL"))
 			return
 
 		const v = url.searchParams.get("v")
@@ -1166,7 +1164,7 @@ function 불러오기_재생목록(이름)
 		})
 	}
 
-	async function id_가공(재생목록)
+	function id_가공(재생목록)
 	{
 		const keys = Object.keys(재생목록)
 		for (const key of keys)
@@ -1176,7 +1174,7 @@ function 불러오기_재생목록(이름)
 
 			for (const 동영상 of 재생목록[key])
 			{
-				if (!동영상.id)
+				if (!동영상.id && 동영상.id.length === 0)
 					continue
 
 				const id = id_찾기(동영상.id)
@@ -1188,11 +1186,13 @@ function 불러오기_재생목록(이름)
 						const 펼침 = (동영상.노래 ?? [])
 							.filter(노래 => 노래.이름 && 노래.제목 && 노래.시작 && 노래.종료)
 							.map(노래 => ({ id : 값, ...노래 }))
-						임시_목록[key] = (임시_목록[key] ?? []).concat(펼침)
+						임시_목록[key] ??= []
+						임시_목록[key].push(...펼침)
 						continue
 					}
 					const { id, ...rest } = 동영상
-					임시_목록[key] = (임시_목록[key] ?? []).concat([{ id : 값, ...rest }])
+					임시_목록[key] ??= []
+					임시_목록[key].push({ id : 값, ...rest })
 				}
 			}
 		}
@@ -1203,7 +1203,7 @@ function 불러오기_재생목록(이름)
 		if (!색깔)
 			return
 
-		const 설정 = document.documentElement.style
+		const 스타일 = document.documentElement.style
 
 		const 색깔_종류 =
 		[
@@ -1214,7 +1214,7 @@ function 불러오기_재생목록(이름)
 		{
 			if (색깔[이거])
 			{
-				설정.setProperty("--" + 이거, 색깔[이거])
+				스타일.setProperty("--" + 이거, 색깔[이거])
 			}
 		}
 	}
@@ -1317,19 +1317,24 @@ function 시작()
 			이름표들.appendChild(이름표)
 
 			const 이름 = document.createElement("span")
-			이름.className = 누구.이름
+			이름.dataset.이름 = 누구.이름
 
 			이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
 			이름표.appendChild(이름)
-
-			이름.addEventListener("click", () =>
-			{
-				본문.innerHTML = ""
-				document.title = 누구.이름
-				대기_문자열(본문, "준비 중")
-				불러오기_재생목록(누구.이름)
-			})
 		}
+
+		이름표들.addEventListener("click", 클릭 =>
+		{
+			const 이름표 = 클릭.target.closest("span")
+			if (!이름표)
+				return
+
+			const 이름 = 이름표.dataset.이름
+			본문.innerHTML = ""
+			document.title = 이름
+			대기_문자열(본문, "준비 중")
+			불러오기_재생목록(이름)
+		})
 		대기_문자열(본문)
 	}
 
