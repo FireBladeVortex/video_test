@@ -78,13 +78,13 @@ async function 불러오기_제목(id)
 	if (arguments.length !== 1)
 		return
 
+	const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
+	const 주소_2 = id
+	const 주소_3 = "&format=json"
+	const 주소 = 주소_1 + 주소_2 + 주소_3
+
 	try
 	{
-		const 주소_1 = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v="
-		const 주소_2 = id
-		const 주소_3 = "&format=json"
-		const 주소 = 주소_1 + 주소_2 + 주소_3
-
 		const 호출 = await fetch(주소)
 		const 데이터 = await 호출.json()
 
