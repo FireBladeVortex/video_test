@@ -970,14 +970,16 @@ function 만들기_목록()
 			머리말_페이지.appendChild(버튼)
 
 			if (버튼_그거.한장 === 0)
-				for (const 클래스 of ["이전_숫자", "지금_숫자", "다음_숫자"])
+			{
+				for (const 버튼_숫자 of ["이전_숫자", "지금_숫자", "다음_숫자"])
 				{
 					const 숫자 = document.createElement("span")
-					숫자.className = 클래스
+					숫자.className = 버튼_숫자
 					숫자.dataset.종류 = 분류.종류
 					버튼.appendChild(숫자)
 				}
 				continue
+			}
 
 			const 문자열 = document.createElement("span")
 			문자열.className = "문자열_클릭"
