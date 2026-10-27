@@ -188,11 +188,8 @@ function onPlayerStateChange(event)
 
 	const 상태 = [1, 2, 3].includes(event.data)
 	const 오른쪽 = document.querySelectorAll("#오른쪽")
-	for (const 화면 of 오른쪽)
-	{
-		화면.style.cursor = 상태 ? "pointer" : "default"
-		화면.onclick = 상태 ? 재생_일시중지_조작 : null
-	}
+	오른쪽.style.cursor = 상태 ? "pointer" : "default"
+	오른쪽.onclick = 상태 ? 재생_일시중지_조작 : null
 }
 
 
@@ -232,56 +229,33 @@ const 방지 = 간섭 => 간섭.stopPropagation()
 
 function 키_입력(키)
 {
-	// const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
-	// const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
-	const 증감 =
-		(키.code === "NumpadAdd" || 키.code === "ArrowUp")
-		- (키.code === "NumpadSubtract" || 키.code === "ArrowDown")
-	// const 컨트롤_쉬프트 = 키.ctrlKey || 키.shiftKey
-
-	if (증감)
-	{
-		키.preventDefault()
-		소리_크기_값_조절(증감 * 5)
-	}
-	// if (!컨트롤_쉬프트)
-	// {
-		// if (증가)
-		// {
-		// 	키.preventDefault()
-		// 	소리_크기_값_조절(+5)
-		// }
-		// else if (감소)
-		// {
-		// 	키.preventDefault()
-		// 	소리_크기_값_조절(-5)
-		// }
-	// }
-	// else if (컨트롤_쉬프트 && 증가 || 감소)
-	// {
-	// 	키.preventDefault()
-	// }
-
 	if (!player || !재생중())
 		return
+
+	// const 증가 = 키.code === "NumpadAdd" || 키.code === "ArrowUp"
+	// const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
+	const 증감 = (키.code === "NumpadAdd" || 키.code === "ArrowUp")
+		- (키.code === "NumpadSubtract" || 키.code === "ArrowDown")
+	const 이동 = (키.code === "ArrowRight") - (키.code === "ArrowLeft")
+	// const 컨트롤_쉬프트 = 키.ctrlKey || 키.shiftKey
 
 	// 키 반복입력 방지
 	if (!키.repeat)
 	{
-		if (키.code === "Space")
+		if (증감)
+		{
+			키.preventDefault()
+			소리_크기_값_조절(증감 * 5)
+		}
+		else if (키.code === "Space")
 		{
 			키.preventDefault()
 			재생_일시중지_조작()
 		}
-		else if (키.code === "ArrowLeft")
+		else if (이동)
 		{
 			키.preventDefault()
-			player.seekTo(Math.max(시간_관리.시작, player.getCurrentTime() - 5), true)
-		}
-		else if (키.code === "ArrowRight")
-		{
-			키.preventDefault()
-			player.seekTo(Math.min(시간_관리.종료, player.getCurrentTime() + 5), true)
+			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 좌우 * 5)), true)
 		}
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
@@ -314,6 +288,8 @@ document.addEventListener("keydown", 키_입력)
 
 function 드르륵(마우스휠)
 {
+	마우스휠.preventDefault()
+
 	if (마우스휠.target.closest("#오른쪽"))
 	{
 		마우스휠.preventDefault()
@@ -321,15 +297,13 @@ function 드르륵(마우스휠)
 		return
 	}
 
-	const 구역 = 마우스휠.target.closest(".구역[data-종류=동영상], .구역[data-종류=쇼츠]")
-	if (구역)
+	const 크기_계산 = 마우스휠.target.closest(".크기_계산")
+	if (크기_계산)
 	{
 		마우스휠.preventDefault()
-		페이지_넘기기(구역.dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
+		페이지_넘기기(크기_계산.closest(".구역").dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
 		return
 	}
-
-	마우스휠.preventDefault()
 }
 document.addEventListener("wheel", 드르륵, { passive : false })
 
@@ -676,14 +650,6 @@ function 페이지_갱신(종류)
 		}
 	}
 
-	// function 페이지_버튼_찾기(종류, 위치)
-	// {
-	// 	return document.querySelector(".버튼_" + 위치 + "[data-종류=" + 종류 + "]")
-	// }
-	// const 버튼_이전 = 페이지_버튼_찾기(종류, "이전")
-	// const 버튼_지금 = 페이지_버튼_찾기(종류, "지금")
-	// const 버튼_다음 = 페이지_버튼_찾기(종류, "다음")
-
 	const [버튼_이전, 버튼_지금, 버튼_다음] =
 		document.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지")?.children ?? []
 
@@ -705,22 +671,14 @@ function 페이지_갱신(종류)
 	}
 
 	버튼_이전_문자열.textContent = 페이지_지금 === 1 ? "" : "이전"
-	// 버튼_지금.textContent = ""
 	버튼_다음_문자열.textContent = 페이지_지금 >= 페이지_수 ? "" : "다음"
 
-	const 페이지_앞_지금_뒤 = ["이전_숫자", "지금_숫자", "다음_숫자"]
 	for (let 한장_차이 = -1 ; 한장_차이 <= +1 ; 한장_차이++)
 	{
 		const 페이지_숫자 = 페이지_지금 + 한장_차이
 
 		버튼_지금.children[한장_차이 + 1].textContent =
 			(페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
-
-		// const 숫자 = document.createElement("span")
-		// 숫자.className = 페이지_앞_지금_뒤[한장_차이 + 1]
-		// 숫자.dataset.종류 = 종류
-		// 숫자.textContent = (페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
-		// 버튼_지금.appendChild(숫자)
 	}
 }
 
@@ -751,19 +709,19 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 
 
 
-let 이미지_클릭함 = null
-function 이미지_클릭_강조(이거)
-{
-	const 버튼 = document.querySelectorAll(".버튼")
-	for (const 딸깍 of 버튼)
-	{
-		const 그거 = 딸깍.dataset.종류 + 딸깍.dataset.숫자
-		const 클릭 = 그거 === 이거
-		딸깍.classList.toggle("강조", 클릭)
-		딸깍.classList.toggle("밝게", !클릭)
-	}
-	이미지_클릭함 = 이거
-}
+// let 이미지_클릭함 = null
+// function 이미지_클릭_강조(이거)
+// {
+// 	const 버튼 = document.querySelectorAll(".버튼")
+// 	for (const 딸깍 of 버튼)
+// 	{
+// 		const 그거 = 딸깍.dataset.종류 + 딸깍.dataset.숫자
+// 		const 클릭 = 그거 === 이거
+// 		딸깍.classList.toggle("강조", 클릭)
+// 		딸깍.classList.toggle("밝게", !클릭)
+// 	}
+// 	이미지_클릭함 = 이거
+// }
 
 
 
