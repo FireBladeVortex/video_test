@@ -3,6 +3,7 @@
 const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
 
+
 let api_준비_대기 = null
 const api_준비 = new Promise(resolve => { api_준비_대기 = resolve })
 
@@ -47,13 +48,21 @@ function onYouTubeIframeAPIReady()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const 오른쪽 = document.querySelectorAll("#오른쪽")
+const 재생_시간_지금 = document.getElementById("재생_시간_지금")
+const 동영상_제목 = document.getElementById("동영상_제목")
+const 제목표시줄 = document.getElementById("제목표시줄")
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-const 재생_시간_지금 = document.getElementById("재생_시간_지금")
-const 동영상_제목 = document.getElementById("동영상_제목")
-const 제목표시줄 = document.getElementById("제목표시줄")
+
+
+
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
@@ -187,7 +196,6 @@ function onPlayerStateChange(event)
 	}
 
 	const 상태 = [1, 2, 3].includes(event.data)
-	const 오른쪽 = document.querySelectorAll("#오른쪽")
 	오른쪽.style.cursor = 상태 ? "pointer" : "default"
 	오른쪽.onclick = 상태 ? 재생_일시중지_조작 : null
 }
@@ -255,7 +263,7 @@ function 키_입력(키)
 		else if (이동)
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 좌우 * 5)), true)
+			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 이동 * 5)), true)
 		}
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
@@ -767,7 +775,7 @@ function 채우기_페이지(종류, 자료)
 
 	if (자료)
 	{
-		이미지_클릭함 = null
+		// 이미지_클릭함 = null
 		페이지_관리[종류] = 1
 		페이지_갱신(종류)
 	}
@@ -971,8 +979,8 @@ function 만들기_목록()
 
 			const 종류 = 버튼.dataset.종류
 			const 그거 = 종류 + 버튼.dataset.숫자
-			if (그거 === 이미지_클릭함)
-				return
+			// if (그거 === 이미지_클릭함)
+			// 	return
 
 			const 동영상 = 임시_목록[종류][+버튼.dataset.숫자]
 			const 쇼츠 = 종류 === "쇼츠"
