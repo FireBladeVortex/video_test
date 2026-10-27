@@ -210,13 +210,9 @@ function 재생_속도_조절(키, 증감)
 
 
 
-function 소리_크기_값_조절(증감)
+function 소리_크기_조절(증감)
 {
-	const 지금소리크기 = player.getVolume()
-	const 올려내려 = 증감 > 0
-		? Math.floor(지금소리크기 / 5) * 5 + 5
-		: Math.ceil(지금소리크기 / 5) * 5 - 5
-	const 범위 = Math.min(100, Math.max(0, 올려내려))
+	const 범위 = Math.min(100, Math.max(0, Math[증감 > 0 ? "floor" : "ceil"](player.getVolume() / 5) * 5 + 증감))
 	player.setVolume(범위)
 	볼륨_조절.value = 범위
 }
@@ -244,7 +240,7 @@ function 키_입력(키)
 	// const 감소 = 키.code === "NumpadSubtract" || 키.code === "ArrowDown"
 	const 증감 = (키.code === "NumpadAdd" || 키.code === "ArrowUp")
 		- (키.code === "NumpadSubtract" || 키.code === "ArrowDown")
-	const 이동 = (키.code === "ArrowRight") - (키.code === "ArrowLeft")
+	const 시간이동 = (키.code === "ArrowRight") - (키.code === "ArrowLeft")
 	// const 컨트롤_쉬프트 = 키.ctrlKey || 키.shiftKey
 
 	// 키 반복입력 방지
@@ -253,17 +249,17 @@ function 키_입력(키)
 		if (증감)
 		{
 			키.preventDefault()
-			소리_크기_값_조절(증감 * 5)
+			소리_크기_조절(증감 * 5)
 		}
 		else if (키.code === "Space")
 		{
 			키.preventDefault()
 			재생_일시중지_조작()
 		}
-		else if (이동)
+		else if (시간이동)
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 이동 * 5)), true)
+			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 시간이동 * 5)), true)
 		}
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
@@ -298,10 +294,11 @@ function 드르륵(마우스휠)
 {
 	마우스휠.preventDefault()
 
-	if (마우스휠.target.closest("#오른쪽"))
+	const 오른쪽 = 마우스휠.target.closest("#오른쪽")
+	if (오른쪽)
 	{
 		마우스휠.preventDefault()
-		소리_크기_값_조절(마우스휠.deltaY < 0 ? +5 : -5)
+		소리_크기_조절(마우스휠.deltaY < 0 ? +5 : -5)
 		return
 	}
 
@@ -309,7 +306,8 @@ function 드르륵(마우스휠)
 	if (크기_계산)
 	{
 		마우스휠.preventDefault()
-		페이지_넘기기(크기_계산.closest(".구역").dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
+		// 페이지_넘기기(크기_계산.closest(".구역").dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
+		페이지_넘기기(크기_계산.dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
 		return
 	}
 }
@@ -566,9 +564,11 @@ function 페이지_넘기기(종류, 한장)
 
 const 이거_몇칸임 = { 동영상 : 0, 쇼츠 : 0, 부분 : 0 }
 const 설정 = getComputedStyle(document.documentElement)
-const 길이 = {}
-길이.가로 = parseInt(설정.getPropertyValue("--가로"))
-길이.세로 = parseInt(설정.getPropertyValue("--세로"))
+const 길이 =
+{
+	가로 : parseInt(설정.getPropertyValue("--가로")),
+	세로 : parseInt(설정.getPropertyValue("--세로")),
+}
 let 총몇칸 = null
 function 크기_감지(구역)
 {
@@ -1201,16 +1201,16 @@ function 불러오기_재생목록(이름)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function 대기_문자열(본문, 출력)
+function 대기열(본문, 출력)
 {
-	const 있냐 = document.getElementById("대기_문자열")
+	const 있냐 = document.getElementById("대기열")
 	if (있냐)
 		return 있냐.remove()
 
-	const 대기_문자열 = document.createElement("div")
-	대기_문자열.id = "대기_문자열"
-	대기_문자열.textContent = 출력
-	본문.appendChild(대기_문자열)
+	const 대기열 = document.createElement("div")
+	대기열.id = "대기열"
+	대기열.textContent = 출력
+	본문.appendChild(대기열)
 }
 
 
@@ -1234,7 +1234,7 @@ function 시작()
 		본문.className = "본문"
 		왼쪽_이름.appendChild(본문)
 
-		대기_문자열(본문, "불러오는 중")
+		대기열(본문, "불러오는 중")
 
 		function 가나다순_정렬(목록)
 		{
@@ -1288,10 +1288,10 @@ function 시작()
 			const 이름 = 이름표.dataset.이름
 			본문.innerHTML = ""
 			document.title = 이름
-			대기_문자열(본문, "준비 중")
+			대기열(본문, "준비 중")
 			불러오기_재생목록(이름)
 		})
-		대기_문자열(본문)
+		대기열(본문)
 	}
 
 	function 채우기_가나다()
