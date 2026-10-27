@@ -50,7 +50,7 @@ function onYouTubeIframeAPIReady()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-const 오른쪽 = document.querySelectorAll("#오른쪽")
+const 오른쪽 = document.getElementById("#오른쪽")
 const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
