@@ -110,7 +110,6 @@ const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
-const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 
 
 
@@ -146,6 +145,7 @@ function 만들기_공간(모양, 소속, 클래스, 문자열, 종류, 숫자)
 	return 공간
 }
 
+const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
@@ -1092,8 +1092,8 @@ function 불러오기_재생목록(이름)
 
 		await 불러오기_소개(임시_목록.소개)
 		만들기_구역()
-		document.getElementById("왼쪽_이름").remove()
-		document.getElementById("오른쪽_안내").remove()
+		왼쪽_이름.remove()
+		오른쪽_안내.remove()
 	}
 	script.addEventListener("load", 불러오기)
 	document.head.appendChild(script)
