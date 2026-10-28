@@ -1,5 +1,4 @@
 
-// YouTube Player iframe API 준비
 const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
 
@@ -8,7 +7,6 @@ let api_준비_대기 = null
 const api_준비 = new Promise(resolve => { api_준비_대기 = resolve })
 
 let player = null
-// iframe 호출할 때
 function onYouTubeIframeAPIReady()
 {
 	player = new YT.Player("YTP",
@@ -33,8 +31,6 @@ function onYouTubeIframeAPIReady()
 			// 자막 자동 실행 + pip 모드 제작 대비
 			// cc_load_policy : 1,
 		},
-
-		// 현재 상태 불러오기
 		events :
 		{
 			onReady : () =>
@@ -49,9 +45,9 @@ function onYouTubeIframeAPIReady()
 
 
 
-// 동영상 상태 변화 감지에서 사용할 재생 표시줄 변수
+
+const 오른쪽 = document.getElementById("#오른쪽")
 let 재생_시간_표시줄 = null
-// 동영상 상태가 변하면 즉시 작동
 function onPlayerStateChange(event)
 {
 	if (event.data === 5)
@@ -110,17 +106,15 @@ function onPlayerStateChange(event)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-const 오른쪽 = document.getElementById("#오른쪽")
-const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
-const 조각모음 = document.createDocumentFragment()
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+const 조각모음 = document.createDocumentFragment()
 function 조각모음_초기화()
 {
 	if (조각모음.hasChildNodes())
@@ -128,6 +122,7 @@ function 조각모음_초기화()
 }
 
 
+const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
@@ -470,14 +465,16 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			선택지_가짜.hidden = true
 			선택지.appendChild(선택지_가짜)
 
+			조각모음_초기화()
 			for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
 			{
 				const 노래 = 임시_목록.부분[순서]
 				const 항목 = document.createElement("option")
 				항목.value = 순서 + ""
 				항목.textContent = 노래.이름 + " - " + 노래.제목
-				선택지.appendChild(항목)
+				조각모음.appendChild(항목)
 			}
+			선택지.appendChild(조각모음)
 
 			const 재생 = document.createElement("button")
 			재생.className = "재생_시작_버튼"
@@ -502,6 +499,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 	{
 		크기_계산.inert = 구역.dataset.크기 !== "커짐"
 
+		조각모음_초기화()
 		for (let 번호 = 0 ; 번호 < 임시_목록.부분.length ; 번호++)
 		{
 			const 노래 = 임시_목록.부분[번호]
@@ -511,7 +509,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			항목.className = "노래_항목"
 			항목.dataset.종류 = "부분"
 			항목.dataset.숫자 = 몇번
-			페이지.appendChild(항목)
+			조각모음.appendChild(항목)
 
 			const 칸_이름 = document.createElement("span")
 			칸_이름.className = "노래_칸 노래_이름"
@@ -541,6 +539,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 				선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
 			})
 		}
+		페이지.appendChild(조각모음)
 	}
 
 	구역.dataset.크기 = "작아짐"
@@ -752,8 +751,8 @@ function 채우기_페이지(종류, 자료)
 		return
 
 	페이지.innerHTML = ""
-	const 조각모음 = document.createDocumentFragment()
 
+	조각모음_초기화()
 	for (let 숫자 = 0 ; 숫자 < 동영상들.length ; 숫자++)
 	{
 		const 동영상 = 동영상들[숫자]
@@ -776,7 +775,6 @@ function 채우기_페이지(종류, 자료)
 		버튼.appendChild(img)
 		조각모음.appendChild(버튼)
 	}
-
 	페이지.appendChild(조각모음)
 
 	if (자료)
@@ -1029,55 +1027,6 @@ function 만들기_구역()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////
 
 function id_찾기(주소)
@@ -1226,7 +1175,7 @@ const 가나다순 =
 	"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
 	"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
 ]
-const AtoZ =
+const A_Z =
 [
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
@@ -1273,11 +1222,12 @@ function 시작()
 		본문.appendChild(이름표들)
 
 
+		조각모음_초기화()
 		for (const 누구 of 이름들)
 		{
 			const 이름표 = document.createElement("button")
 			이름표.className = "이름표"
-			이름표들.appendChild(이름표)
+			조각모음.appendChild(이름표)
 
 			const 이름 = document.createElement("span")
 			이름.dataset.이름 = 누구.이름
@@ -1285,6 +1235,7 @@ function 시작()
 			이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
 			이름표.appendChild(이름)
 		}
+		이름표들.appendChild(조각모음)
 
 		이름표들.addEventListener("click", 클릭 =>
 		{
@@ -1305,11 +1256,12 @@ function 시작()
 	{
 		const 가나다 = document.getElementById("가나다")
 
+		조각모음_초기화()
 		for (const 순서대로 of 가나다순)
 		{
 			const 자음_상자 = document.createElement("button")
 			자음_상자.className = "자음_상자"
-			가나다.appendChild(자음_상자)
+			조각모음.appendChild(자음_상자)
 
 				const 자음 = document.createElement("span")
 				자음.className = 순서대로
@@ -1318,14 +1270,14 @@ function 시작()
 
 			const 자음_번호 = document.createElement("button")
 			자음_번호.className = "자음_번호"
-			가나다.appendChild(자음_번호)
+			조각모음.appendChild(자음_번호)
 
 				const 몇개 = document.createElement("span")
 				몇개.className = 순서대로
 				// 몇개.textContent = 순서대로
 				자음_번호.appendChild(몇개)
-
 		}
+		가나다.appendChild(조각모음)
 	}
 
 	채우기_가나다()
