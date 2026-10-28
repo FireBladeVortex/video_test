@@ -48,19 +48,84 @@ function onYouTubeIframeAPIReady()
 }
 
 
+
+// 동영상 상태 변화 감지에서 사용할 재생 표시줄 변수
+let 재생_시간_표시줄 = null
+// 동영상 상태가 변하면 즉시 작동
+function onPlayerStateChange(event)
+{
+	if (event.data === 5)
+	{
+		player.setPlaybackRate(1)
+		if (시간_관리.종료 === 0)
+		{
+			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
+		}
+		let title = null
+		try
+		{
+			title = player.getVideoData().title
+		}
+		catch
+		{
+		}
+		if (title)
+		{
+			동영상_제목.style.textAlign = "start"
+			제목표시줄.textContent = title
+			불러오기_제목(선택한_동영상.id, title)
+		}
+		else
+		{
+			불러오기_제목(선택한_동영상.id)
+		}
+	}
+
+	if (event.data === 1)
+	{
+		if (player.getCurrentTime() < 시간_관리.시작)
+		{
+			player.seekTo(시간_관리.시작, true)
+		}
+		clearInterval(재생_시간_표시줄)
+		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
+	}
+	else
+	{
+		clearInterval(재생_시간_표시줄)
+	}
+
+	if (event.data === 0)
+	{
+		player.seekTo(시간_관리.시작, true)
+		player.playVideo()
+	}
+
+	const 상태 = [1, 2, 3].includes(event.data)
+	오른쪽.style.cursor = 상태 ? "pointer" : "default"
+	오른쪽.onclick = 상태 ? 재생_일시중지_조작 : null
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 const 오른쪽 = document.getElementById("#오른쪽")
 const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
+const 조각모음 = document.createDocumentFragment()
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+function 조각모음_초기화()
+{
+	if (조각모음.hasChildNodes())
+		조각모음.replaceChildren()
+}
 
 
 function 재생_표시줄()
@@ -142,64 +207,6 @@ function 재생_일시중지_조작()
 		player.playVideo()
 	}
 }
-
-// 동영상 상태 변화 감지에서 사용할 재생 표시줄 변수
-let 재생_시간_표시줄 = null
-// 동영상 상태가 변하면 즉시 작동
-function onPlayerStateChange(event)
-{
-	if (event.data === 5)
-	{
-		player.setPlaybackRate(1)
-		if (시간_관리.종료 === 0)
-		{
-			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
-		}
-		let title = null
-		try
-		{
-			title = player.getVideoData().title
-		}
-		catch
-		{
-		}
-		if (title)
-		{
-			동영상_제목.style.textAlign = "start"
-			제목표시줄.textContent = title
-			불러오기_제목(선택한_동영상.id, title)
-		}
-		else
-		{
-			불러오기_제목(선택한_동영상.id)
-		}
-	}
-
-	if (event.data === 1)
-	{
-		if (player.getCurrentTime() < 시간_관리.시작)
-		{
-			player.seekTo(시간_관리.시작, true)
-		}
-		clearInterval(재생_시간_표시줄)
-		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
-	}
-	else
-	{
-		clearInterval(재생_시간_표시줄)
-	}
-
-	if (event.data === 0)
-	{
-		player.seekTo(시간_관리.시작, true)
-		player.playVideo()
-	}
-
-	const 상태 = [1, 2, 3].includes(event.data)
-	오른쪽.style.cursor = 상태 ? "pointer" : "default"
-	오른쪽.onclick = 상태 ? 재생_일시중지_조작 : null
-}
-
 
 
 // 만들기 보류
@@ -1265,6 +1272,7 @@ function 시작()
 		const 이름표들 = document.createElement("menu")
 		이름표들.className = "이름표들"
 		본문.appendChild(이름표들)
+
 
 		for (const 누구 of 이름들)
 		{
