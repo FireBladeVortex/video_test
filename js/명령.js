@@ -45,8 +45,6 @@ function onYouTubeIframeAPIReady()
 
 
 
-
-const 오른쪽 = document.getElementById("오른쪽")
 let 재생_시간_표시줄 = null
 function onPlayerStateChange(event)
 {
@@ -106,6 +104,10 @@ function onPlayerStateChange(event)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+const 왼쪽 = document.getElementById("왼쪽")
+const 오른쪽 = document.getElementById("오른쪽")
+const 왼쪽_이름 = document.getElementById("왼쪽_이름")
+const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
 
@@ -143,7 +145,7 @@ function 만들기_공간(모양, 소속, 클래스, 문자열, 종류, 숫자)
 	return 공간
 }
 
-const 재생_시간_지금 = document.getElementById("재생_시간_지금")
+const 재생_시간_지금 = 오른쪽.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
@@ -242,8 +244,8 @@ function 소리_크기_조절(증감)
 
 
 
-const 볼륨 = document.getElementById("볼륨")
-const 볼륨_조절 = document.getElementById("볼륨_조절")
+const 볼륨 = 오른쪽.getElementById("볼륨")
+const 볼륨_조절 = 오른쪽.getElementById("볼륨_조절")
 
 const 조절_반영 = () => player.setVolume(+볼륨_조절.value)
 볼륨_조절.addEventListener("input", 조절_반영)
@@ -452,7 +454,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 	function 구역_찾기(종류)
 	{
-		return document.querySelector(".구역[data-종류=" + 종류 + "]")
+		return 왼쪽.querySelector(".구역[data-종류=" + 종류 + "]")
 	}
 
 	const 구역_동영상 = 구역_찾기("동영상")
@@ -468,34 +470,27 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 		const 드롭다운_공간 = 만들기_공간("section", 본문, "드롭다운_공간")
 
-			const 드롭다운_칸 =만들기_공간("div", 드롭다운_공간, "드롭다운_칸")
+			const 드롭다운_칸 = 만들기_공간("div", 드롭다운_공간, "드롭다운_칸")
 
 			const 선택지 = 만들기_공간("select", 드롭다운_칸, "드롭다운_선택")
 
-			const 선택지_가짜 = document.createElement("option")
-			선택지_가짜.textContent = "노래 골라"
+			const 선택지_가짜 = 만들기_공간("option", 선택지, null, "노래 골라")
 			선택지_가짜.value = ""
 			선택지_가짜.selected = true
 			선택지_가짜.disabled = true
 			선택지_가짜.hidden = true
-			선택지.appendChild(선택지_가짜)
 
 			조각모음_초기화()
 			for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
 			{
 				const 노래 = 임시_목록.부분[순서]
-				const 항목 = document.createElement("option")
+				const 항목 = 만들기_공간("option", 부모, 조각모음, 노래.이름 + " - " + 노래.제목)
 				항목.value = 순서 + ""
-				항목.textContent = 노래.이름 + " - " + 노래.제목
-				조각모음.appendChild(항목)
 			}
 			선택지.appendChild(조각모음)
 
-			const 재생 = document.createElement("button")
-			재생.className = "재생_시작_버튼"
-			재생.textContent = "듣기"
+			const 재생 = 만들기_공간("button", 드롭다운_칸, "재생_시작_버튼", "듣기")
 			재생.disabled = true
-			드롭다운_칸.appendChild(재생)
 
 		선택지.addEventListener("change", () => 재생.disabled = 선택지.value === "")
 
@@ -620,7 +615,7 @@ function 페이지_최대(종류)
 		return 1
 
 	const 몇개 = 종류 === "부분"
-		? document.querySelectorAll(".노래_항목").length
+		? 왼쪽.querySelectorAll(".노래_항목").length
 		: 임시_목록[종류].length
 	return Math.ceil(몇개 / 숫자)
 }
@@ -650,7 +645,7 @@ function 페이지_갱신(종류)
 		const 숫자_최소 = (페이지_지금 - 1) * 숫자
 		const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
-		const 구역 = document.querySelector(".구역[data-종류=" + 종류 + "]")
+		const 구역 = 왼쪽.querySelector(".구역[data-종류=" + 종류 + "]")
 		const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
 		const 그거 = 구역.querySelectorAll(불러올거)
 		for (const 버튼 of 그거)
@@ -662,7 +657,7 @@ function 페이지_갱신(종류)
 	}
 
 	const [버튼_이전, 버튼_지금, 버튼_다음] =
-		document.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지")?.children ?? []
+		왼쪽.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지")?.children ?? []
 
 	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
 		return
@@ -740,7 +735,7 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 
 function 채우기_페이지(종류, 자료)
 {
-	const 페이지 = document.querySelector(".페이지." + 종류)
+	const 페이지 = 왼쪽.querySelector(".페이지." + 종류)
 	if (!페이지)
 		return
 
@@ -757,17 +752,15 @@ function 채우기_페이지(종류, 자료)
 		if (!동영상)
 			continue
 
-		const 버튼 = document.createElement("button")
-		버튼.className = "버튼"
-		버튼.dataset.종류 = 종류
 		const 몇번 = (숫자 + "").padStart(3, "0")
-		버튼.dataset.숫자 = 몇번
+		const 버튼 = 만들기_공간("button", 조각모음, "버튼", "", 종류, 몇번)
 
-		const img = document.createElement("img")
-		img.loading = "lazy"
+
 		const src_1 = "https://img.youtube.com/vi/"
 		const src_2 = 동영상.id
 		const src_3 = "/mqdefault.jpg"
+		const img = document.createElement("img")
+		img.loading = "lazy"
 		img.src = src_1 + src_2 + src_3
 
 		버튼.appendChild(img)
@@ -813,13 +806,13 @@ function 크기_조절(왼쪽, 그거)
 
 	구역_커짐 = 조절_딸깍
 
-	const 이거 = document.querySelectorAll(".머리말_크기 .문자열_클릭")
+	const 이거 = 왼쪽.querySelectorAll(".머리말_크기 .문자열_클릭")
 	for (const 크기 of 이거)
 	{
 		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
 	}
 
-	const 부분_구역 = document.querySelector(".구역[data-종류=부분]")
+	const 부분_구역 = 왼쪽.querySelector(".구역[data-종류=부분]")
 	if (부분_구역)
 	{
 		const 커짐 = 구역_커짐 === "부분"
@@ -843,8 +836,6 @@ function 크기_조절(왼쪽, 그거)
 
 function 만들기_목록()
 {
-	const 왼쪽 = document.getElementById("왼쪽")
-
 	if (임시_목록.원곡 || 임시_목록.커버)
 	{
 		임시_목록.동영상 = (임시_목록.원곡 ?? []).concat(임시_목록.커버 ?? [])
@@ -975,7 +966,7 @@ function 만들기_구역()
 {
 	만들기_목록()
 
-	const 크기_계산 = document.querySelectorAll(".크기_계산")
+	const 크기_계산 = 왼쪽.querySelectorAll(".크기_계산")
 	for (const 감지 of 크기_계산)
 	{
 		재구성.observe(감지)
@@ -1118,7 +1109,7 @@ function 불러오기_재생목록(이름)
 
 function 대기열(본문, 출력)
 {
-	const 있냐 = document.getElementById("대기열")
+	const 있냐 = 본문.querySelector(".대기열")
 	if (있냐)
 		return 있냐.remove()
 
@@ -1180,10 +1171,8 @@ function 시작()
 		{
 			const 이름표 = 만들기_공간("button", 조각모음, "이름표")
 
-			const 이름 = document.createElement("span")
+			const 이름 = 만들기_공간("span", 이름표, null, 누구.중복 ? 누구.이름 + "+" : 누구.이름)
 			이름.dataset.이름 = 누구.이름
-			이름.textContent = 누구.중복 ? 누구.이름 + "+" : 누구.이름
-			이름표.appendChild(이름)
 		}
 		이름표들.appendChild(조각모음)
 
@@ -1204,7 +1193,7 @@ function 시작()
 
 	function 채우기_가나다()
 	{
-		const 가나다 = document.getElementById("가나다")
+		const 가나다 = 왼쪽_이름.getElementById("가나다")
 
 		조각모음_초기화()
 		for (const 순서대로 of 가나다순)
@@ -1222,10 +1211,8 @@ function 시작()
 
 	채우기_가나다()
 
-	const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 	채우기_이름표들(왼쪽_이름)
 
-	const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 	// 채우기_안내목록() 추가 함수 필요
 	// 채우기_안내문()
 }
