@@ -121,9 +121,9 @@ function 조각모음_초기화()
 		조각모음.replaceChildren()
 }
 
-function 만들기_공간(요소, 부모, 클래스, 문자열, 종류, 숫자)
+function 만들기_공간(모양, 소속, 클래스, 문자열, 종류, 숫자)
 {
-	const 공간 = document.createElement(요소)
+	const 공간 = document.createElement(모양)
 
 	if (클래스)
 		공간.className = 클래스
@@ -137,8 +137,8 @@ function 만들기_공간(요소, 부모, 클래스, 문자열, 종류, 숫자)
 	if (숫자)
 		공간.dataset.숫자 = 숫자
 
-	if (부모)
-		부모.appendChild(공간)
+	if (소속)
+		소속.appendChild(공간)
 
 	return 공간
 }
@@ -466,17 +466,20 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 		if (!구역_동영상 && !구역_쇼츠)
 			return
 
-		// const 드롭다운_공간 = document.createElement("section")
+		const 드롭다운_공간 =
+		// document.createElement("section")
 		// 드롭다운_공간.className = "드롭다운_공간"
 		// 본문.appendChild(드롭다운_공간)
 		만들기_공간("section", 본문, "드롭다운_공간")
 
-			// const 드롭다운_칸 = document.createElement("div")
+			const 드롭다운_칸 =
+			// document.createElement("div")
 			// 드롭다운_칸.className = "드롭다운_칸"
 			// 드롭다운_공간.appendChild(드롭다운_칸)
 			만들기_공간("div", 드롭다운_공간, "드롭다운_칸")
 
-			// const 선택지 = document.createElement("select")
+			const 선택지 =
+			// document.createElement("select")
 			// 선택지.className = "드롭다운_선택"
 			// 드롭다운_칸.appendChild(선택지)
 			만들기_공간("select", 드롭다운_칸, "드롭다운_선택")
@@ -529,36 +532,42 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			const 노래 = 임시_목록.부분[번호]
 			const 몇번 = (번호 + "").padStart(3, "0")
 
-			// const 항목 = document.createElement("div")
+			const 항목 =
+			// document.createElement("div")
 			// 항목.className = "노래_항목"
 			// 항목.dataset.종류 = "부분"
 			// 항목.dataset.숫자 = 몇번
 			// 조각모음.appendChild(항목)
 			만들기_공간("div", 조각모음, "노래_항목", "", "부분", 몇번)
 
-			// const 칸_이름 = document.createElement("span")
+			const 칸_이름 =
+			// document.createElement("span")
 			// 칸_이름.className = "노래_칸 노래_이름"
 			// 칸_이름.textContent = 노래.이름
 			// 항목.appendChild(칸_이름)
 			만들기_공간("span", 항목, "노래_칸 노래_이름", 노래.이름)
 
-			// const 칸_구분선 = document.createElement("div")
+			const 칸_구분선 =
+			//  document.createElement("div")
 			// 칸_구분선.className = "노래_구분선"
 			// 항목.appendChild(칸_구분선)
 			만들기_공간("div", 항목, "노래_구분선")
 
-			// const 칸_제목 = document.createElement("span")
+			const 칸_제목 =
+			//  document.createElement("span")
 			// 칸_제목.className = "노래_칸 노래_제목"
 			// 칸_제목.textContent = 노래.제목
 			// 항목.appendChild(칸_제목)
 			만들기_공간("span", 항목, "노래_칸 노래_제목", 노래.제목)
 
-			// const 칸_재생 = document.createElement("button")
+			const 칸_재생 =
+			//  document.createElement("button")
 			// 칸_재생.className = "노래_칸 노래_재생"
 			// 항목.appendChild(칸_재생)
 			만들기_공간("button", 항목, "노래_칸 노래_재생")
 
-			// const 재생 = document.createElement("span")
+			const 재생 =
+			//  document.createElement("span")
 			// 재생.className = "재생_시작_버튼"
 			// 재생.textContent = "듣기"
 			// 칸_재생.appendChild(재생)
@@ -894,43 +903,51 @@ function 만들기_목록()
 		if (!분류.자료 || 분류.자료.length === 0)
 			continue
 
-		// const 구역 = document.createElement("section")
+		const 구역 =
+		// document.createElement("section")
 		// 구역.className = "구역"
 		// 구역.dataset.종류 = 분류.종류
 		// 왼쪽.appendChild(구역)
 		만들기_공간("section", 왼쪽, "구역", "", 분류.종류)
 
-		// const 머리말 = document.createElement("header")
+		const 머리말 =
+		// document.createElement("header")
 		// 머리말.className = "머리말"
 		// 구역.appendChild(머리말)
 		만들기_공간("header", 구역, "머리말")
 
-			// const 머리말_재생목록 = document.createElement("div")
+			const 머리말_재생목록 =
+			// document.createElement("div")
 			// 머리말_재생목록.className = "머리말_재생목록"
 			// 머리말.appendChild(머리말_재생목록)
 			만들기_공간("div", 머리말, "머리말_재생목록")
 
-				// const 머리말_재생목록_문자열 = document.createElement("span")
+				const 머리말_재생목록_문자열 =
+				// document.createElement("span")
 				// 머리말_재생목록_문자열.textContent = 분류.종류
 				// 머리말_재생목록.appendChild(머리말_재생목록_문자열)
 				만들기_공간("span", 머리말_재생목록, null, 분류.종류)
 
-			// const 머리말_종류 = document.createElement("menu")
+			const 머리말_종류 =
+			// document.createElement("menu")
 			// 머리말_종류.className = "머리말_종류"
 			// 머리말.appendChild(머리말_종류)
 			만들기_공간("menu", 머리말, "머리말_종류")
 
-			// const 머리말_페이지 = document.createElement("menu")
+			const 머리말_페이지 =
+			//  document.createElement("menu")
 			// 머리말_페이지.className = "머리말_페이지"
 			// 머리말.appendChild(머리말_페이지)
 			만들기_공간("menu", 머리말, "머리말_페이지")
 
-			// const 머리말_크기 = document.createElement("button")
+			const 머리말_크기 =
+			// document.createElement("button")
 			// 머리말_크기.className = "머리말_크기"
 			// 머리말.appendChild(머리말_크기)
 			만들기_공간("button", 머리말, "머리말_크기")
 
-				// const 크기_조절_문자열 = document.createElement("span")
+				const 크기_조절_문자열 =
+				// document.createElement("span")
 				// 크기_조절_문자열.className = "문자열_클릭"
 				// 크기_조절_문자열.textContent = "크게"
 				// 크기_조절_문자열.dataset.종류 = 분류.종류
@@ -950,12 +967,14 @@ function 만들기_목록()
 				]
 				for (const 종류 of 종류_목록)
 				{
-					// const 종류_버튼 = document.createElement("button")
+					const 종류_버튼 =
+					//  document.createElement("button")
 					// 종류_버튼.className = "종류_" + 종류.이름
 					// 머리말_종류.appendChild(종류_버튼)
 					만들기_공간("button", 머리말_종류, "종류_" + 종류.이름)
 
-						// const 문자열 = document.createElement("span")
+						const 문자열 =
+						//  document.createElement("span")
 						// 문자열.className = "문자열_클릭"
 						// 문자열.textContent = 종류.이름
 						// 종류_버튼.appendChild(문자열)
@@ -974,7 +993,8 @@ function 만들기_목록()
 		]
 		for (const 버튼_그거 of 페이지_버튼_종류)
 		{
-			// const 버튼 = document.createElement("button")
+			const 버튼 =
+			//  document.createElement("button")
 			// 버튼.className = "버튼_" + 버튼_그거.넘김
 			// 버튼.dataset.종류 = 분류.종류
 			// 머리말_페이지.appendChild(버튼)
@@ -984,7 +1004,8 @@ function 만들기_목록()
 			{
 				for (const 버튼_숫자 of ["이전_숫자", "지금_숫자", "다음_숫자"])
 				{
-					// const 숫자 = document.createElement("span")
+					const 숫자 =
+					// document.createElement("span")
 					// 숫자.className = 버튼_숫자
 					// 숫자.dataset.종류 = 분류.종류
 					// 버튼.appendChild(숫자)
@@ -993,24 +1014,28 @@ function 만들기_목록()
 				continue
 			}
 
-			// const 문자열 = document.createElement("span")
+			const 문자열 =
+			// document.createElement("span")
 			// 문자열.className = "문자열_클릭"
 			// 버튼.appendChild(문자열)
 			만들기_공간("span", 버튼, "문자열_클릭")
 			문자열.addEventListener("click", () => 페이지_넘기기(분류.종류, 버튼_그거.한장))
 		}
 
-		// const 본문 = document.createElement("section")
+		const 본문 =
+		// document.createElement("section")
 		// 본문.className = "본문"
 		// 구역.appendChild(본문)
 		만들기_공간("section", 구역, "본문")
 
-		// const 크기_계산 = document.createElement("div")
+		const 크기_계산 =
+		// document.createElement("div")
 		// 크기_계산.className = "크기_계산 " + 분류.종류
 		// 본문.appendChild(크기_계산)
 		만들기_공간("div", 본문, "크기_계산 " + 분류.종류)
 
-		// const 페이지 = document.createElement("div")
+		const 페이지 =
+		// document.createElement("div")
 		// 페이지.className = "페이지 " + 분류.종류
 		// 크기_계산.appendChild(페이지)
 		만들기_공간("div", 크기_계산, 분류.종류)
@@ -1208,7 +1233,8 @@ function 대기열(본문, 출력)
 	if (있냐)
 		return 있냐.remove()
 
-	// const 대기열 = document.createElement("div")
+	const 대기열 =
+	// document.createElement("div")
 	// 대기열.className = "대기열"
 	// 대기열.textContent = 출력
 	// 본문.appendChild(대기열)
@@ -1232,7 +1258,8 @@ function 시작()
 {
 	function 채우기_이름표들(왼쪽_이름)
 	{
-		// const 본문 = document.createElement("section")
+		const 본문 =
+		// document.createElement("section")
 		// 본문.className = "본문"
 		// 왼쪽_이름.appendChild(본문)
 		만들기_공간("section", 왼쪽_이름, "본문")
@@ -1265,7 +1292,8 @@ function 시작()
 
 		const 이름들 = 가나다순_정렬(이름_목록)
 
-		// const 이름표들 = document.createElement("menu")
+		const 이름표들 =
+		// document.createElement("menu")
 		// 이름표들.className = "이름표들"
 		// 본문.appendChild(이름표들)
 		만들기_공간("menu", 본문, "이름표들")
@@ -1274,7 +1302,8 @@ function 시작()
 		조각모음_초기화()
 		for (const 누구 of 이름들)
 		{
-			// const 이름표 = document.createElement("button")
+			const 이름표 =
+			// document.createElement("button")
 			// 이름표.className = "이름표"
 			// 조각모음.appendChild(이름표)
 			만들기_공간("button", 조각모음, "이름표")
@@ -1308,23 +1337,27 @@ function 시작()
 		조각모음_초기화()
 		for (const 순서대로 of 가나다순)
 		{
-			// const 자음_상자 = document.createElement("button")
+			const 자음_상자 =
+			// document.createElement("button")
 			// 자음_상자.className = "자음_상자"
 			// 조각모음.appendChild(자음_상자)
 			만들기_공간("button", 조각모음, "자음_상자")
 
-				// const 자음 = document.createElement("span")
+				const 자음 =
+				// document.createElement("span")
 				// 자음.className = 순서대로
 				// 자음.textContent = 순서대로
 				// 자음_상자.appendChild(자음)
 				만들기_공간("span", 자음_상자, 순서대로, 순서대로)
 
-			// const 자음_번호 = document.createElement("button")
+			const 자음_번호 =
+			// document.createElement("button")
 			// 자음_번호.className = "자음_번호"
 			// 조각모음.appendChild(자음_번호)
 			만들기_공간("button", 조각모음, 클래스)
 
-				// const 몇개 = document.createElement("span")
+				const 몇개 =
+				// document.createElement("span")
 				// 몇개.className = 순서대로
 				// // 몇개.textContent = 순서대로
 				// 자음_번호.appendChild(몇개)
