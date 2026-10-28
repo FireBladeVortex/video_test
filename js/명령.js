@@ -110,6 +110,7 @@ const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
+const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 
 
 
@@ -145,7 +146,6 @@ function 만들기_공간(모양, 소속, 클래스, 문자열, 종류, 숫자)
 	return 공간
 }
 
-const 재생_시간_지금 = 오른쪽.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
@@ -244,8 +244,8 @@ function 소리_크기_조절(증감)
 
 
 
-const 볼륨 = 오른쪽.getElementById("볼륨")
-const 볼륨_조절 = 오른쪽.getElementById("볼륨_조절")
+const 볼륨 = document.getElementById("볼륨")
+const 볼륨_조절 = document.getElementById("볼륨_조절")
 
 const 조절_반영 = () => player.setVolume(+볼륨_조절.value)
 볼륨_조절.addEventListener("input", 조절_반영)
@@ -1193,7 +1193,7 @@ function 시작()
 
 	function 채우기_가나다()
 	{
-		const 가나다 = 왼쪽_이름.getElementById("가나다")
+		const 가나다 = document.getElementById("가나다")
 
 		조각모음_초기화()
 		for (const 순서대로 of 가나다순)
