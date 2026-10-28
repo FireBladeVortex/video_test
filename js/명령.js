@@ -313,8 +313,7 @@ function 드르륵(마우스휠)
 	if (크기_계산)
 	{
 		마우스휠.preventDefault()
-		// 페이지_넘기기(크기_계산.closest(".구역").dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
-		페이지_넘기기(크기_계산.dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
+		페이지_넘기기(크기_계산.closest(".구역").dataset.종류, 마우스휠.deltaY > 0 ? +1 : -1)
 		return
 	}
 }
