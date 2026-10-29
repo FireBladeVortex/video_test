@@ -52,7 +52,7 @@ body
 #화면
 {
 	display : grid ;
-	grid-template-columns : minmax(0, 1fr) minmax(0, 1fr) ;
+	grid-template-columns : minmax(0, 3fr) minmax(0, 2fr) ;
 	grid-template-rows : 100% ;
 	height : 100% ;
 }
@@ -296,7 +296,7 @@ body
 .재생_시작_버튼 span
 {
 	background : var(--강조2) ;
-	padding: 0 3px ;
+	padding: 0 9px ;
 }
 
 #화면 .재생_시작_버튼:disabled
