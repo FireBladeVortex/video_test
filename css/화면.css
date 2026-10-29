@@ -296,6 +296,7 @@ body
 .재생_시작_버튼 span
 {
 	background : var(--강조2) ;
+	padding: 0 3px ;
 }
 
 #화면 .재생_시작_버튼:disabled
