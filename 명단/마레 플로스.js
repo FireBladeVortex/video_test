@@ -64,16 +64,11 @@ window.재생목록 ??= {}
 	},
 	{
 		// 3
-		// 유튜브 5만명 구독자 기념 마레플로스 영어 노래방송! 【마레의 노래방】
-		id : "https://youtu.be/ux7en3vXRVE",
-	},
-	{
-		// 4
 		// ROSÉ & Bruno Mars - APT. || Cover by Bukuki & Mare Flos
 		id : "https://youtu.be/UeSDWPdR5IQ",
 	},
 	{
-		// 5
+		// 4
 		// Love In A Bottle (Hazbin Hotel) / 마레 플로스 COVER
 		id : "https://youtu.be/wJe_yVtRfPU",
 	},

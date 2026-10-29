@@ -28,61 +28,56 @@ window.재생목록 ??= {}
 [
 	{
 		// 1
-		// 이오몽 - 부엉이 ~부엉이가 알려줬소 그대가 당도하였다는 걸~ Cover (국악 Arrange ver.)
-		id : "https://youtu.be/OTBlzjWSesY",
-	},
-	{
-		// 2
 		// 「수호기 OST」 '꽃을 보았던가(見此花) - 이오몽' [마인크래프트]
 		id : "https://youtu.be/qDWgka-jww8",
 	},
 	{
-		// 3
+		// 2
 		// [ 이오몽 - 초담 (鷦談) ] Original song
 		id : "https://youtu.be/Xcjc4GxGdC8",
 	},
 	{
-		// 4
+		// 3
 		// 적월[赤月](ft.이오몽)  - 융터르 작곡캠프 오리지날 송
 		id : "https://youtu.be/K1FiGikQ4D8",
 	},
 	{
-		// 5
+		// 4
 		// [ 이오몽 - 월야 (月夜) ] Original song
 		id : "https://youtu.be/6_FDG2JTQN8",
 	},
 	{
-		// 6
+		// 5
 		// 정혜일 -  잔향 (殘香) (feat.이오몽) / Official Lyric video
 		id : "https://youtu.be/K5CdFoJXO_I",
 	},
 	{
-		// 7
+		// 6
 		// [ 이오몽 ( ft. 빙그레우스 ) - 여기, 행복의 사이 ] Original song
 		id : "https://youtu.be/cNuRxaVoU6E",
 	},
 	{
-		// 8
+		// 7
 		// DJ조선 (feat. 이오몽, 판다랑) by CLTH
 		id : "https://youtu.be/vqXH6NPcZYw",
 	},
 	{
-		// 9
+		// 8
 		// [ 이오몽 - 영물이다 ] Original song
 		id : "https://youtu.be/Rdo8-3kt_JE",
 	},
 	{
-		// 10
+		// 9
 		// [ 이오몽 - 산렴 (珊瀲) ] Original song
 		id : "https://youtu.be/WddLi5cr1lw",
 	},
 	{
-		// 11
+		// 10
 		// 도깨비의세계 ost [ 이오몽 - 도깨비의세계 ] Original song
 		id : "https://youtu.be/Cweuw5j5EMg",
 	},
 	{
-		// 12
+		// 11
 		// 이오몽 - 비상선언(飛上宣言) | Official MV
 		id : "https://youtu.be/PAW9dCGshTk",
 	},

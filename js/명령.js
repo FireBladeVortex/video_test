@@ -61,9 +61,7 @@ function onPlayerStateChange(event)
 		{
 			title = player.getVideoData().title
 		}
-		catch
-		{
-		}
+		catch {}
 
 		if (title)
 		{
@@ -198,10 +196,7 @@ async function 불러오기_제목(id)
 		동영상_제목.style.textAlign = "start"
 		제목표시줄.textContent = 선택한_동영상.제목
 	}
-	catch
-	{
-		return
-	}
+	catch {}
 }
 
 
@@ -602,6 +597,8 @@ function 페이지_갱신(종류)
 
 function 선택한_동영상_준비(id, start = 0, end = 0)
 {
+	document.activeElement?.blur?.()
+
 	선택한_동영상.id = id
 
 	if (arguments.length === 1)
@@ -755,7 +752,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 		for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
 		{
 			const 노래 = 임시_목록.부분[순서]
-			const 항목 = 만들기_공간("option", 조각모음, 노래.이름 + " - " + 노래.제목)
+			const 항목 = 만들기_공간("option", 조각모음, null, 노래.이름 + " - " + 노래.제목)
 			항목.value = String(순서).padStart(3, "0")
 		}
 		선택지.appendChild(조각모음)
@@ -979,10 +976,7 @@ function id_찾기(주소)
 		const t = parseInt(url.searchParams.get("t"))
 		return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
 	}
-	catch
-	{
-		return
-	}
+	catch {}
 }
 
 
@@ -1002,10 +996,7 @@ function 불러오기_재생목록(이름)
 			? 소개[0]
 			: 소개[Math.floor(Math.random() * 소개.length)]
 
-		player.cueVideoById(
-		{
-			videoId : 선택.id,
-		})
+		선택한_동영상_준비(선택.id)
 	}
 
 	function id_가공(재생목록)
@@ -1058,20 +1049,34 @@ function 불러오기_재생목록(이름)
 		}
 	}
 
+	function 아무튼_에러()
+	{
+		const 본문 = 왼쪽_이름.querySelector(".본문")
+		if (!본문)
+			return
+		본문.innerHTML = ""
+		대기열(본문, "불러오기 실패")
+	}
+	script.addEventListener("error", 아무튼_에러)
+
 	async function 불러오기()
 	{
-		document.head.appendChild(api)
-		나만의_색깔(window.재생목록.색깔)
-		await api_준비
-		await id_가공(window.재생목록)
+		try
+		{
+			document.head.appendChild(api)
+			나만의_색깔(window.재생목록.색깔)
+			await api_준비
+			await id_가공(window.재생목록)
 
-		delete window.재생목록
-		script.remove()
+			delete window.재생목록
+			script.remove()
 
-		await 불러오기_소개(임시_목록.소개)
-		만들기_구역()
-		왼쪽_이름.remove()
-		오른쪽_안내.remove()
+			await 불러오기_소개(임시_목록.소개)
+			만들기_구역()
+			왼쪽_이름.remove()
+			오른쪽_안내.remove()
+		}
+		catch {}
 	}
 	script.addEventListener("load", 불러오기)
 	document.head.appendChild(script)
@@ -1087,11 +1092,15 @@ function 불러오기_재생목록(이름)
 
 function 대기열(본문, 출력)
 {
-	const 있냐 = 본문.querySelector(".대기열")
-	if (있냐)
-		return 있냐.remove()
+	if (!출력)
+	{
+		const 있냐 = 본문.querySelector(".대기열")
+		if (있냐)
+			return 있냐.remove()
+	}
 
-	const 대기열 = 만들기_공간("div", 본문, "대기열", 출력)
+	본문.innerHTML = ""
+	만들기_공간("div", 본문, "대기열", 출력)
 }
 
 
