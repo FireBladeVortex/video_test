@@ -61,12 +61,9 @@ body
 #오른쪽,
 #오른쪽_안내
 {
-	width : 100% ;
-	height : 100% ;
 	display: flex ;
 	flex-direction: column ;
 	align-items: center ;
-	justify-content: flex-start ;
 }
 
 #처음으로
@@ -86,10 +83,14 @@ body
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 /* 공공재 */
 
-.머리말
+.머리말,
+.본문
 {
 	width : 90% ;
-	height : auto ;
+}
+
+.머리말
+{
 	min-height : 30px ;
 	border-bottom : 3px solid var(--강조2) ;
 	padding-bottom : 3px ;
@@ -97,17 +98,6 @@ body
 	align-items : center ;
 }
 
-.본문
-{
-	width : 90% ;
-	min-height : 0 ;
-	height : auto ;
-}
-
-#화면 menu
-{
-	height : auto
-}
 
 #화면 img
 {
@@ -136,8 +126,7 @@ body
 
 #왼쪽_이름
 {
-	grid-column : 1 ;
-	grid-row : 1 ;
+	grid-area : 1 / 1 ;
 	background : var(--왼쪽바탕색) ;
 	z-index : 1 ;
 }
@@ -148,15 +137,16 @@ body
 {
 	display : grid ;
 	grid-template-columns : repeat(7, 2fr 1fr) ;
-	grid-auto-rows : auto ;
 	width : 100% ;
-	height : auto ;
-	text-align : center ;
 }
 
 
 .자음_상자,
-.자음_번호
+.자음_번호,
+.이름표,
+.버튼,
+.재생_시작_버튼,
+.대기열
 {
 	display : flex ;
 	align-items : center ;
@@ -167,17 +157,12 @@ body
 {
 	display : flex ;
 	flex-wrap : wrap ;
-	align-content : flex-start ;
 	padding-top: 10px ;
 }
 
 .이름표
 {
-	display : flex ;
-	align-items : center ;
-	justify-content : center ;
 	flex : 0 0 200px ;
-	width : 200px ;
 	height : 30px ;
 }
 
@@ -201,8 +186,7 @@ body
 
 #오른쪽_안내
 {
-	grid-column : 2 ;
-	grid-row : 1 ;
+	grid-area : 1 / 2 ;
 	background : var(--오른쪽바탕색) ;
 	z-index : 1 ;
 }
@@ -217,10 +201,8 @@ body
 
 #왼쪽
 {
-	grid-column : 1 ;
-	grid-row : 1 ;
+	grid-area : 1 / 1 ;
 	display : grid ;
-	min-height : 0 ;
 	background : var(--왼쪽바탕색) ;
 }
 
@@ -242,8 +224,6 @@ body
 	display : flex ;
 	flex-direction : column ;
 	align-items : center ;
-	width : 100% ;
-	min-height : 0 ;
 }
 
 .구역[data-종류=동영상],
@@ -255,18 +235,10 @@ body
 	align-items : stretch ;
 }
 
-.구역[data-종류=동영상] .본문,
-.구역[data-종류=쇼츠] .본문
-{
-	height : 100% ;
-	min-height : 0 ;
-}
 
 .크기_계산
 {
-	margin-top : 9px ;
-	margin-left : auto ;
-	margin-right : auto ;
+	margin : 9px auto 0 ;
 	width : 100% ;
 	height : 100% ;
 	max-width : round(down, 100%, var(--가로)) ;
@@ -300,10 +272,6 @@ body
 
 .버튼
 {
-	display : flex ;
-	align-items : center ;
-	justify-content : center ;
-	position : relative ;
 	width : var(--가로) ;
 	height : var(--세로) ;
 }
@@ -320,50 +288,14 @@ body
 	outline-offset : -3px ;
 }
 
-.버튼.강조
-{
-	outline : 3px solid var(--강조1) ;
-	outline-offset : -3px ;
-}
-
-.버튼.밝게
-{
-	filter : brightness(25%) ;
-}
-
-.버튼.밝게:hover
-{
-	filter : brightness(100%) ;
-}
-
-
-.선택지_공간
-{
-	display : flex ;
-	width : 80% ;
-	gap : 3px ;
-	flex : 1 ;
-}
-
-.선택지_공간 .선택지_노래
-{
-	flex : 5 ;
-	text-align : left ;
-}
-
-.선택지_공간 .선택지_재생
-{
-	display : flex ;
-	flex : 1 ;
-}
-
 .재생_시작_버튼
 {
 	width : 100% ;
-	height : 100% ;
-	display : flex ;
-	align-items : center ;
-	justify-content : center ;
+}
+
+.재생_시작_버튼 span
+{
+	background : var(--강조2) ;
 }
 
 #화면 .재생_시작_버튼:disabled
@@ -401,8 +333,7 @@ body
 
 #오른쪽
 {
-	grid-column : 2 ;
-	grid-row : 1 ;
+	grid-area : 1 / 2 ;
 	gap : 3px ;
 	background : var(--오른쪽바탕색) ;
 }
@@ -426,13 +357,11 @@ body
 #player
 {
 	aspect-ratio : 16 / 9 ;
-	height : auto ;
-	margin-bottom : 10px ;
+	margin-bottom : 9px ;
 	z-index : 1 ;
 }
 
-#player iframe,
-#YTP
+#player iframe
 {
 	width : 100% ;
 	height : 100% ;
@@ -443,8 +372,7 @@ body
 {
 	height : 9px ;
 	background : #000000 ;
-	border-radius : var(--세로) ;
-	margin-bottom : 10px ;
+	margin-bottom : 9px ;
 }
 
 #재생_시간_지금
@@ -452,8 +380,6 @@ body
 	height : 100% ;
 	width : 0% ;
 	background : var(--강조2) ;
-	border-radius : var(--세로) ;
-
 }
 
 #동영상_제목
@@ -480,13 +406,11 @@ body
 #볼륨_조절:hover
 {
 	cursor : grab ;
-	accent-color : var(--강조2) ;
 }
 
 #볼륨_조절:active
 {
 	cursor : grabbing ;
-	accent-color : var(--강조2) ;
 }
 
 
@@ -499,8 +423,6 @@ body
 	display : grid ;
 	grid-template-rows : minmax(0, 0fr) minmax(0, 1fr) ;
 	flex : 1 ;
-	min-height : 0 ;
-	height : auto ;
 	padding-top : 9px ;
 }
 
@@ -512,8 +434,6 @@ body
 .드롭다운_공간
 {
 	height : 100% ;
-	min-height : 0 ;
-	overflow : hidden ;
 }
 
 .드롭다운_칸
@@ -521,22 +441,14 @@ body
 	display : grid ;
 	grid-template-columns : minmax(0, 3fr) minmax(0, 1fr) ;
 	width : 100% ;
-	height : 30px ;
-	/* justify-content : center ; */
 }
 
 .드롭다운_선택
 {
-	/* flex : 0 1 auto ; */
 	width : 100% ;
 	min-width : 0 ;
-	height : 30px ;
-	text-align : left ;
-	background : var(--왼쪽바탕색) ;
 	border : 1px solid var(--강조2) ;
 	cursor : pointer ;
-	white-space : pre ;
-	tab-size : 200px ;
 }
 
 .드롭다운_선택 option
@@ -546,23 +458,10 @@ body
 	tab-size : 200px ;
 }
 
-/* 재생 시작 버튼 (공통) */
-.드롭다운_칸 .재생_시작_버튼,
-.노래_재생 .재생_시작_버튼
-{
-	width : 100% ;
-	height : 30px ;
-	background : var(--강조2) ;
-	cursor : pointer ;
-}
-
-/* 노래 목록 (크게 화면) */
 .크기_계산.부분
 {
 	max-width : none ;
 	max-height : none ;
-	margin-top : 0 ;
-	height : 100% ;
 }
 
 .페이지.부분
@@ -577,8 +476,6 @@ body
 	display : grid ;
 	grid-template-columns : minmax(0, 1.5fr) minmax(0, 0fr) minmax(0, 1.5fr) minmax(0, 1fr) ;
 	flex : 0 0 30px ;
-	width : 100% ;
-	height : 30px ;
 }
 
 .노래_항목:hover
@@ -588,7 +485,6 @@ body
 
 .노래_칸
 {
-	position : relative ;
 	display : flex ;
 	align-items : center ;
 	height : 30px ;
@@ -599,7 +495,6 @@ body
 .노래_이름
 {
 	justify-content : flex-end ;
-	text-align : right ;
 	padding-right : 9px ;
 }
 
@@ -622,8 +517,5 @@ body
 {
 	width : 100% ;
 	height : 100% ;
-	display : flex ;
-	align-items : center ;
-	justify-content : center ;
 	font-size : 60px ;
 }
