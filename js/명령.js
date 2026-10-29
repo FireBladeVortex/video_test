@@ -111,6 +111,7 @@ const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
+let 구역들 = null
 
 
 
@@ -628,7 +629,7 @@ function 페이지_최대(종류)
 		return 1
 
 	const 몇개 = 종류 === "부분"
-		? 왼쪽.querySelectorAll(".노래_항목").length
+		? 왼쪽.querySelector(".페이지." + 종류).children.length
 		: 임시_목록[종류].length
 	return Math.ceil(몇개 / 숫자)
 }
@@ -658,9 +659,7 @@ function 페이지_갱신(종류)
 		const 숫자_최소 = (페이지_지금 - 1) * 숫자
 		const 숫자_최대 = (페이지_지금 * 숫자) - 1
 
-		const 구역 = 왼쪽.querySelector(".구역[data-종류=" + 종류 + "]")
-		const 불러올거 = ".버튼[data-종류=" + 종류 + "], .노래_항목[data-종류=" + 종류 + "]"
-		const 그거 = 구역.querySelectorAll(불러올거)
+		const 그거 = 왼쪽.querySelector(".페이지." + 종류).children
 		for (const 버튼 of 그거)
 		{
 			const 번호 = +버튼.dataset.숫자
@@ -670,13 +669,13 @@ function 페이지_갱신(종류)
 	}
 
 	const [버튼_이전, 버튼_지금, 버튼_다음] =
-		왼쪽.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지")?.children ?? []
+		왼쪽.querySelector(".구역[data-종류=" + 종류 + "] .머리말_페이지").children ?? []
 
-	if (!버튼_이전 || !버튼_지금 || !버튼_다음)
+	if (!(버튼_이전 && 버튼_지금 && 버튼_다음))
 		return
 
-	const 버튼_이전_문자열 = 버튼_이전.querySelector(".문자열_클릭")
-	const 버튼_다음_문자열 = 버튼_다음.querySelector(".문자열_클릭")
+	const 버튼_이전_문자열 = 버튼_이전.children[0]
+	const 버튼_다음_문자열 = 버튼_다음.children[0]
 
 	const 페이지_수 = 페이지_최대(종류)
 
@@ -725,8 +724,6 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
 	})
 }
-
-
 
 
 
@@ -779,13 +776,11 @@ let 구역_커짐 = null
 const 구역_비율 = { 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
 function 크기_조절(왼쪽, 그거)
 {
-	const 생성된_구역_확인 = [...왼쪽.querySelectorAll(".구역")]
+	const 생성된_구역_확인 = [...구역들]
 	const 확인된_구역_종류들 = 생성된_구역_확인.map(구역 => 구역.dataset.종류)
 
 	const 조절_딸깍 = 구역_커짐 === 그거 ? null : 그거
 
-	// (수정) "시작"
-	// fr 값을 minmax(0, Nfr) 로 감싸서 내용 때문에 행이 커지지 않게 함
 	const 비율들 = 확인된_구역_종류들.map(종류 =>
 	{
 		if (확인된_구역_종류들.length === 1)
@@ -796,7 +791,6 @@ function 크기_조절(왼쪽, 그거)
 
 		return "minmax(0, " + 구역_비율[종류] + "fr)"
 	})
-	// (수정) "종료"
 
 	왼쪽.style.gridTemplateRows = 비율들.join(" ")
 
@@ -808,19 +802,19 @@ function 크기_조절(왼쪽, 그거)
 		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
 	}
 
-	const 부분_구역 = 왼쪽.querySelector(".구역[data-종류=부분]")
-	if (부분_구역)
+	const 구역_부분 = 왼쪽.querySelector(".구역[data-종류=부분]")
+	if (구역_부분)
 	{
 		const 커짐 = 구역_커짐 === "부분"
-		부분_구역.dataset.크기 = 커짐 ? "커짐" : "작아짐"
+		구역_부분.dataset.크기 = 커짐 ? "커짐" : "작아짐"
 
-		const 드롭다운_칸 = 부분_구역.querySelector(".드롭다운_칸")
+		const 드롭다운_칸 = 구역_부분.querySelector(".드롭다운_칸")
 		if (드롭다운_칸)
 		{
 			드롭다운_칸.inert = 커짐
 		}
 
-		const 노래_목록 = 부분_구역.querySelector(".크기_계산.부분")
+		const 노래_목록 = 구역_부분.querySelector(".크기_계산.부분")
 		if (노래_목록)
 		{
 			노래_목록.inert = !커짐
@@ -941,14 +935,16 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
-	왼쪽.style.gridTemplateRows = [...왼쪽.querySelectorAll(".구역")]
+
+	구역들 = 왼쪽.querySelectorAll(".구역")
+	왼쪽.style.gridTemplateRows = [...구역들]
 	.map(구역 => "minmax(0, " + 구역_비율[구역.dataset.종류] + "fr)")
 	.join(" ")
 
-	if (왼쪽.querySelectorAll(".구역").length === 1)
+	if (구역들.length === 1)
 	{
 		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
-		크기_조절(왼쪽, 왼쪽.querySelector(".구역").dataset.종류)
+		크기_조절(왼쪽, 구역들[0].dataset.종류)
 	}
 }
 
@@ -1123,7 +1119,7 @@ const A_Z =
 const 소속사 = []
 function 시작()
 {
-	function 채우기_이름표들(왼쪽_이름)
+	function 채우기_이름표들()
 	{
 		const 본문 = 만들기_공간("section", 왼쪽_이름, "본문")
 
@@ -1133,7 +1129,6 @@ function 시작()
 		{
 			const 규칙 = new Intl.Collator("ko")
 			const 정렬 = [...목록].sort((앞, 뒤) => 규칙.compare(앞.이름.trim(), 뒤.이름.trim()))
-
 
 			const map = new Map()
 			for (const 그거 of 정렬)
@@ -1198,14 +1193,13 @@ function 시작()
 
 			const 자음_번호 = 만들기_공간("button", 조각모음, "자음_번호")
 
-				const 몇개 = 만들기_공간("span", 자음_번호, 순서대로, 순서대로)
+				const 몇개 = 만들기_공간("span", 자음_번호, 순서대로)
 		}
 		가나다.appendChild(조각모음)
 	}
 
 	채우기_가나다()
-
-	채우기_이름표들(왼쪽_이름)
+	채우기_이름표들()
 
 	// 채우기_안내목록() 추가 함수 필요
 	// 채우기_안내문()
