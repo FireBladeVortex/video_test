@@ -1049,15 +1049,10 @@ function 불러오기_재생목록(이름)
 		}
 	}
 
-	function 아무튼_에러()
+	script.addEventListener("error", () =>
 	{
-		const 본문 = 왼쪽_이름.querySelector(".본문")
-		if (!본문)
-			return
-		본문.innerHTML = ""
-		대기열(본문, "불러오기 실패")
-	}
-	script.addEventListener("error", 아무튼_에러)
+		대기열(왼쪽_이름.querySelector(".본문"), "불러오기 실패")
+	})
 
 	async function 불러오기()
 	{
@@ -1076,7 +1071,10 @@ function 불러오기_재생목록(이름)
 			왼쪽_이름.remove()
 			오른쪽_안내.remove()
 		}
-		catch {}
+		catch
+		{
+			대기열(왼쪽_이름.querySelector(".본문"), "불러오기 실패")
+		}
 	}
 	script.addEventListener("load", 불러오기)
 	document.head.appendChild(script)
@@ -1092,6 +1090,9 @@ function 불러오기_재생목록(이름)
 
 function 대기열(본문, 출력)
 {
+	if (!본문)
+		return
+
 	if (!출력)
 	{
 		const 있냐 = 본문.querySelector(".대기열")
