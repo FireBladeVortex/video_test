@@ -55,6 +55,7 @@ function onPlayerStateChange(event)
 		{
 			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
 		}
+
 		let title = null
 		try
 		{
@@ -63,11 +64,11 @@ function onPlayerStateChange(event)
 		catch
 		{
 		}
+
 		if (title)
 		{
 			동영상_제목.style.textAlign = "start"
 			제목표시줄.textContent = title
-			불러오기_제목(선택한_동영상.id, title)
 		}
 		else
 		{
@@ -247,8 +248,7 @@ function 소리_크기_조절(증감)
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
 
-const 조절_반영 = () => player.setVolume(+볼륨_조절.value)
-볼륨_조절.addEventListener("input", 조절_반영)
+볼륨_조절.addEventListener("input", () => player.setVolume(+볼륨_조절.value))
 
 const 방지 = 간섭 => 간섭.stopPropagation()
 볼륨.addEventListener("mousedown", 방지)
@@ -350,6 +350,9 @@ document.getElementById("처음으로").addEventListener("click", () => location
 // 없는거 채워서 시간값 2개 전달하기
 function 시간_표기법(시간)
 {
+	if (!시간 || 시간 <= 0)
+		return [ 0, 0 ]
+
 	const 값 =
 		typeof 시간 === "number"
 		? 시간
@@ -459,7 +462,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 	const 구역_동영상 = 구역_찾기("동영상")
 	const 구역_쇼츠 = 구역_찾기("쇼츠")
-	const 구역 = 구역_찾기("부분")
+	const 구역 = 본문.closest(".구역")
 	if (!구역)
 		return
 
@@ -474,35 +477,35 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 			const 선택지 = 만들기_공간("select", 드롭다운_칸, "드롭다운_선택")
 
-			const 선택지_가짜 = 만들기_공간("option", 선택지, null, "노래 골라")
+			const 선택지_가짜 = 만들기_공간("option", 선택지, null, "듣고 싶은 노래를 골라보세요")
 			선택지_가짜.value = ""
 			선택지_가짜.selected = true
 			선택지_가짜.disabled = true
 			선택지_가짜.hidden = true
 
-			조각모음_초기화()
-			for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
-			{
-				const 노래 = 임시_목록.부분[순서]
-				const 항목 = 만들기_공간("option", 부모, 조각모음, 노래.이름 + " - " + 노래.제목)
-				항목.value = 순서 + ""
-			}
-			선택지.appendChild(조각모음)
+		조각모음_초기화()
+		for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
+		{
+			const 노래 = 임시_목록.부분[순서]
+			const 항목 = 만들기_공간("option", 조각모음, 노래.이름 + " - " + 노래.제목)
+			항목.value = String(순서).padStart(3, "0")
+		}
+		선택지.appendChild(조각모음)
 
-			const 재생 = 만들기_공간("button", 드롭다운_칸, "재생_시작_버튼", "듣기")
-			재생.disabled = true
+		const 재생 = 만들기_공간("button", 드롭다운_칸, "재생_시작_버튼", "듣기")
+		재생.disabled = true
 
-		선택지.addEventListener("change", () => 재생.disabled = 선택지.value === "")
+		선택지.addEventListener("change", () => 재생.disabled = !선택지.value)
 
-		재생.addEventListener("click", () =>
+		function 딸깍()
 		{
 			const 노래 = 임시_목록.부분[+선택지.value]
 			if (!노래)
 				return
 
-			// 이미지_클릭_강조("드롭다운")
 			선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
-		})
+		}
+		재생.addEventListener("click", 딸깍)
 	}
 
 	function 만들기_노래_목록()
@@ -526,13 +529,23 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			const 칸_재생 = 만들기_공간("button", 항목, "노래_칸 노래_재생")
 
 			const 재생 = 만들기_공간("span", 칸_재생, "재생_시작_버튼", "듣기")
-			재생.addEventListener("click", () =>
-			{
-				// 이미지_클릭_강조("부분" + 몇번)
-				선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
-			})
 		}
 		페이지.appendChild(조각모음)
+
+		function 딸깍(클릭)
+		{
+			const 재생_버튼 = 클릭.target.closest(".재생_시작_버튼")
+			if (!재생_버튼)
+				return
+
+			const 항목 = 재생_버튼.closest(".노래_항목")
+			const 노래 = 임시_목록.부분[+항목.dataset.숫자]
+			if (!노래)
+				return
+
+			선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+		}
+		페이지.addEventListener("click", 딸깍)
 	}
 
 	구역.dataset.크기 = "작아짐"
@@ -708,26 +721,10 @@ function 선택한_동영상_준비(id, start = 0, end = 0)
 	player.cueVideoById(
 	{
 		videoId : 선택한_동영상.id,
-		startSeconds : 시간_관리.시작,
+		...(시간_관리.시작 > 0 && {startSeconds : 시간_관리.시작}),
 		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
 	})
 }
-
-
-
-// let 이미지_클릭함 = null
-// function 이미지_클릭_강조(이거)
-// {
-// 	const 버튼 = document.querySelectorAll(".버튼")
-// 	for (const 딸깍 of 버튼)
-// 	{
-// 		const 그거 = 딸깍.dataset.종류 + 딸깍.dataset.숫자
-// 		const 클릭 = 그거 === 이거
-// 		딸깍.classList.toggle("강조", 클릭)
-// 		딸깍.classList.toggle("밝게", !클릭)
-// 	}
-// 	이미지_클릭함 = 이거
-// }
 
 
 
@@ -770,7 +767,6 @@ function 채우기_페이지(종류, 자료)
 
 	if (자료)
 	{
-		// 이미지_클릭함 = null
 		페이지_관리[종류] = 1
 		페이지_갱신(종류)
 	}
@@ -933,10 +929,6 @@ function 만들기_목록()
 				return
 
 			const 종류 = 버튼.dataset.종류
-			const 그거 = 종류 + 버튼.dataset.숫자
-			// if (그거 === 이미지_클릭함)
-			// 	return
-
 			const 동영상 = 임시_목록[종류][+버튼.dataset.숫자]
 			const 쇼츠 = 종류 === "쇼츠"
 			선택한_동영상_준비(동영상.id,
@@ -1176,7 +1168,7 @@ function 시작()
 		}
 		이름표들.appendChild(조각모음)
 
-		이름표들.addEventListener("click", 클릭 =>
+		function 딸깍(클릭)
 		{
 			const 이름표 = 클릭.target.closest("span")
 			if (!이름표)
@@ -1187,7 +1179,9 @@ function 시작()
 			document.title = 이름
 			대기열(본문, "준비 중")
 			불러오기_재생목록(이름)
-		})
+		}
+		이름표들.addEventListener("click", 딸깍)
+
 		대기열(본문)
 	}
 
