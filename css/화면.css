@@ -26,7 +26,6 @@ http://developer.mozilla.org/
 	cursor : default ;
 }
 
-/* 변수 선언 */
 :root
 {
 	--오른쪽바탕색 : #021322 ;
@@ -226,6 +225,9 @@ body
 	align-items : center ;
 }
 
+
+.구역[data-종류=원곡],
+.구역[data-종류=커버],
 .구역[data-종류=동영상],
 .구역[data-종류=쇼츠]
 {
