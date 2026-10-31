@@ -916,3 +916,11 @@ document.getElementById("초기화").addEventListener("click", () =>
 
 버튼_갱신()
 // (추가) "종료"
+
+
+
+const A_Z =
+[
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+]

@@ -2,9 +2,10 @@
 const api = document.createElement("script")
 api.src = "https://www.youtube.com/iframe_api"
 
-
 let api_준비_대기 = null
 const api_준비 = new Promise(resolve => { api_준비_대기 = resolve })
+
+
 
 let player = null
 function onYouTubeIframeAPIReady()
@@ -56,21 +57,22 @@ function onPlayerStateChange(event)
 			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
 		}
 
-		let title = null
-		try
+		if (선택한_동영상.id)
 		{
-			title = player.getVideoData().title
-		}
-		catch {}
-
-		if (title)
-		{
-			동영상_제목.style.textAlign = "start"
-			제목표시줄.textContent = title
-		}
-		else
-		{
-			불러오기_제목(선택한_동영상.id)
+			try
+			{
+				if (!선택한_동영상.제목)
+				{
+					선택한_동영상.제목 = player.getVideoData().title
+					동영상_제목.style.textAlign = "start"
+					제목표시줄.textContent = 선택한_동영상.제목
+				}
+				else
+				{
+					불러오기_제목(선택한_동영상.id)
+				}
+			}
+			catch {}
 		}
 	}
 
@@ -109,12 +111,26 @@ const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
-let 구역들 = null
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+function 대기열(본문, 출력)
+{
+	if (!본문)
+		return
+
+	if (!출력)
+	{
+		const 있냐 = 본문.querySelector(".대기열")
+		if (있냐)
+			return 있냐.remove()
+	}
+
+	본문.innerHTML = ""
+	만들기_공간("div", 본문, "대기열", 출력)
+}
 
 const 조각모음 = document.createDocumentFragment()
 function 조각모음_초기화()
@@ -150,7 +166,6 @@ function 구역_찾기(종류)
 	return 왼쪽.querySelector(".구역[data-종류=" + 종류 + "]")
 }
 
-
 const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
@@ -172,7 +187,7 @@ function 재생_표시줄()
 	// }
 }
 
-
+const 선택한_채널 = { 이름 : null, 주소 : null }
 async function 불러오기_제목(id)
 {
 	if (arguments.length !== 1)
@@ -198,8 +213,6 @@ async function 불러오기_제목(id)
 	}
 	catch {}
 }
-
-
 
 // 재생 종료
 // YT.PlayerState.ENDED === 0
@@ -229,14 +242,10 @@ function 재생_일시중지_조작()
 	}
 }
 
-
 // 만들기 보류
 function 재생_속도_조절(키, 증감)
 {
-
 }
-
-
 
 function 소리_크기_조절(증감)
 {
@@ -245,18 +254,12 @@ function 소리_크기_조절(증감)
 	볼륨_조절.value = 범위
 }
 
-
-
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
-
 볼륨_조절.addEventListener("input", () => player.setVolume(+볼륨_조절.value))
-
 const 방지 = 간섭 => 간섭.stopPropagation()
 볼륨.addEventListener("mousedown", 방지)
 볼륨.addEventListener("click", 방지)
-
-
 
 function 키_입력(키)
 {
@@ -315,8 +318,6 @@ function 키_입력(키)
 }
 document.addEventListener("keydown", 키_입력)
 
-
-
 function 드르륵(마우스휠)
 {
 	마우스휠.preventDefault()
@@ -339,13 +340,9 @@ function 드르륵(마우스휠)
 }
 document.addEventListener("wheel", 드르륵, { passive : false })
 
-
 document.getElementById("처음으로").addEventListener("click", () => location.reload())
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 // 시간 표시 변환
 // 100000초 또는 12:34:56 같은 모양으로
@@ -378,77 +375,35 @@ function 시간_표기법(시간)
 	return [ 값, 문자열 ]
 }
 
+const 선택한_동영상 = { id : null, 제목 : null }
+const 시간_관리 = { 시작 : null, 종료 : null }
+const 문자열_관리 = { 시작 : null, 종료 : null }
+function 선택한_동영상_준비(id, start = 0, end = 0)
+{
+	document.activeElement?.blur?.()
+
+	선택한_동영상.id = id
+
+	if (arguments.length === 1)
+		return 선택한_동영상.id
+
+	const 시작 = 시간_표기법(start)
+	시간_관리.시작 = 시작[0]
+	문자열_관리.시작 = 시작[1]
+
+	const 종료 = 시간_표기법(end)
+	시간_관리.종료 = 종료[0]
+	문자열_관리.종료 = 종료[1]
+
+	player.cueVideoById(
+	{
+		videoId : 선택한_동영상.id,
+		...(시간_관리.시작 > 0 && {startSeconds : 시간_관리.시작}),
+		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
+	})
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function 페이지_넘기기(종류, 한장)
 {
@@ -462,10 +417,6 @@ function 페이지_넘기기(종류, 한장)
 	페이지_갱신(종류)
 }
 
-
-
-
-
 const 이거_몇칸임 = { 원곡 : 0, 커버 : 0, 동영상 : 0, 쇼츠 : 0, 부분 : 0 }
 const 설정 = getComputedStyle(document.documentElement)
 const 길이 =
@@ -473,6 +424,7 @@ const 길이 =
 	가로 : parseInt(설정.getPropertyValue("--가로")),
 	세로 : parseInt(설정.getPropertyValue("--세로")),
 }
+
 let 총몇칸 = null
 function 크기_감지(구역)
 {
@@ -515,8 +467,6 @@ function 크기_감지(구역)
 }
 const 재구성 = new ResizeObserver(크기_감지)
 
-
-
 function 페이지_최대(종류)
 {
 	const 숫자 = 이거_몇칸임[종류]
@@ -529,21 +479,7 @@ function 페이지_최대(종류)
 	return Math.ceil(몇개 / 숫자)
 }
 
-
-
-
-
-
-const 선택한_동영상 = { id : null, 제목 : null }
-const 선택한_채널 = { 이름 : null, 주소 : null }
-
-const 시간_관리 = { 시작 : null, 종료 : null }
-const 문자열_관리 = { 시작 : null, 종료 : null }
-
 const 페이지_관리 = { 원곡 : 1, 커버 : 1, 동영상 : 1, 쇼츠 : 1, 부분 : 1 }
-
-
-
 function 페이지_갱신(종류)
 {
 	const 페이지_지금 = 페이지_관리[종류]
@@ -596,35 +532,6 @@ function 페이지_갱신(종류)
 	}
 }
 
-
-
-function 선택한_동영상_준비(id, start = 0, end = 0)
-{
-	document.activeElement?.blur?.()
-
-	선택한_동영상.id = id
-
-	if (arguments.length === 1)
-		return 선택한_동영상.id
-
-	const 시작 = 시간_표기법(start)
-	시간_관리.시작 = 시작[0]
-	문자열_관리.시작 = 시작[1]
-
-	const 종료 = 시간_표기법(end)
-	시간_관리.종료 = 종료[0]
-	문자열_관리.종료 = 종료[1]
-
-	player.cueVideoById(
-	{
-		videoId : 선택한_동영상.id,
-		...(시간_관리.시작 > 0 && {startSeconds : 시간_관리.시작}),
-		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
-	})
-}
-
-
-
 function 채우기_페이지(종류, 자료)
 {
 	const 페이지 = 왼쪽.querySelector(".페이지." + 종류)
@@ -667,9 +574,7 @@ function 채우기_페이지(종류, 자료)
 	}
 }
 
-
-
-
+let 구역들 = null
 let 구역_커짐 = null
 const 구역_비율 = { 원곡 : 2, 커버 : 2, 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
 function 크기_조절(왼쪽, 그거)
@@ -720,8 +625,7 @@ function 크기_조절(왼쪽, 그거)
 	}
 }
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function 만들기_부분(본문, 크기_계산, 페이지)
 {
@@ -741,13 +645,13 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 
 		const 드롭다운_공간 = 만들기_공간("section", 본문, "드롭다운_공간")
 			const 드롭다운_칸 = 만들기_공간("div", 드롭다운_공간, "드롭다운_칸")
-			const 선택지 = 만들기_공간("select", 드롭다운_칸, "드롭다운_선택")
+				const 선택지 = 만들기_공간("select", 드롭다운_칸, "드롭다운_선택")
 
-			const 선택지_가짜 = 만들기_공간("option", 선택지, null, "듣고 싶은 노래를 골라보세요")
-			선택지_가짜.value = ""
-			선택지_가짜.selected = true
-			선택지_가짜.disabled = true
-			선택지_가짜.hidden = true
+				const 선택지_가짜 = 만들기_공간("option", 선택지, null, "듣고 싶은 노래를 골라보세요")
+				선택지_가짜.value = ""
+				선택지_가짜.selected = true
+				선택지_가짜.disabled = true
+				선택지_가짜.hidden = true
 
 		조각모음_초기화()
 		for (let 순서 = 0 ; 순서 < 임시_목록.부분.length ; 순서++)
@@ -759,8 +663,8 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 		선택지.appendChild(조각모음)
 
 		const 재생 = 만들기_공간("button", 드롭다운_칸, "재생_시작_버튼")
-		const 듣기 = 만들기_공간("span", 재생, null, "듣기")
-		재생.disabled = true
+			const 듣기 = 만들기_공간("span", 재생, null, "듣기")
+			재생.disabled = true
 
 		선택지.addEventListener("change", () => 재생.disabled = !선택지.value)
 
@@ -813,10 +717,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 	구역.dataset.크기 = "작아짐"
 	드롭다운()
 	만들기_노래_목록()
-
 }
-
-
 
 function 만들기_목록()
 {
@@ -867,13 +768,11 @@ function 만들기_목록()
 				for (const 종류 of 종류_목록)
 				{
 					const 종류_버튼 = 만들기_공간("button", 머리말_종류, "종류_" + 종류.이름)
-
 						const 문자열 = 만들기_공간("span", 종류_버튼, "문자열_클릭", 종류.이름)
 						문자열.addEventListener("click", () => 채우기_페이지(분류.종류, 종류.자료))
 				}
 			}
 		}
-
 
 		const 페이지_버튼_종류 =
 		[
@@ -899,10 +798,8 @@ function 만들기_목록()
 		}
 
 		const 본문 = 만들기_공간("section", 구역, "본문")
-
-		const 크기_계산 = 만들기_공간("div", 본문, "크기_계산 " + 분류.종류)
-
-		const 페이지 = 만들기_공간("div", 크기_계산, "페이지 " + 분류.종류)
+			const 크기_계산 = 만들기_공간("div", 본문, "크기_계산 " + 분류.종류)
+				const 페이지 = 만들기_공간("div", 크기_계산, "페이지 " + 분류.종류)
 
 		if (분류.종류 === "부분")
 		{
@@ -929,7 +826,6 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
-
 	구역들 = 왼쪽.querySelectorAll(".구역")
 	왼쪽.style.gridTemplateRows = [...구역들]
 	.map(구역 => "minmax(0, " + 구역_비율[구역.dataset.종류] + "fr)")
@@ -942,8 +838,6 @@ function 만들기_목록()
 	}
 }
 
-
-
 function 만들기_구역()
 {
 	만들기_목록()
@@ -955,12 +849,7 @@ function 만들기_구역()
 	}
 }
 
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function id_찾기(주소)
 {
@@ -974,18 +863,17 @@ function id_찾기(주소)
 
 		const v = url.searchParams.get("v")
 		const path = url.pathname.split("/").pop()
-		const id_동영상 = v ?? path
+		const id = v ?? path
 
 		const 정규표현식 = /^[a-zA-Z0-9_-]{11}$/
-		if (!정규표현식.test(id_동영상))
+		if (!정규표현식.test(id))
 			return
 
 		const t = parseInt(url.searchParams.get("t"))
-		return (Number.isNaN(t)) ? id_동영상 : [id_동영상, t]
+		return (Number.isNaN(t)) ? id : [id, t]
 	}
 	catch {}
 }
-
 
 const 존재 = { 원곡 : null, 커버 : null, 동영상 : null, 쇼츠 : null, 부분 : null, 원곡커버 : null }
 function 불러오기_재생목록(이름)
@@ -1039,6 +927,7 @@ function 불러오기_재생목록(이름)
 				}
 			}
 		}
+
 		존재.원곡 = !!임시_목록.원곡
 		존재.커버 = !!임시_목록.커버
 		존재.쇼츠 = !!임시_목록.쇼츠
@@ -1096,39 +985,28 @@ function 불러오기_재생목록(이름)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function 대기열(본문, 출력)
-{
-	if (!본문)
-		return
-
-	if (!출력)
-	{
-		const 있냐 = 본문.querySelector(".대기열")
-		if (있냐)
-			return 있냐.remove()
-	}
-
-	본문.innerHTML = ""
-	만들기_공간("div", 본문, "대기열", 출력)
-}
-
-
+// const 가나다순 =
+// {
+// 	가 : ["ㄱ", "가"],
+// 	나 : ["ㄴ", "나"],
+// 	다 : ["ㄷ", "다"],
+// 	라 : ["ㄹ", "라"],
+// 	마 : ["ㅁ", "마"],
+// 	바 : ["ㅂ", "바"],
+// 	사 : ["ㅅ", "사"],
+// 	아 : ["ㅇ", "아"],
+// 	자 : ["ㅈ", "자"],
+// 	차 : ["ㅊ", "차"],
+// 	카 : ["ㅋ", "카"],
+// 	타 : ["ㅌ", "타"],
+// 	파 : ["ㅍ", "파"],
+// 	하 : ["ㅎ", "하"],
+// }
 
 const 가나다순 =
 [
 	"ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ",
 	"ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
-]
-const A_Z =
-[
-	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-	"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 ]
 const 소속사 = []
 function 시작()
@@ -1163,9 +1041,7 @@ function 시작()
 		}
 
 		const 이름들 = 가나다순_정렬(이름_목록)
-
 		const 이름표들 = 만들기_공간("menu", 본문, "이름표들")
-
 
 		조각모음_초기화()
 		for (const 누구 of 이름들)
