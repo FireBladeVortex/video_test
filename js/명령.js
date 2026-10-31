@@ -434,7 +434,6 @@ function 크기_감지(구역)
 		const 커버 = 목록.target.classList.contains("커버")
 		const 쇼츠 = 목록.target.classList.contains("쇼츠")
 		const 부분 = 목록.target.classList.contains("부분")
-		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : "동영상"
 		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : 원곡 ? "원곡" : 커버 ? "커버" : "동영상"
 
 		if (부분)
