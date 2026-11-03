@@ -858,7 +858,7 @@ function id_찾기(주소)
 	catch {}
 }
 
-const 존재 = { 원곡 : null, 커버 : null, 쇼츠 : null, 부분 : null }
+const 존재 = { 원곡 : null, 커버 : null, 동영상 : null, 쇼츠 : null, 부분 : null }
 function 불러오기_재생목록(이름)
 {
 	delete window.재생목록
