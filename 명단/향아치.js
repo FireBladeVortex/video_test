@@ -17,8 +17,7 @@ window.재생목록 ??= {}
 재생목록.소개 =
 [
 	{
-		// 야르 민원송
-		id : "https://youtu.be/nQba51L_uHI",
+		id : "",
 	},
 ]
 
@@ -47,6 +46,10 @@ window.재생목록 ??= {}
 	{
 		// 야르 민원송
 		id : "https://youtu.be/nQba51L_uHI",
+	},
+	{
+		// 향사기 속사포 | 우사기 랩
+		id : "https://youtu.be/Rq_YBNcBtBs",
 	},
 ]
 
