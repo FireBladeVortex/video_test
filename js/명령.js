@@ -52,24 +52,24 @@ function onPlayerStateChange(event)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
-		if (시간_관리.종료 === 0)
+		if (관리_시간.종료 === 0)
 		{
-			[시간_관리.종료, 문자열_관리.종료] = 시간_표기법(player.getDuration())
+			[관리_시간.종료, 관리_문자열.종료] = 시간_표기법(player.getDuration())
 		}
 
-		if (선택한_동영상.id)
+		if (선택_동영상.id)
 		{
 			try
 			{
-				if (!선택한_동영상.제목)
+				if (!선택_동영상.제목)
 				{
-					선택한_동영상.제목 = player.getVideoData().title
+					선택_동영상.제목 = player.getVideoData().title
 					동영상_제목.style.textAlign = "start"
-					제목표시줄.textContent = 선택한_동영상.제목
+					제목표시줄.textContent = 선택_동영상.제목
 				}
 				else
 				{
-					불러오기_제목(선택한_동영상.id)
+					불러오기_제목(선택_동영상.id)
 				}
 			}
 			catch {}
@@ -78,9 +78,9 @@ function onPlayerStateChange(event)
 
 	if (event.data === 1)
 	{
-		if (player.getCurrentTime() < 시간_관리.시작)
+		if (player.getCurrentTime() < 관리_시간.시작)
 		{
-			player.seekTo(시간_관리.시작, true)
+			player.seekTo(관리_시간.시작, true)
 		}
 		clearInterval(재생_시간_표시줄)
 		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
@@ -92,7 +92,7 @@ function onPlayerStateChange(event)
 
 	if (event.data === 0)
 	{
-		player.seekTo(시간_관리.시작, true)
+		player.seekTo(관리_시간.시작, true)
 		player.playVideo()
 	}
 
@@ -165,19 +165,19 @@ const 재생_시간_지금 = document.getElementById("재생_시간_지금")
 function 재생_표시줄()
 {
 	const 지금_시간 = player.getCurrentTime()
-	const 비율 = (지금_시간 - 시간_관리.시작) / (시간_관리.종료 - 시간_관리.시작)
+	const 비율 = (지금_시간 - 관리_시간.시작) / (관리_시간.종료 - 관리_시간.시작)
 	재생_시간_지금.style.width = (Math.max(0, Math.min(1, 비율)) * 100) + "%"
 
 	// const [, 지금_문자열] = 시간_표기법(지금_시간)
-	// if (문자열_관리.종료 && 문자열_관리.시작)
+	// if (관리_문자열.종료 && 관리_문자열.시작)
 	// {
-	// 	if (시간_관리.시작 === 0)
+	// 	if (관리_시간.시작 === 0)
 	// 	{
-	// 		동영상_제목.textContent = 지금_문자열 + "<" + 문자열_관리.종료
+	// 		동영상_제목.textContent = 지금_문자열 + "<" + 관리_문자열.종료
 	// 	}
 	// 	else
 	// 	{
-	// 		동영상_제목.textContent = 문자열_관리.시작 + "< + 지금_문자열 + ">" + 문자열_관리.종료
+	// 		동영상_제목.textContent = 관리_문자열.시작 + "< + 지금_문자열 + ">" + 관리_문자열.종료
 	// 	}
 	// }
 }
@@ -200,11 +200,11 @@ async function 불러오기_제목(id)
 
 		선택한_채널.이름 = 데이터.author_name
 		선택한_채널.주소 = 데이터.author_url
-		선택한_동영상.제목 = 데이터.title
+		선택_동영상.제목 = 데이터.title
 		// document.title = 선택한_채널.이름
 
 		동영상_제목.style.textAlign = "start"
-		제목표시줄.textContent = 선택한_동영상.제목
+		제목표시줄.textContent = 선택_동영상.제목
 	}
 	catch {}
 }
@@ -284,14 +284,14 @@ function 키_입력(키)
 		else if (시간이동)
 		{
 			키.preventDefault()
-			player.seekTo(Math.min(시간_관리.종료, Math.max(시간_관리.시작, player.getCurrentTime() + 시간이동 * 5)), true)
+			player.seekTo(Math.min(관리_시간.종료, Math.max(관리_시간.시작, player.getCurrentTime() + 시간이동 * 5)), true)
 		}
 		// 숫자키 0-9 = 현재 재생 위치 변경
 		else if (키.code.match(/^(Digit|Numpad)[0-9]$/))
 		{
 			키.preventDefault()
 			const 비율 = +(키.code.slice(-1)) / 10
-			const 숫자키 = 시간_관리.시작 + Math.floor((시간_관리.종료 - 시간_관리.시작) * 비율)
+			const 숫자키 = 관리_시간.시작 + Math.floor((관리_시간.종료 - 관리_시간.시작) * 비율)
 			player.seekTo(숫자키, true)
 		}
 
@@ -370,31 +370,31 @@ function 시간_표기법(시간)
 	return [ 값, 문자열 ]
 }
 
-const 선택한_동영상 = { id : null, 제목 : null }
-const 시간_관리 = { 시작 : null, 종료 : null }
-const 문자열_관리 = { 시작 : null, 종료 : null }
-function 선택한_동영상_준비(id, start = 0, end = 0)
+const 선택_동영상 = { id : null, 제목 : null }
+const 관리_시간 = { 시작 : null, 종료 : null }
+const 관리_문자열 = { 시작 : null, 종료 : null }
+function 선택_동영상_준비(id, start = 0, end = 0)
 {
 	document.activeElement?.blur?.()
 
-	선택한_동영상.id = id
+	선택_동영상.id = id
 
 	if (arguments.length === 1)
-		return 선택한_동영상.id
+		return 선택_동영상.id
 
 	const 시작 = 시간_표기법(start)
-	시간_관리.시작 = 시작[0]
-	문자열_관리.시작 = 시작[1]
+	관리_시간.시작 = 시작[0]
+	관리_문자열.시작 = 시작[1]
 
 	const 종료 = 시간_표기법(end)
-	시간_관리.종료 = 종료[0]
-	문자열_관리.종료 = 종료[1]
+	관리_시간.종료 = 종료[0]
+	관리_문자열.종료 = 종료[1]
 
 	player.cueVideoById(
 	{
-		videoId : 선택한_동영상.id,
-		...(시간_관리.시작 > 0 && {startSeconds : 시간_관리.시작}),
-		...(시간_관리.종료 > 0 && {endSeconds : 시간_관리.종료})
+		videoId : 선택_동영상.id,
+		...(관리_시간.시작 > 0 && {startSeconds : 관리_시간.시작}),
+		...(관리_시간.종료 > 0 && {endSeconds : 관리_시간.종료})
 	})
 }
 
@@ -425,21 +425,17 @@ function 크기_감지(구역)
 {
 	for (const 목록 of 구역)
 	{
-		const 원곡 = 목록.target.classList.contains("원곡")
-		const 커버 = 목록.target.classList.contains("커버")
-		const 쇼츠 = 목록.target.classList.contains("쇼츠")
-		const 부분 = 목록.target.classList.contains("부분")
-		const 종류 = 쇼츠 ? "쇼츠" : 부분 ? "부분" : 원곡 ? "원곡" : 커버 ? "커버" : "동영상"
+		const 종류 = ["원곡", "커버", "동영상", "쇼츠", "부분"].find(이거 => 목록.target.classList.contains(이거))
 
-		if (부분)
+		if (종류 === "부분")
 		{
 			const 세로_몇칸 = Math.floor((목록.contentBoxSize[0].blockSize + 3) / 33)
 			총몇칸 = 세로_몇칸
 		}
 		else
 		{
-			const 쇼츠_가로 = 쇼츠 ? 길이.세로 : 길이.가로
-			const 쇼츠_세로 = 쇼츠 ? 길이.가로 : 길이.세로
+			const 쇼츠_가로 = 종류 === "쇼츠" ? 길이.세로 : 길이.가로
+			const 쇼츠_세로 = 종류 === "쇼츠" ? 길이.가로 : 길이.세로
 
 			const 너비 = 목록.contentBoxSize[0].inlineSize
 			const 높이 = 목록.contentBoxSize[0].blockSize
@@ -548,16 +544,12 @@ function 채우기_페이지(종류, 자료)
 		const 몇번 = (숫자 + "").padStart(3, "0")
 		const 버튼 = 만들기_공간("button", 조각모음, "버튼", "", 종류, 몇번)
 
-
 		const src_1 = "https://img.youtube.com/vi/"
 		const src_2 = 동영상.id
 		const src_3 = "/mqdefault.jpg"
-		const img = document.createElement("img")
+		const img = 만들기_공간("img", 버튼)
 		img.loading = "lazy"
 		img.src = src_1 + src_2 + src_3
-
-		버튼.appendChild(img)
-		조각모음.appendChild(버튼)
 	}
 	페이지.appendChild(조각모음)
 
@@ -666,7 +658,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			if (!노래)
 				return
 
-			선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+			선택_동영상_준비(노래.id, 노래.시작, 노래.종료)
 		}
 		재생.addEventListener("click", 딸깍)
 	}
@@ -701,7 +693,7 @@ function 만들기_부분(본문, 크기_계산, 페이지)
 			if (!노래)
 				return
 
-			선택한_동영상_준비(노래.id, 노래.시작, 노래.종료)
+			선택_동영상_준비(노래.id, 노래.시작, 노래.종료)
 		}
 		페이지.addEventListener("click", 딸깍)
 	}
@@ -799,7 +791,7 @@ function 만들기_목록()
 			const 종류 = 버튼.dataset.종류
 			const 동영상 = 임시_목록[종류][+버튼.dataset.숫자]
 			const 쇼츠 = 종류 === "쇼츠"
-			선택한_동영상_준비(동영상.id,
+			선택_동영상_준비(동영상.id,
 				쇼츠 ? 0 : 동영상.시작,
 				쇼츠 ? 0 : 동영상.종료)
 		}
@@ -875,7 +867,7 @@ function 불러오기_재생목록(이름)
 			? 소개[0]
 			: 소개[Math.floor(Math.random() * 소개.length)]
 
-		선택한_동영상_준비(선택.id)
+		선택_동영상_준비(선택.id)
 	}
 
 	function id_가공(재생목록)
