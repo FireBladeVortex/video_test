@@ -6,7 +6,6 @@ http://developer.mozilla.org/
 
 */
 
-
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 /* 기본 설정들 */
 
@@ -36,7 +35,6 @@ http://developer.mozilla.org/
 	--가로 : 160px ;
 	--세로 : 90px ;
 }
-
 
 body
 {
@@ -69,13 +67,12 @@ body
 {
 	position : fixed ;
 	right : 3px;
-	top : 3px;
+	bottom : 3px;
 	z-index : 3;
 }
 
 /* 기본 설정들 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
-
 
 
 
@@ -97,6 +94,12 @@ body
 	align-items : center ;
 }
 
+.대기열
+{
+	width : 100% ;
+	height : 100% ;
+	font-size : 60px ;
+}
 
 #화면 img
 {
@@ -139,7 +142,6 @@ body
 	width : 100% ;
 }
 
-
 .자음_상자,
 .자음_번호,
 .이름표,
@@ -165,7 +167,6 @@ body
 	height : 30px ;
 }
 
-
 .이름표 span
 {
 	color: var(--강조3) ;
@@ -178,6 +179,7 @@ body
 
 /* 왼쪽 최초 화면 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
+
 
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
@@ -205,7 +207,6 @@ body
 	background : var(--왼쪽바탕색) ;
 }
 
-
 .구역 > .머리말 > *,
 .머리말_페이지 > *,
 .머리말_종류 > *,
@@ -216,15 +217,12 @@ body
 	justify-content : space-evenly ;
 }
 
-
-
 .구역
 {
 	display : flex ;
 	flex-direction : column ;
 	align-items : center ;
 }
-
 
 .구역[data-종류=원곡],
 .구역[data-종류=커버],
@@ -237,6 +235,18 @@ body
 	align-items : stretch ;
 }
 
+.구역[data-종류=부분] .본문
+{
+	display : grid ;
+	grid-template-rows : minmax(0, 0fr) minmax(0, 1fr) ;
+	flex : 1 ;
+	padding-top : 9px ;
+}
+
+.구역[data-종류=부분][data-크기=커짐] .본문
+{
+	grid-template-rows : minmax(0, 1fr) minmax(0, 0fr) ;
+}
 
 .크기_계산
 {
@@ -247,15 +257,23 @@ body
 	max-height : round(down, 100%, var(--세로)) ;
 }
 
-
-
 .크기_계산.쇼츠
 {
 	max-width : round(down, 100%, var(--세로)) ;
 	max-height : round(down, 100%, var(--가로)) ;
 }
 
+.크기_계산.쇼츠 .버튼
+{
+	width : var(--세로) ;
+	height : var(--가로) ;
+}
 
+.크기_계산.부분
+{
+	max-width : none ;
+	max-height : none ;
+}
 
 .페이지
 {
@@ -263,25 +281,22 @@ body
 	grid-template-columns : repeat(auto-fill, var(--가로)) ;
 }
 
-
-
 .페이지.쇼츠
 {
 	grid-template-columns : repeat(auto-fill, var(--세로)) ;
 }
 
-
+.페이지.부분
+{
+	display : flex ;
+	flex-direction : column ;
+	gap : 3px ;
+}
 
 .버튼
 {
 	width : var(--가로) ;
 	height : var(--세로) ;
-}
-
-.크기_계산.쇼츠 .버튼
-{
-	width : var(--세로) ;
-	height : var(--가로) ;
 }
 
 .버튼:hover
@@ -306,33 +321,82 @@ body
 	opacity : 0.5 ;
 }
 
+.드롭다운_공간
+{
+	height : 100% ;
+}
+
+.드롭다운_칸
+{
+	display : grid ;
+	grid-template-columns : minmax(0, 3fr) minmax(0, 1fr) ;
+	width : 100% ;
+}
+
+.드롭다운_선택
+{
+	width : 100% ;
+	min-width : 0 ;
+	border : 1px solid var(--강조2) ;
+	cursor : pointer ;
+}
+
+.드롭다운_선택 option
+{
+	background : var(--왼쪽바탕색) ;
+	white-space : pre ;
+	tab-size : 200px ;
+}
+
+.노래_항목
+{
+	display : grid ;
+	grid-template-columns : minmax(0, 1.5fr) minmax(0, 0fr) minmax(0, 1.5fr) minmax(0, 1fr) ;
+	flex : 0 0 30px ;
+}
+
+.노래_항목:hover
+{
+	background : rgba(255, 255, 255, 0.15) ;
+}
+
+.노래_칸
+{
+	display : flex ;
+	align-items : center ;
+	height : 30px ;
+	min-width : 0 ;
+	white-space : nowrap ;
+}
+
+.노래_이름
+{
+	justify-content : flex-end ;
+	padding-right : 9px ;
+}
+
+.노래_구분선
+{
+	width : 0 ;
+	height : 66% ;
+	padding : 0 1.5px ;
+	background : var(--강조2) ;
+	justify-self : center ;
+	align-self : center ;
+}
+
+.노래_제목
+{
+	padding-left : 9px ;
+}
+
 /* 왼쪽 본문 화면 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
-
 /* 오른쪽 본문 화면 */
-
-
 
 #오른쪽
 {
@@ -416,109 +480,5 @@ body
 	cursor : grabbing ;
 }
 
-
 /* 오른쪽 본문 화면 */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////// */
-
-
-.구역[data-종류=부분] .본문
-{
-	display : grid ;
-	grid-template-rows : minmax(0, 0fr) minmax(0, 1fr) ;
-	flex : 1 ;
-	padding-top : 9px ;
-}
-
-.구역[data-종류=부분][data-크기=커짐] .본문
-{
-	grid-template-rows : minmax(0, 1fr) minmax(0, 0fr) ;
-}
-
-.드롭다운_공간
-{
-	height : 100% ;
-}
-
-.드롭다운_칸
-{
-	display : grid ;
-	grid-template-columns : minmax(0, 3fr) minmax(0, 1fr) ;
-	width : 100% ;
-}
-
-.드롭다운_선택
-{
-	width : 100% ;
-	min-width : 0 ;
-	border : 1px solid var(--강조2) ;
-	cursor : pointer ;
-}
-
-.드롭다운_선택 option
-{
-	background : var(--왼쪽바탕색) ;
-	white-space : pre ;
-	tab-size : 200px ;
-}
-
-.크기_계산.부분
-{
-	max-width : none ;
-	max-height : none ;
-}
-
-.페이지.부분
-{
-	display : flex ;
-	flex-direction : column ;
-	gap : 3px ;
-}
-
-.노래_항목
-{
-	display : grid ;
-	grid-template-columns : minmax(0, 1.5fr) minmax(0, 0fr) minmax(0, 1.5fr) minmax(0, 1fr) ;
-	flex : 0 0 30px ;
-}
-
-.노래_항목:hover
-{
-	background : rgba(255, 255, 255, 0.15) ;
-}
-
-.노래_칸
-{
-	display : flex ;
-	align-items : center ;
-	height : 30px ;
-	min-width : 0 ;
-	white-space : nowrap ;
-}
-
-.노래_이름
-{
-	justify-content : flex-end ;
-	padding-right : 9px ;
-}
-
-.노래_제목
-{
-	padding-left : 9px ;
-}
-
-.노래_구분선
-{
-	width : 0 ;
-	height : 80% ;
-	padding : 0 1.5px ;
-	background : var(--강조2) ;
-	justify-self : center ;
-	align-self : center ;
-}
-
-.대기열
-{
-	width : 100% ;
-	height : 100% ;
-	font-size : 60px ;
-}

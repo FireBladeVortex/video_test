@@ -5,8 +5,6 @@ api.src = "https://www.youtube.com/iframe_api"
 let api_준비_대기 = null
 const api_준비 = new Promise(resolve => { api_준비_대기 = resolve })
 
-
-
 let player = null
 function onYouTubeIframeAPIReady()
 {
@@ -44,7 +42,16 @@ function onYouTubeIframeAPIReady()
 	})
 }
 
-
+// 재생 종료
+// YT.PlayerState.ENDED === 0
+// 재생 중
+// YT.PlayerState.PLAYING === 1
+// 재생 일시 중지
+// YT.PlayerState.PAUSED === 2
+// 재생 하기위한 준비 중
+// YT.PlayerState.BUFFERING === 3
+// 재생 하기위한 준비 완료
+// YT.PlayerState.CUED === 5
 
 let 재생_시간_표시줄 = null
 function onPlayerStateChange(event)
@@ -52,6 +59,7 @@ function onPlayerStateChange(event)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
+
 		if (관리_시간.종료 === 0)
 		{
 			[관리_시간.종료, 관리_문자열.종료] = 시간_표기법(player.getDuration())
@@ -82,6 +90,7 @@ function onPlayerStateChange(event)
 		{
 			player.seekTo(관리_시간.시작, true)
 		}
+
 		clearInterval(재생_시간_표시줄)
 		재생_시간_표시줄 = setInterval(재생_표시줄, 100)
 	}
@@ -101,8 +110,6 @@ function onPlayerStateChange(event)
 	오른쪽.onclick = 상태 ? 재생_일시중지_조작 : null
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 const 왼쪽 = document.getElementById("왼쪽")
@@ -111,8 +118,6 @@ const 왼쪽_이름 = document.getElementById("왼쪽_이름")
 const 오른쪽_안내 = document.getElementById("오른쪽_안내")
 const 동영상_제목 = document.getElementById("동영상_제목")
 const 제목표시줄 = document.getElementById("제목표시줄")
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -201,7 +206,7 @@ async function 불러오기_제목(id)
 		선택한_채널.이름 = 데이터.author_name
 		선택한_채널.주소 = 데이터.author_url
 		선택_동영상.제목 = 데이터.title
-		// document.title = 선택한_채널.이름
+		document.title = 선택한_채널.이름
 
 		동영상_제목.style.textAlign = "start"
 		제목표시줄.textContent = 선택_동영상.제목
@@ -222,7 +227,6 @@ async function 불러오기_제목(id)
 
 const 재생 = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
 const 일시중지 = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
-// !재생중() === !재생() && !일시중지()
 const 재생중 = () => 재생() || 일시중지()
 
 function 재생_일시중지_조작()
@@ -252,6 +256,7 @@ function 소리_크기_조절(증감)
 const 볼륨 = document.getElementById("볼륨")
 const 볼륨_조절 = document.getElementById("볼륨_조절")
 볼륨_조절.addEventListener("input", () => player.setVolume(+볼륨_조절.value))
+
 const 방지 = 간섭 => 간섭.stopPropagation()
 볼륨.addEventListener("mousedown", 방지)
 볼륨.addEventListener("click", 방지)
@@ -361,7 +366,6 @@ function 시간_표기법(시간)
 	const 분 = Math.floor(값 % 3600 / 60)
 	const 초 = Math.floor(값 % 60)
 	const 시분초 = [시, 분, 초]
-
 
 	const 길이 = 시분초.findIndex(값 => 값 !== 0)
 	const [처음, ...나머지] = 시분초.slice(길이 === -1 ? 시분초.length - 1 : 길이)
@@ -490,8 +494,7 @@ function 페이지_갱신(종류)
 	}
 
 	const 구역 = 왼쪽.querySelector(".구역[data-종류=" + 종류 + "]")
-	const [버튼_이전, 버튼_지금, 버튼_다음] =
-		구역.querySelector(".머리말_페이지")?.children
+	const [버튼_이전, 버튼_지금, 버튼_다음] = 구역.querySelector(".머리말_페이지")?.children
 
 	if (!(버튼_이전 && 버튼_지금 && 버튼_다음))
 		return
@@ -544,12 +547,12 @@ function 채우기_페이지(종류, 자료)
 		const 몇번 = (숫자 + "").padStart(3, "0")
 		const 버튼 = 만들기_공간("button", 조각모음, "버튼", "", 종류, 몇번)
 
+		const img = 만들기_공간("img", 버튼)
 		const src_1 = "https://img.youtube.com/vi/"
 		const src_2 = 동영상.id
 		const src_3 = "/mqdefault.jpg"
-		const img = 만들기_공간("img", 버튼)
-		img.loading = "lazy"
 		img.src = src_1 + src_2 + src_3
+		img.loading = "lazy"
 	}
 	페이지.appendChild(조각모음)
 
