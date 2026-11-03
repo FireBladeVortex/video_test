@@ -352,10 +352,8 @@ function 시간_표기법(시간)
 	if (!시간 || 시간 <= 0)
 		return [ 0, 0 ]
 
-	const 값 =
-		typeof 시간 === "number"
-		? 시간
-		: (typeof 시간 === "string" && /[.,:;]/.test(시간))
+	const 값 = typeof 시간 === "number" ? 시간
+		: typeof 시간 === "string"
 			? 시간.split(/[.,:;]/).reduce((합, 값) => 합 * 60 + +값, 0)
 			: 0
 
@@ -870,7 +868,7 @@ function 불러오기_재생목록(이름)
 			? 소개[0]
 			: 소개[Math.floor(Math.random() * 소개.length)]
 
-		선택_동영상_준비(선택.id)
+		선택_동영상_준비(선택.id, 0, 0)
 	}
 
 	function id_가공(재생목록)
