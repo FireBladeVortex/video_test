@@ -502,7 +502,13 @@ function 페이지_갱신(종류)
 
 	const 페이지_수 = 페이지_최대(종류)
 
-	if (페이지_수 <= 1)
+	if (종류 !== "부분" && 숫자 && 구역들 && 구역_커짐 !== 종류)
+	{
+		구역.querySelector(".머리말_크기").style.visibility =
+			(구역들.length === 1) || (페이지_수 === 1 ) ? "hidden" : ""
+	}
+
+	if (페이지_수 === 1)
 	{
 		for (const 숫자 of 버튼_지금.children)
 		{
@@ -520,6 +526,67 @@ function 페이지_갱신(종류)
 
 		버튼_지금.children[한장_차이 + 1].textContent =
 			(페이지_숫자 < 1 || 페이지_숫자 > 페이지_수) ? "" : 페이지_숫자
+	}
+}
+
+let 구역들 = null
+let 구역_커짐 = null
+const 구역_비율 = { 원곡 : 2, 커버 : 2, 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
+function 크기_조절(왼쪽, 그거)
+{
+	구역들 = 왼쪽.querySelectorAll(".구역")
+
+	if (구역들.length === 1 && !그거)
+	{
+		그거 = 구역들[0].dataset.종류
+	}
+
+	const 생성된_구역_확인 = [...구역들]
+	const 확인된_구역_종류들 = 생성된_구역_확인.map(구역 => 구역.dataset.종류)
+
+	const 조절_딸깍 = 구역_커짐 === 그거 ? null : 그거
+
+	const 비율들 = 확인된_구역_종류들.map(종류 =>
+	{
+		if (확인된_구역_종류들.length === 1)
+			return "minmax(0, 1fr)"
+
+		if (조절_딸깍)
+			return 종류 === 조절_딸깍 ? "minmax(0, 1fr)" : "minmax(0, 0fr)"
+
+		return "minmax(0, " + 구역_비율[종류] + "fr)"
+	})
+
+	왼쪽.style.gridTemplateRows = 비율들.join(" ")
+
+	구역_커짐 = 조절_딸깍
+
+	const 이거 = 왼쪽.querySelectorAll(".머리말_크기 .문자열_클릭")
+	for (const 크기 of 이거)
+	{
+		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
+	}
+
+	if (구역)
+		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
+
+	const 구역_부분 = 왼쪽.querySelector(".구역[data-종류=부분]")
+	if (구역_부분)
+	{
+		const 커짐 = 구역_커짐 === "부분"
+		구역_부분.dataset.크기 = 커짐 ? "커짐" : "작아짐"
+
+		const 드롭다운_칸 = 구역_부분.querySelector(".드롭다운_칸")
+		if (드롭다운_칸)
+		{
+			드롭다운_칸.inert = 커짐
+		}
+
+		const 노래_목록 = 구역_부분.querySelector(".크기_계산.부분")
+		if (노래_목록)
+		{
+			노래_목록.inert = !커짐
+		}
 	}
 }
 
@@ -558,57 +625,6 @@ function 채우기_페이지(종류, 자료)
 	{
 		페이지_관리[종류] = 1
 		페이지_갱신(종류)
-	}
-}
-
-let 구역들 = null
-let 구역_커짐 = null
-const 구역_비율 = { 원곡 : 2, 커버 : 2, 동영상 : 2, 쇼츠 : 2, 부분 : 1 }
-function 크기_조절(왼쪽, 그거)
-{
-	const 생성된_구역_확인 = [...구역들]
-	const 확인된_구역_종류들 = 생성된_구역_확인.map(구역 => 구역.dataset.종류)
-
-	const 조절_딸깍 = 구역_커짐 === 그거 ? null : 그거
-
-	const 비율들 = 확인된_구역_종류들.map(종류 =>
-	{
-		if (확인된_구역_종류들.length === 1)
-			return "minmax(0, 1fr)"
-
-		if (조절_딸깍)
-			return 종류 === 조절_딸깍 ? "minmax(0, 1fr)" : "minmax(0, 0fr)"
-
-		return "minmax(0, " + 구역_비율[종류] + "fr)"
-	})
-
-	왼쪽.style.gridTemplateRows = 비율들.join(" ")
-
-	구역_커짐 = 조절_딸깍
-
-	const 이거 = 왼쪽.querySelectorAll(".머리말_크기 .문자열_클릭")
-	for (const 크기 of 이거)
-	{
-		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
-	}
-
-	const 구역_부분 = 왼쪽.querySelector(".구역[data-종류=부분]")
-	if (구역_부분)
-	{
-		const 커짐 = 구역_커짐 === "부분"
-		구역_부분.dataset.크기 = 커짐 ? "커짐" : "작아짐"
-
-		const 드롭다운_칸 = 구역_부분.querySelector(".드롭다운_칸")
-		if (드롭다운_칸)
-		{
-			드롭다운_칸.inert = 커짐
-		}
-
-		const 노래_목록 = 구역_부분.querySelector(".크기_계산.부분")
-		if (노래_목록)
-		{
-			노래_목록.inert = !커짐
-		}
 	}
 }
 
@@ -802,16 +818,7 @@ function 만들기_목록()
 		채우기_페이지(분류.종류)
 	}
 
-	구역들 = 왼쪽.querySelectorAll(".구역")
-	왼쪽.style.gridTemplateRows = [...구역들]
-	.map(구역 => "minmax(0, " + 구역_비율[구역.dataset.종류] + "fr)")
-	.join(" ")
-
-	if (구역들.length === 1)
-	{
-		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
-		크기_조절(왼쪽, 구역들[0].dataset.종류)
-	}
+	크기_조절(왼쪽)
 }
 
 function 만들기_구역()
