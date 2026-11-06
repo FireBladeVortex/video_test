@@ -510,9 +510,9 @@ function 페이지_갱신(종류)
 
 	if (페이지_수 === 1)
 	{
-		for (const 숫자 of 버튼_지금.children)
+		for (const 문자열 of 구역.querySelectorAll(".머리말_페이지 span"))
 		{
-			숫자.textContent = ""
+			문자열.textContent = ""
 		}
 		return
 	}
