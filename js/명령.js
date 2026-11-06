@@ -567,9 +567,6 @@ function 크기_조절(왼쪽, 그거)
 		크기.textContent = 크기.dataset.종류 === 구역_커짐 ? "작게" : "크게"
 	}
 
-	if (구역)
-		왼쪽.querySelector(".머리말_크기").style.visibility = "hidden"
-
 	const 구역_부분 = 왼쪽.querySelector(".구역[data-종류=부분]")
 	if (구역_부분)
 	{
