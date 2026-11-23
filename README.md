@@ -10,7 +10,7 @@ https://firebladevortex.github.io/video_test/도구.html
 * 누구나 프로젝트에 참여할 수 있습니다.
 	* [Pull requests](../../pulls) 직접 기여
 	* [Issues](../../issues) 간접 기여 - 제보, 요청, 제안 등
-		* [고쳐줘](../../issues/new?title=버그&type=Bug)
+		* [고쳐줘](../../issues//new?template=bug_report.yml)
 		* [(명단에 누구|누구의 노래) 추가 해줘](../../issues/new?title=추가&type=Feature)
 		* [이거 해줘](../../issues/new?title=제안&type=Feature")
 * 누구나 복제, 수정할 수 있습니다.
