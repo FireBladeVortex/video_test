@@ -8,13 +8,13 @@ https://firebladevortex.github.io/video_test/도구.html
 
 이 프로젝트는 비공식 프로젝트입니다.
 * 누구나 프로젝트에 참여할 수 있습니다.
-	* [Pull requests](https://github.com/FireBladeVortex/video_test/pulls)로 직접 기여
-	* [Pull requests](../../pulls)로 직접 기여
-	* [Issues](https://github.com/FireBladeVortex/video_test/issues)에서 기여
-		* 제안, 제보, 요청 등
+	* [Pull requests](../../pulls) 직접 기여
+	* [Issues](../../issues) 간접 기여 - 제보, 요청, 제안 등
+		* [고쳐줘](../../issues/new?title=버그&type=Bug)
+		* [(명단에 누구|누구의 노래) 추가 해줘](../../issues/new?title=추가&type=Feature)
+		* [이거 해줘](../../issues/new?title=제안&type=Feature")
 * 누구나 복제, 수정할 수 있습니다.
 	* 자세한 내용은 [라이선스](#라이선스)를 읽어주세요.
-
 
 #### 제작 동기
 * 유튜브 재생목록이 500개가 넘어서
@@ -50,13 +50,13 @@ https://firebladevortex.github.io/video_test/도구.html
 	* 누구나 복제, 수정, 배포, 웹서비스 할 수 있습니다.
 	* 배포, 웹 서비스 시
 		* 소스코드를 공개해야합니다.
-		* APGL 3.0 라이선스를 유지해야합니다.
+		* [APGL 3.0 라이선스](LICENSE)를 유지해야합니다.
+* 위 내용은 단순한 요약이며, 자세한 것은 [라이선스](LICENSE)를 직접 확인해보세요.
 * 라이선스 미적용 범위 / 라이선스 미적용 / 라이선스 예외
 	* 명단 내부에서 사용 중인 모든 유튜브 동영상 링크는 라이선스에 적용받지 않습니다.
 	* 명단 내부에서 사용 중인 모든 유튜브 동영상 링크는 라이선스를 적용받지 않습니다.
 	* 명단 내부에서 사용 중인 모든 유튜브 동영상 링크는 라이선스와 무관합니다.
 	* 명단 폴더 내부에 있는 모든 파일은 라이선스와 무관합니다.
-* 자세한 내용은 해당 [라이선스](LICENSE)를 직접 확인해보세요.
 
 
 ### 출처
