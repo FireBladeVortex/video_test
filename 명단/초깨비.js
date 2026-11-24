@@ -26,7 +26,7 @@ window.재생목록 ??= {}
 재생목록.원곡 =
 [
 	{
-		id : "",
+		id : "https://youtu.be/EYnnaQkIm7s",
 	},
 ]
 
